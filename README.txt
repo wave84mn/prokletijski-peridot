@@ -5,7 +5,7 @@ Since 15 Nov 2026 this folder is the AR trail missions only. The virtual trail m
 3D walk, the 3D valley map) are becoming a game of their own and are no longer here.
 
 WHAT IS IN THIS FOLDER
-  index.html      the start screen: the 3D Peridot badge over the valley at night, the AR trail missions card, and four tiles:
+  index.html      the start screen: the 3D Peridot badge over the valley at night, the AR trail missions card, and four menu cards in the same style:
                   My Peridot (points, places, chapters, rank, the field stamp with its QR), Legend & how to play,
                   Visit info (visitor centre, time and getting around, safety, national park, places of prayer),
                   Before you go (checks location, camera, motion and compass, shows the battery; tips).
@@ -24,8 +24,9 @@ WHAT IS IN THIS FOLDER
                   The city map on the same site (wave84mn.github.io) and this game share their lens measurements.
   logo/           the 3D badge for the start screen (peridot-mesh.txt + textures) and its pictures (peridot-badge*.png)
   landing/        the start screen's pictures: night-wide.jpg (computers), night-tall.jpg (phones), trail.jpg (the picture on
-                  the game card: the trail crossroad with the signpost and the glowing peridot), frame.webp (the slate
-                  frame of the card)
+                  the game card: the trail crossroad with the signpost and the glowing peridot), menu-mine.jpg,
+                  menu-legend.jpg, menu-visit.jpg, menu-ready.jpg (the pictures on the four menu cards), frame.webp (the
+                  slate frame of the cards)
   fieldmap/       the game's map, painted like the printed Game Trails Map (blue-hour relief, glowing rivers, warm town
                   lights): overview.jpg (the valleys), gusinje.webp, vusanje.webp, grebaje.webp (town plans that fade in when
                   you zoom in). Made from the Copernicus DEM and OpenStreetMap by tools/fieldmap in the build folder.

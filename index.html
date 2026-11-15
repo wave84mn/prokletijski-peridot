@@ -256,18 +256,14 @@ button { font: inherit; color: inherit; }
   font-family: var(--f-display); font-weight: 800; font-size: 15px; letter-spacing: 0.1em; }
 .ld-lang button[aria-pressed="true"] { color: #2a1a05; background: linear-gradient(180deg, #f8dea4, var(--gold) 55%, #c08d47); }
 .ld-lang button:focus-visible { outline: 2px solid var(--peridot-hi); outline-offset: 1px; }
-.ld-menu { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
-.ld-item { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 6px; min-height: 92px; padding: 12px 6px 10px;
-  border: 1.5px solid rgba(199, 165, 80, 0.85); border-radius: 4px; cursor: pointer; text-align: center; color: var(--parchment);
-  background: linear-gradient(180deg, rgba(38, 44, 46, 0.96), rgba(21, 25, 26, 0.97));
-  box-shadow: inset 0 0 0 2px rgba(12, 14, 15, 0.9), inset 0 0 0 3px rgba(199, 165, 80, 0.3), 0 10px 22px rgba(0, 0, 0, 0.45); transition: transform 180ms ease, filter 180ms ease; }
-.ld-item:hover { transform: translateY(-2px); filter: drop-shadow(0 0 12px rgba(125, 255, 74, 0.14)); }
-.ld-item:focus-visible { outline: 2px solid var(--peridot-hi); outline-offset: 2px; }
-.ld-item svg { width: 26px; height: 26px; flex: none; fill: none; stroke: var(--gold); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
-.ld-item[data-panel="mine"] svg path:first-child { fill: rgba(182, 209, 46, 0.25); stroke: var(--peridot-hi); }
-.ld-item span { font-family: "EB Garamond", "Palatino Linotype", Palatino, Georgia, serif; font-weight: 600; font-size: 16px; line-height: 1.1; }
-.ld-item small { font-size: 12px; line-height: 1.1; color: var(--peridot-hi); font-variant-numeric: tabular-nums; }
-.ld-item small:empty { display: none; }
+.ld-menu { display: flex; flex-direction: column; gap: 14px; }
+.mode.menu { grid-template-columns: 150px minmax(0, 1fr); }
+.mode.menu .mode-art { width: 150px; height: 150px; }
+.mode.menu .mode-cta { color: #f3dca4; background: rgba(8, 10, 10, 0.35); box-shadow: inset 0 0 0 1.5px rgba(229, 185, 113, 0.8), 0 4px 12px rgba(0, 0, 0, 0.35); }
+.mode.menu:hover .mode-cta, .mode.menu:focus-visible .mode-cta { color: #2a1a05; background: linear-gradient(180deg, #f8dea4, var(--gold) 55%, #c08d47); }
+.mode.menu .mode-prog { gap: 2px; }
+.mode.menu .mode-prog span + span { font-family: "EB Garamond", "Palatino Linotype", Palatino, Georgia, serif; font-style: italic; font-size: 15px; color: var(--peridot-hi); }
+.mode:focus-visible { outline: 2px solid var(--peridot-hi); outline-offset: 4px; }
 /* the panel the menu opens */
 .ld-panel { position: fixed; inset: 0; z-index: 9; display: grid; place-items: center; overflow-y: auto; overscroll-behavior: contain; background: rgba(4, 10, 12, 0.66);
   -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
@@ -344,11 +340,6 @@ button { font: inherit; color: inherit; }
   .ld-foot { width: min(520px, 100%); }
 }
 @media (max-width: 520px) {
-  .ld-menu { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-  .ld-item { min-height: 0; flex-direction: row; justify-content: flex-start; flex-wrap: wrap; gap: 4px 8px; padding: 10px 10px; text-align: left; }
-  .ld-item svg { width: 22px; height: 22px; }
-  .ld-item span { font-size: 15px; flex: 1 1 auto; min-width: 0; }
-  .ld-item small { flex-basis: 100%; padding-left: 30px; }
   .ld-sheet { padding: 22px 18px 18px; }
   .ld-sheet h2 { font-size: 26px; }
   .ld-lang button { min-width: 40px; font-size: 14px; }
@@ -357,6 +348,9 @@ button { font: inherit; color: inherit; }
   .mode-art { width: 76px; height: 76px; }
   .mode.field { grid-template-columns: 92px minmax(0, 1fr); }
   .mode.field .mode-art { width: 92px; height: 92px; }
+  .ld-menu { gap: 12px; }
+  .mode.menu { grid-template-columns: 92px minmax(0, 1fr); }
+  .mode.menu .mode-art { width: 92px; height: 92px; }
   .mode-title { font-size: 25px; }
   .mode-desc { font-size: 13.5px; line-height: 1.35; }
   .mode-foot { margin-top: 5px; gap: 8px; }
@@ -530,10 +524,42 @@ button { font: inherit; color: inherit; }
         </button>
       </div>
       <nav class="ld-menu" aria-label="More" data-i18n-label="more">
-        <button type="button" class="ld-item" data-panel="mine"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5C17.2 7.6 17.2 16.4 12 21.5C6.8 16.4 6.8 7.6 12 2.5Z"/><path d="M12 7.5C14.2 9.8 14.2 14.2 12 16.5C9.8 14.2 9.8 9.8 12 7.5Z M12 2.5V7.5M12 16.5V21.5"/></svg><span data-i18n="menuMine">My Peridot</span><small id="mine-sum"></small></button>
-        <button type="button" class="ld-item" data-panel="legend"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5c2.8-1.4 5.6-1.4 8 .5 2.4-1.9 5.2-1.9 8-.5v13c-2.8-1.4-5.6-1.4-8 .5-2.4-1.9-5.2-1.9-8-.5z"/><path d="M12 6v13"/></svg><span data-i18n="menuLegend">Legend & how to play</span></button>
-        <button type="button" class="ld-item" data-panel="visit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0c0 5-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></svg><span data-i18n="menuVisit">Visit info</span></button>
-        <button type="button" class="ld-item" data-panel="ready"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="2.5" width="11" height="19" rx="2.2"/><path d="M9.5 12.2l1.8 1.8 3.4-3.6"/></svg><span data-i18n="menuReady">Before you go</span></button>
+        <button type="button" class="mode framed menu" data-panel="mine" data-i18n-label="menuMine" aria-describedby="desc-mine">
+          <span class="mode-art" aria-hidden="true"><img src="landing/menu-mine.jpg" alt="" width="240" height="240" decoding="async" loading="lazy"></span>
+          <span class="mode-body">
+            <span class="mode-kicker" data-i18n="mineKicker">Your progress</span>
+            <span class="mode-title" data-i18n="menuMine">My Peridot</span>
+            <span class="mode-desc" id="desc-mine" data-i18n="descMine">Your points and rank, the places you have found, and your field stamp when you finish.</span>
+            <span class="mode-foot"><span class="mode-prog" id="mine-sum"></span><span class="mode-cta" data-i18n="ctaOpen">Open</span></span>
+          </span>
+        </button>
+        <button type="button" class="mode framed menu" data-panel="legend" data-i18n-label="menuLegend" aria-describedby="desc-legend">
+          <span class="mode-art" aria-hidden="true"><img src="landing/menu-legend.jpg" alt="" width="240" height="240" decoding="async" loading="lazy"></span>
+          <span class="mode-body">
+            <span class="mode-kicker" data-i18n="legKicker">The legend</span>
+            <span class="mode-title" data-i18n="menuLegend">Legend & how to play</span>
+            <span class="mode-desc" id="desc-legend" data-i18n="descLegend">How the green gem of Prokletije broke, and how to find its pieces in five steps. Try it at home first.</span>
+            <span class="mode-foot"><span class="mode-prog"></span><span class="mode-cta" data-i18n="ctaRead">Read</span></span>
+          </span>
+        </button>
+        <button type="button" class="mode framed menu" data-panel="visit" data-i18n-label="menuVisit" aria-describedby="desc-visit">
+          <span class="mode-art" aria-hidden="true"><img src="landing/menu-visit.jpg" alt="" width="240" height="240" decoding="async" loading="lazy"></span>
+          <span class="mode-body">
+            <span class="mode-kicker" data-i18n="visKicker">Plan your visit</span>
+            <span class="mode-title" data-i18n="menuVisit">Visit info</span>
+            <span class="mode-desc" id="desc-visit" data-i18n="descVisit">The visitor centre, how long each part takes, getting around, safety and the national park.</span>
+            <span class="mode-foot"><span class="mode-prog"></span><span class="mode-cta" data-i18n="ctaOpen">Open</span></span>
+          </span>
+        </button>
+        <button type="button" class="mode framed menu" data-panel="ready" data-i18n-label="menuReady" aria-describedby="desc-ready">
+          <span class="mode-art" aria-hidden="true"><img src="landing/menu-ready.jpg" alt="" width="240" height="240" decoding="async" loading="lazy"></span>
+          <span class="mode-body">
+            <span class="mode-kicker" data-i18n="rdyKicker">Get ready</span>
+            <span class="mode-title" data-i18n="menuReady">Before you go</span>
+            <span class="mode-desc" id="desc-ready" data-i18n="descReady">Check location, camera and compass on your phone before you set off, plus tips for the day.</span>
+            <span class="mode-foot"><span class="mode-prog"></span><span class="mode-cta" data-i18n="ctaCheck">Check</span></span>
+          </span>
+        </button>
       </nav>
       <p class="ld-note" data-i18n="note">Your progress stays on this device.</p>
       <div class="ld-partners">
@@ -6453,6 +6479,11 @@ const TXT = {
     cardAria: 'AR trail missions. {n} of 10 places done. {cta}.', ptsShort: 'points',
     note: 'Your progress stays on this device.', partners: 'This game is developed under project Xplore Prokletije, supported by:',
     menuMine: 'My Peridot', menuLegend: 'Legend & how to play', menuVisit: 'Visit info', menuReady: 'Before you go', more: 'More', lang: 'Language', close: 'Close',
+    descMine: 'Your points and rank, the places you have found, and your field stamp when you finish.',
+    descLegend: 'How the green gem of Prokletije broke, and how to find its pieces in five steps. Try it at home first.',
+    descVisit: 'The visitor centre, how long each part takes, getting around, safety and the national park.',
+    descReady: 'Check location, camera and compass on your phone before you set off, plus tips for the day.',
+    ctaOpen: 'Open', ctaRead: 'Read', ctaCheck: 'Check',
     // My Peridot
     mineKicker: 'Your progress', mineTitle: 'My Peridot', points: 'Points', places: 'Places', chapters: 'Chapters',
     ranks: ['Not on the trail yet', 'On the trail', 'Field Scout', 'Field Keeper', 'Guardian of the Peridot in the Field'],
@@ -6499,6 +6530,11 @@ const TXT = {
     cardAria: 'AR misije na stazama. Završeno {n} od 10 mjesta. {cta}.', ptsShort: 'poena',
     note: 'Tvoj napredak ostaje na ovom uređaju.', partners: 'Ova igra je razvijena u okviru projekta Xplore Prokletije, uz podršku:',
     menuMine: 'Moj Peridot', menuLegend: 'Legenda i pravila', menuVisit: 'Info za posjetu', menuReady: 'Prije polaska', more: 'Više', lang: 'Jezik', close: 'Zatvori',
+    descMine: 'Tvoji poeni i rang, pronađena mjesta i tvoj terenski pečat kad završiš.',
+    descLegend: 'Kako se razbio zeleni dragulj Prokletija i kako da pronađeš njegove djelove u pet koraka. Prvo probaj od kuće.',
+    descVisit: 'Info centar, koliko traje svaki dio, kako se kretati, bezbjednost i nacionalni park.',
+    descReady: 'Provjeri lokaciju, kameru i kompas na telefonu prije polaska, i savjete za taj dan.',
+    ctaOpen: 'Otvori', ctaRead: 'Čitaj', ctaCheck: 'Provjeri',
     mineKicker: 'Tvoj napredak', mineTitle: 'Moj Peridot', points: 'Poeni', places: 'Mjesta', chapters: 'Poglavlja',
     ranks: ['Još nijesi na stazi', 'Na stazi', 'Terenski izviđač', 'Terenski čuvar', 'Zaštitnik Peridota na terenu'],
     stDone: 'Završeno', stHere: 'Posjećeno', stNot: 'Još ne', stampTitle: 'Tvoj terenski pečat', stampText: 'Pokaži ga u info centru.',
@@ -6541,6 +6577,11 @@ const TXT = {
     cardAria: 'Misionet AR në shtigje. {n} nga 10 vende të kryera. {cta}.', ptsShort: 'pikë',
     note: 'Përparimi yt mbetet në këtë pajisje.', partners: 'Kjo lojë është zhvilluar në kuadër të projektit Xplore Prokletije, me mbështetjen e:',
     menuMine: 'Peridoti im', menuLegend: 'Legjenda dhe rregullat', menuVisit: 'Për vizitën', menuReady: 'Para nisjes', more: 'Më shumë', lang: 'Gjuha', close: 'Mbyll',
+    descMine: 'Pikët dhe rangu yt, vendet e gjetura dhe vula jote e terrenit kur të mbarosh.',
+    descLegend: 'Si u copëtua guri i gjelbër i Bjeshkëve të Nemuna dhe si t’i gjesh copat e tij në pesë hapa. Provoje fillimisht nga shtëpia.',
+    descVisit: 'Qendra për vizitorë, sa zgjat secila pjesë, si të lëvizësh, siguria dhe parku kombëtar.',
+    descReady: 'Kontrollo vendndodhjen, kamerën dhe busullën në telefon para se të nisesh, dhe këshilla për ditën.',
+    ctaOpen: 'Hap', ctaRead: 'Lexo', ctaCheck: 'Kontrollo',
     mineKicker: 'Përparimi yt', mineTitle: 'Peridoti im', points: 'Pikë', places: 'Vende', chapters: 'Kapituj',
     ranks: ['Ende jo në shteg', 'Në shteg', 'Zbulues në terren', 'Rojtar në terren', 'Mbrojtës i Peridotit në terren'],
     stDone: 'Kryer', stHere: 'Vizituar', stNot: 'Ende jo', stampTitle: 'Vula jote e terrenit', stampText: 'Tregoje në qendrën për vizitorë.',
@@ -6591,14 +6632,14 @@ function fieldProgress() {
   const rank = f.assembled && done >= 10 ? 4 : f.assembled ? 3 : chapters ? 2 : started ? 1 : 0;
   return { rec, done, chapters, pts, started, rank, assembled: !!f.assembled, stamp: typeof f.stamp === 'string' ? f.stamp : null };
 }
-function refreshLanding() {   // the game card's pips and button, and the points on the My Peridot tile
+function refreshLanding() {   // the game card's pips and button, and the points and rank on the My Peridot card
   const f = fieldProgress();
   const dots = PLACES10.map((p) => `<i${f.rec(p)?.done ? ' class="on"' : ''}></i>`).join('');
   $('prog-field').innerHTML = `<span class="pips dots" aria-hidden="true">${dots}</span><span>${f.started ? t('progOn', { n: f.done, c: f.chapters }) : t('progNew')}</span>`;
   const cta = f.started ? t('continue') : t('start');
   $('cta-field').textContent = cta;
   $('go-field').setAttribute('aria-label', t('cardAria', { n: f.done, cta }));
-  $('mine-sum').textContent = f.started ? `${fmt(f.pts)} ${t('ptsShort')}` : '';
+  $('mine-sum').innerHTML = f.started ? `<span><b>${fmt(f.pts)}</b> ${esc(t('ptsShort'))}</span><span>${esc(t('ranks')[f.rank])}</span>` : '';
 }
 
 /* ---------------------------------------------------------------- language */
