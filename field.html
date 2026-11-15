@@ -2898,7 +2898,7 @@ function updateSeq(now, dt) {
   const end = wob - S.wobbles * 850;
   if (S.caught) {
     if (cat.state !== 'caught') {
-      cat.state = 'caught'; sound('caught'); buzz([40, 30, 90]); pop('Caught!', 'green');
+      cat.state = 'caught'; sound('caught'); buzz([40, 30, 90]); pop('Collected!', 'green');
       G.orbGlow.material.color.setHex(0xb6ff4a); G.orbGlow.material.opacity = 1;
       G.burst.forEach((s) => { s.position.copy(G.orb.position); s.userData.v.set(Math.random() - 0.5, Math.random() * 0.9 + 0.2, Math.random() - 0.5).normalize().multiplyScalar(1.1 + Math.random() * 1.4); s.material.opacity = 1; });
       say(`${CUB}: “${cat.f.story}”`);
@@ -2925,7 +2925,7 @@ function finishCatch() {
   const f = cat.f, r = frec(f.id);
   const pts = Math.max(60, FP.catch + (cat.lastQ ? cat.lastQ.bonus : 0) - 10 * cat.misses);
   r.catch = pts; r.throwQ = cat.lastQ ? cat.lastQ.name : null; r.throws = cat.throws; r.look = Date.now(); persist();
-  refreshFieldMarkers(); toast(`+${pts} · Peridot shard caught`, 2600);
+  refreshFieldMarkers(); toast(`+${pts} · Peridot shard collected`, 2600);
   closeAR(() => taskIntro(f.id));
 }
 if (DEBUG) setTimeout(() => { if (window.game) Object.assign(window.game, { cat, startCatch, throwOrb, loadThree }); }, 0);
