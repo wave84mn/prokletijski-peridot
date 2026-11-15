@@ -17,7 +17,7 @@ WHAT IS IN THIS FOLDER
                   The city map on the same site (wave84mn.github.io) and this game share their lens measurements.
   logo/           the 3D badge for the start screen (peridot-mesh.txt + textures) and its pictures (peridot-badge*.png)
   landing/        the start screen's pictures, made with Higgsfield: night-wide.jpg (computers), night-tall.jpg (phones),
-                  orb.jpg and trail.jpg (the pictures on the two menu cards), frame.webp (the slate frame of the cards)
+                  phone.jpg and trail.jpg (the pictures on the two menu cards), frame.webp (the slate frame of the cards)
   logo.png        Xplore Prokletije logo
   partners/       logos under the menu on the start screen: TO Gusinje, Xplore Prokletije, Ministry of Tourism
   catch/          ari.jpg: Ari's painted portrait in the field game's camera view (from the Higgsfield catch design)
