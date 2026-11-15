@@ -331,6 +331,7 @@ textarea.export { width: 100%; box-sizing: border-box; min-height: 180px; font: 
 .ar-scan { position: absolute; left: 50%; top: 45%; width: 120px; height: 120px; margin: -60px 0 0 -60px; pointer-events: none; --k: 0; }
 .ar-scan svg { width: 100%; height: 100%; transform: rotate(-90deg); }
 .ar-scan circle { fill: none; stroke: var(--peridot); stroke-width: 6; stroke-linecap: round; stroke-dasharray: 339.3; stroke-dashoffset: calc(339.3 * (1 - var(--k))); }
+.ar-lens { margin-left: auto; flex: none; }
 .ar-top { position: absolute; left: 0; right: 0; top: 0; display: flex; gap: 8px; align-items: flex-start;
   padding: max(12px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 0 max(16px, env(safe-area-inset-left, 0px)); }
 .ar-bottom { position: absolute; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; gap: 10px; align-items: center;
@@ -486,6 +487,9 @@ textarea.export { width: 100%; box-sizing: border-box; min-height: 180px; font: 
       <h1 id="ar-title">Look around</h1>
       <p class="where" id="ar-where" aria-live="polite"></p>
     </div>
+    <button class="icon-btn glass ar-lens" id="ar-lens" type="button" hidden aria-label="Switch to the next back camera">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l1.6-2h6.8L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.4"/></svg>
+    </button>
   </header>
   <div class="ar-camnote glass" id="ar-camnote" role="status" hidden>
     <p id="ar-camnote-text"></p>
@@ -1418,20 +1422,101 @@ function fieldAction(a) {
 /* ---------------------------------------------------------------- the look-around view (camera + compass) */
 const arEl = $('ar'), arItems = $('ar-items'), arVideo = $('ar-video'), arRibbon = $('ar-ribbon');
 let arOpen = false, arStream = null, arMode = 'look', arF = null, arRAF = 0, arScan = 0, arShardGot = false, arT0 = 0;
-const orient = { heading: 0, elev: 0, compass: false, tilt: false, last: 0, manual: true, prevH: 0, steady: 0 };
-const HFOV = 58;
+/* ---------- where the phone points: gyro for every movement, the compass only to set north, slowly (v20)
+   The first version turned the view with the compass alone: the magnetometer is noisy (the shard shook) and was
+   smoothed (it lagged behind the picture, so it didn't stick). Now, like the city map's tracking:
+   - the phone's own sensor fusion without the magnetometer (Android: 'deviceorientation', the game rotation vector;
+     iPhone: alpha/beta/gamma) turns the view, all three axes, roll included: fast and smooth, but its north drifts;
+   - the compass ('deviceorientationabsolute' on Android, webkitCompassHeading on iPhone) only corrects that north, with
+     a 2.5 s time constant (faster after a big jump), so its noise never reaches the picture;
+   - each frame uses the orientation from the moment the camera took the picture now on screen (the video lags the
+   sensors by 40–100 ms), so the shard moves together with the picture, not ahead of it. */
+const orient = { heading: 0, elev: 0, roll: 0, mapHeading: 0, compass: false, tilt: false, last: 0, manual: true, prevH: 0, steady: 0,
+  q: [0, 0, 0, 1], qv: [0, 0, 0, 1], rel: null, relAt: -1e9, absAt: -1e9, off: null, offT: 0, bigT: 0, hist: [], absQ: null, absD: 0, absT: 0 };
+const MAG_DECL = 5;   // Gusinje: magnetic north is about 5° east of true north (bearings to places are true)
+// quaternions [x, y, z, w]; world: x east, y up, z south (north is −z), like three.js
+const qmul = (a, b) => [a[0] * b[3] + a[3] * b[0] + a[1] * b[2] - a[2] * b[1], a[1] * b[3] + a[3] * b[1] + a[2] * b[0] - a[0] * b[2],
+  a[2] * b[3] + a[3] * b[2] + a[0] * b[1] - a[1] * b[0], a[3] * b[3] - a[0] * b[0] - a[1] * b[1] - a[2] * b[2]];
+const qconj = (q) => [-q[0], -q[1], -q[2], q[3]];
+const qaxis = (x, y, z, a) => { const s = Math.sin(a / 2); return [x * s, y * s, z * s, Math.cos(a / 2)]; };
+function qrot(q, v) {
+  const [x, y, z, w] = q, tx = 2 * (y * v[2] - z * v[1]), ty = 2 * (z * v[0] - x * v[2]), tz = 2 * (x * v[1] - y * v[0]);
+  return [v[0] + w * tx + y * tz - z * ty, v[1] + w * ty + z * tx - x * tz, v[2] + w * tz + x * ty - y * tx];
+}
+function qslerp(a, b, t) {
+  let d = a[0] * b[0] + a[1] * b[1] + a[2] * b[2] + a[3] * b[3], s = 1; if (d < 0) { d = -d; s = -1; }
+  if (d > 0.9995) { const r = a.map((v, i) => v + (s * b[i] - v) * t), n = Math.hypot(...r); return r.map((v) => v / n); }
+  const th = Math.acos(d), k0 = Math.sin((1 - t) * th) / Math.sin(th), k1 = s * Math.sin(t * th) / Math.sin(th);
+  return a.map((v, i) => v * k0 + b[i] * k1);
+}
+const qangle = (a, b) => 2 * Math.acos(clamp(Math.abs(a[0] * b[0] + a[1] * b[1] + a[2] * b[2] + a[3] * b[3]), 0, 1)) / DEG;
+const screenAngle = () => (screen.orientation && typeof screen.orientation.angle === 'number' ? screen.orientation.angle : +window.orientation || 0);
+function qFromDO(alpha, beta, gamma) {   // the back camera's orientation from alpha/beta/gamma (three.js DeviceOrientationControls)
+  const x = beta * DEG / 2, y = alpha * DEG / 2, z = -gamma * DEG / 2;
+  const c1 = Math.cos(x), c2 = Math.cos(y), c3 = Math.cos(z), s1 = Math.sin(x), s2 = Math.sin(y), s3 = Math.sin(z);
+  let q = [s1 * c2 * c3 + c1 * s2 * s3, c1 * s2 * c3 - s1 * c2 * s3, c1 * c2 * s3 - s1 * s2 * c3, c1 * c2 * c3 + s1 * s2 * s3];   // Euler YXZ
+  q = qmul(q, [-Math.SQRT1_2, 0, 0, Math.SQRT1_2]);   // look out of the back, not the screen
+  return qmul(q, qaxis(0, 0, 1, -screenAngle() * DEG));
+}
+const headingOf = (q) => { const f = qrot(q, [0, 0, -1]); return (Math.atan2(f[0], -f[2]) / DEG + 360) % 360; };
+const refHeading = (q) => {   // where the phone points: the camera when it is held up, the phone's top when it lies flat
+  const f = qrot(q, [0, 0, -1]), up = qrot(q, [0, 1, 0]), v = Math.hypot(f[0], f[2]) >= Math.hypot(up[0], up[2]) ? f : up;
+  return (Math.atan2(v[0], -v[2]) / DEG + 360) % 360;
+};
+const yawQ = (deg) => qaxis(0, 1, 0, -deg * DEG);   // turns the view by +deg towards the east
+function qManual() { return qmul(yawQ(orient.heading), qaxis(1, 0, 0, orient.elev * DEG)); }
+function fused(qr) { return orient.absOnly || orient.off == null ? qr : qmul(yawQ(orient.off), qr); }
+function setDerived(q) {   // heading, elevation and roll of the camera; the map's heading
+  const f = qrot(q, [0, 0, -1]), up = qrot(q, [0, 1, 0]), r = qrot(q, [1, 0, 0]);
+  orient.elev = Math.asin(clamp(f[1], -1, 1)) / DEG; orient.roll = Math.atan2(-r[1], up[1]) / DEG;
+  orient.mapHeading = refHeading(q);
+  orient.heading = arOpen ? headingOf(q) : orient.mapHeading;
+}
+function pushHist(t, q) { const H = orient.hist; H.push([t, q]); while (H.length > 48 || (H.length > 2 && t - H[0][0] > 700)) H.shift(); }
+function histAt(t) {   // the sensor orientation at time t (interpolated); without the north correction
+  const H = orient.hist; if (!H.length) return null;
+  if (t >= H[H.length - 1][0]) return H[H.length - 1][1];
+  for (let i = H.length - 1; i > 0; i--) if (H[i - 1][0] <= t) { const [t0, a] = H[i - 1], [t1, b] = H[i]; return qslerp(a, b, (t - t0) / Math.max(1, t1 - t0)); }
+  return H[0][1];
+}
+function setNorth(target, now, slow = 1) {   // the compass sets north: slowly, so its noise never shakes the view
+  if (orient.off == null) { orient.off = target; orient.offT = now; return; }
+  const d = wrapDeg(target - orient.off), dt = clamp((now - orient.offT) / 1000, 0, 0.5); orient.offT = now;
+  orient.bigT = Math.abs(d) > 15 ? orient.bigT + dt : 0;   // a real change (a recalibrated compass): follow faster
+  const tau = (orient.bigT > 1.2 ? 0.4 : 2.5) * slow;
+  orient.off = (orient.off + d * (1 - Math.exp(-dt / tau)) + 540) % 360 - 180;
+}
 function onOrient(e) {
-  if (e.alpha == null && e.webkitCompassHeading == null) return;
-  const a = (e.alpha || 0) * DEG, b = (e.beta || 0) * DEG, g = (e.gamma || 0) * DEG;
-  const cA = Math.cos(a), sA = Math.sin(a), cB = Math.cos(b), sB = Math.sin(b), cG = Math.cos(g), sG = Math.sin(g);
-  const elev = Math.asin(clamp(-cB * cG, -1, 1)) / DEG;   // back camera's elevation
-  let h = null;
-  if (typeof e.webkitCompassHeading === 'number' && e.webkitCompassHeading >= 0) h = e.webkitCompassHeading;
-  else if (e.absolute || e.type === 'deviceorientationabsolute') { const rA = -cA * sG - sA * sB * cG, rB = -sA * sG + cA * sB * cG; h = (Math.atan2(rA, rB) / DEG + 360) % 360; }
-  orient.elev = lerp(orient.elev, elev, 0.35); if (e.beta != null) orient.tilt = true;
-  if (h == null) return;
-  orient.compass = true; orient.manual = false; orient.last = performance.now();
-  orient.heading = (orient.heading + wrapDeg(h - orient.heading) * 0.3 + 360) % 360;
+  if (e.alpha == null && e.beta == null && e.webkitCompassHeading == null) return;
+  const now = performance.now(), abs = e.type === 'deviceorientationabsolute' || e.absolute === true;
+  if (e.beta == null) return;
+  const q = qFromDO(e.alpha || 0, e.beta, e.gamma || 0);
+  orient.tilt = true; orient.manual = false; orient.last = now;
+  if (!abs) {   // gyro-based: turns the view
+    if (orient.absOnly) { orient.absOnly = false; orient.hist.length = 0; }
+    orient.rel = q; orient.relAt = now; pushHist(now, q);
+    const ch = e.webkitCompassHeading;   // iPhone: the compass comes with the same event
+    if (typeof ch === 'number' && ch >= 0) {
+      orient.compass = true; orient.absAt = now;
+      setNorth(wrapDeg(ch + MAG_DECL - refHeading(q)), now, e.webkitCompassAccuracy > 25 ? 2 : 1);
+    }
+  } else {   // the compass: north only, unless this phone has no gyro-based events
+    orient.compass = true; orient.absAt = now;
+    const qT = qmul(yawQ(MAG_DECL), q);   // true north
+    if (now - orient.relAt < 400 && orient.rel) {
+      const d = qmul(qT, qconj(orient.rel));   // = the north correction, a turn about the vertical
+      setNorth(-2 * Math.atan2(d[1], d[3]) / DEG, now);
+    } else {   // compass only: smooth it, more when still (One Euro style), so it neither shakes nor lags much
+      if (!orient.absQ || !orient.absOnly) { orient.absQ = qT; orient.absD = 0; orient.hist.length = 0; }
+      orient.absOnly = true;
+      const dt = clamp((now - orient.absT) / 1000, 0.005, 0.2); orient.absT = now;
+      orient.absD += (qangle(orient.absQ, qT) / dt - orient.absD) * 0.3;
+      const cut = 0.6 + 0.05 * orient.absD, a = 1 / (1 + 1 / (2 * Math.PI * cut * dt));
+      orient.absQ = qslerp(orient.absQ, qT, a); pushHist(now, orient.absQ);
+    }
+  }
+  orient.q = fused(orient.hist.length ? orient.hist[orient.hist.length - 1][1] : q);
+  setDerived(orient.q);
 }
 async function startOrientation() {
   try { if (typeof DeviceOrientationEvent !== 'undefined' && DeviceOrientationEvent.requestPermission) await DeviceOrientationEvent.requestPermission(); } catch { /* denied */ }
@@ -1440,6 +1525,23 @@ async function startOrientation() {
 }
 let keepCompass = false;   // the map's heading cone and guide arrow keep the compass after the camera view closes
 function stopOrientation() { if (keepCompass) return; window.removeEventListener('deviceorientationabsolute', onOrient); window.removeEventListener('deviceorientation', onOrient); }
+
+/* ---------- what the screen shows: the camera's real field of view, cropped to fill the screen (no more fixed 58°) */
+const arView = { tx: Math.tan(30 * DEG), ty: Math.tan(45 * DEG), hfov: 60, vfov: 90, w: 1, h: 1 };
+function updateArView(w, h) {
+  const vw = arVideo.videoWidth, vh = arVideo.videoHeight;
+  if (arEl.classList.contains('cam') && vw && vh) {
+    const f = (Math.max(vw, vh) / 2) / Math.tan(camFov.value * DEG / 2), s = Math.max(w / vw, h / vh);   // object-fit: cover
+    arView.tx = (w / 2) / (f * s); arView.ty = (h / 2) / (f * s);
+  } else { const t = Math.tan(30 * DEG); if (w <= h) { arView.tx = t; arView.ty = t * h / w; } else { arView.ty = t; arView.tx = t * w / h; } }
+  arView.hfov = 2 * Math.atan(arView.tx) / DEG; arView.vfov = 2 * Math.atan(arView.ty) / DEG; arView.w = w; arView.h = h;
+}
+function arProject(dir) {   // a world direction → screen pixels (behind: true when it is behind the camera)
+  const c = qrot(qconj(orient.qv), dir), z = -c[2];
+  if (z < 1e-3) return { behind: true, cx: c[0], cy: c[1] };
+  return { behind: false, x: arView.w / 2 + (c[0] / z) / arView.tx * arView.w / 2, y: arView.h / 2 - (c[1] / z) / arView.ty * arView.h / 2, cx: c[0], cy: c[1] };
+}
+const dirBE = (b, e) => [Math.sin(b * DEG) * Math.cos(e * DEG), Math.sin(e * DEG), -Math.cos(b * DEG) * Math.cos(e * DEG)];
 /* where the game lives on the web: inside the Claude app (or any other embedding page) the camera, compass and location are blocked */
 const PUBLIC_FIELD = 'https://xplore-prokletije.com/p/field.html';
 const embedded = (() => { try { return window.self !== window.top; } catch { return true; } })();
@@ -1457,14 +1559,79 @@ function camNote(why) {
   }
   el.hidden = false;
 }
+/* ---------- the camera (v20, from the city map): the main back lens at 1×, the sensor's whole 4:3 picture
+   On the user's phone Chrome opened a lens of about 19° (the camera app has about 69°): everything looked far too close
+   and slid against the picture. Now: ask for 4:3 at 1× zoom; on Android prefer the main camera ("camera2 0"); a lens
+   measured before (here or by the city map on the same site) wins; a lens measured narrower than 40° is left for the
+   next one. The camera button (top right, with several back cameras) switches by hand, remembered. */
+const camSel = { list: [], devId: '', track: null, caps: {}, zoom: 1, tried: new Set(), switching: false };
+const CAM_KEY = 'peridot.field.cam', FOV_KEY = 'peridot.field.fov', LENS_KEY = 'peridot.field.lenses', LENS_MIN = 40;
+const readLS = (k) => { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch { return null; } };
+const writeLS = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* storage off */ } };
+const lensFovOf = (id) => (readLS(LENS_KEY) || {})[id]?.fov ?? (readLS('citymap.lenses') || {})[id]?.fov ?? null;   // the city map measured lenses on the same site
+function isBackCam(d) {
+  const l = d.label || '';
+  if (/front|user|selfie|prednj/i.test(l)) return false;
+  if (/back|rear|environment|zadnj/i.test(l)) return true;
+  try { const f = d.getCapabilities && d.getCapabilities().facingMode; if (f && f.length) return f.includes('environment'); } catch { /* */ }
+  return true;
+}
+async function openCam(deviceId) {
+  const v = { width: { ideal: 1440 }, height: { ideal: 1080 }, aspectRatio: { ideal: 4 / 3 }, frameRate: { ideal: 30 } };
+  if (deviceId) v.deviceId = { exact: deviceId }; else v.facingMode = { ideal: 'environment' };
+  let s;
+  try { s = await navigator.mediaDevices.getUserMedia({ audio: false, video: v }); }
+  catch (e) { if (!deviceId || /NotAllowed|Security/.test(e?.name || '')) throw e; delete v.deviceId; v.facingMode = { ideal: 'environment' }; s = await navigator.mediaDevices.getUserMedia({ audio: false, video: v }); }
+  if (!arOpen) { s.getTracks().forEach((t) => t.stop()); return false; }
+  arStream?.getTracks().forEach((t) => t.stop());
+  arStream = s; const tr = s.getVideoTracks()[0]; camSel.track = tr;
+  camSel.caps = tr.getCapabilities ? tr.getCapabilities() : {};
+  camSel.zoom = 1;
+  if (camSel.caps.zoom) {
+    const want = clamp(1, camSel.caps.zoom.min, camSel.caps.zoom.max);
+    try { await tr.applyConstraints({ advanced: [{ zoom: want }] }); } catch { /* no zoom control */ }
+    camSel.zoom = tr.getSettings().zoom || want;
+  }
+  if (camSel.caps.focusMode?.includes?.('continuous')) { try { await tr.applyConstraints({ advanced: [{ focusMode: 'continuous' }] }); } catch { /* */ } }
+  camSel.devId = (tr.getSettings && tr.getSettings().deviceId) || deviceId || ''; camSel.tried.add(camSel.devId);
+  arVideo.muted = true; arVideo.setAttribute('playsinline', ''); arVideo.srcObject = s; await arVideo.play().catch(() => {});
+  arEl.classList.add('cam'); camFov.key = ''; watchFrames();
+  return true;
+}
+async function chooseLens() {   // after the first picture: move to a better back camera if there is one
+  try { camSel.list = (await navigator.mediaDevices.enumerateDevices()).filter((d) => d.kind === 'videoinput').filter(isBackCam); } catch { camSel.list = []; }
+  $('ar-lens').hidden = camSel.list.length < 2;
+  if (camSel.list.length < 2) return;
+  const mine = readLS(CAM_KEY), city = readLS('citymap.settings');
+  const ok = (id) => id && camSel.list.some((d) => d.deviceId === id);
+  let want = null;
+  if (mine?.manual && ok(mine.id)) want = mine.id;
+  else if (ok(mine?.id) && (lensFovOf(mine.id) ?? 66) >= LENS_MIN) want = mine.id;
+  else if (ok(city?.camId) && (city.camManual || lensFovOf(city.camId) >= LENS_MIN)) want = city.camId;
+  else {
+    const good = camSel.list.filter((d) => lensFovOf(d.deviceId) >= LENS_MIN).sort((a, b) => Math.abs(lensFovOf(a.deviceId) - 66) - Math.abs(lensFovOf(b.deviceId) - 66))[0];
+    want = good?.deviceId || camSel.list.find((d) => /camera2 0\b/.test(d.label))?.deviceId || null;
+  }
+  if (want && want !== camSel.devId) await useLens(want);
+}
+async function useLens(id, why) {
+  if (camSel.switching) return; camSel.switching = true; camSel.tried.add(id);
+  try { await openCam(id); } catch { /* keep the old one */ }
+  camSel.switching = false; if (why) toast(why, 2600);
+}
+$('ar-lens').addEventListener('click', async () => {
+  if (camSel.list.length < 2) return;
+  const i = camSel.list.findIndex((d) => d.deviceId === camSel.devId), d = camSel.list[(i + 1) % camSel.list.length];
+  writeLS(CAM_KEY, { id: d.deviceId, manual: true }); camSel.manualPick = true;
+  await useLens(d.deviceId); const f = lensFovOf(d.deviceId);
+  toast(`Camera ${camSel.list.indexOf(d) + 1} / ${camSel.list.length}${f ? ` · ${Math.round(f)}°` : ''}`, 1800);
+});
 async function startCamera() {
   $('ar-camnote').hidden = true;
   try {
     if (!navigator.mediaDevices?.getUserMedia) throw { name: window.isSecureContext === false ? 'insecure' : 'none' };
-    arStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' } }, audio: false });
-    if (!arOpen) { arStream.getTracks().forEach((t) => t.stop()); arStream = null; return; }
-    arVideo.srcObject = arStream; await arVideo.play().catch(() => {});
-    arEl.classList.add('cam');
+    if (!(await openCam(null))) return;
+    chooseLens();
   } catch (err) {
     arEl.classList.remove('cam');
     if (!arOpen) return;
@@ -1472,6 +1639,72 @@ async function startCamera() {
     camNote(embedded ? 'embedded' : n === 'insecure' ? 'insecure' : /NotAllowed|Security|Permission/.test(n) ? 'denied' : 'none');
   }
 }
+
+/* ---------- the field of view, learned (v20): the gyro says how far the phone turned between two pictures, the
+   pictures say how far everything slid across them; together they give the lens's angle. The median of many turns
+   is used and saved per camera (the city map's key, so either app can use the other's measurement). Until then:
+   the saved value, the city map's, or 66° across the long side, typical for a phone's main camera. */
+const camFov = { value: 66, src: 'default', key: '', samples: [], prev: null, cv: null, g: null, frameT: null, lagS: [] };
+function fovKeyNow() { return `${camSel.devId.slice(0, 12) || 'cam'}|${arVideo.videoWidth}x${arVideo.videoHeight}|z${(+camSel.zoom).toFixed(2)}`; }
+function fovLoad() {
+  const key = fovKeyNow(); if (camFov.key === key) return;
+  Object.assign(camFov, { key, samples: [], prev: null });
+  const saved = (readLS(FOV_KEY) || {})[key] ?? (readLS('citymap.fov') || {})[key] ?? lensFovOf(camSel.devId);
+  camFov.value = saved || 66; camFov.src = saved ? 'saved' : 'default';
+}
+function watchFrames() {   // every new camera picture: when it was taken, and a step of the lens measurement
+  if (!arVideo.requestVideoFrameCallback) return;
+  const gen = camSel.gen = (camSel.gen || 0) + 1;   // one chain per opened camera
+  const tick = (now, md) => {
+    if (!arOpen || !arStream || camSel.gen !== gen) return;
+    const t = md.captureTime ?? (md.presentationTime ? md.presentationTime - 40 : null);
+    if (t != null && now - t < 400 && now - t > -50) { camFov.frameT = t; camFov.lagS.push(now - t); if (camFov.lagS.length > 30) camFov.lagS.shift(); }
+    learnFov(t ?? now - 60);
+    arVideo.requestVideoFrameCallback(tick);
+  };
+  arVideo.requestVideoFrameCallback(tick);
+}
+function learnFov(t) {
+  const vw = arVideo.videoWidth, vh = arVideo.videoHeight;
+  if (!vw || !vh || !orient.rel || orient.absOnly || camFov.src === 'learned' && camFov.samples.length >= 60) return;
+  fovLoad();
+  const W = 96, H = Math.max(24, Math.round(W * vh / vw));
+  if (!camFov.cv) { camFov.cv = document.createElement('canvas'); camFov.g = camFov.cv.getContext('2d', { willReadFrequently: true }); }
+  if (camFov.cv.width !== W || camFov.cv.height !== H) { camFov.cv.width = W; camFov.cv.height = H; camFov.prev = null; }
+  let px; try { camFov.g.drawImage(arVideo, 0, 0, W, H); px = camFov.g.getImageData(0, 0, W, H).data; } catch { return; }
+  const prof = new Float32Array(W), y0 = Math.round(H * 0.2), y1 = Math.round(H * 0.8);
+  for (let y = y0; y < y1; y++) for (let x = 0; x < W; x++) { const i = (y * W + x) * 4; prof[x] += px[i] * 0.3 + px[i + 1] * 0.59 + px[i + 2] * 0.11; }
+  let m = 0; for (const v of prof) m += v; m /= W; let sd = 0; for (let x = 0; x < W; x++) { prof[x] = (prof[x] - m) / (y1 - y0); sd += prof[x] * prof[x]; } sd = Math.sqrt(sd / W);
+  const q = histAt(t), cur = { prof, q, t, sd };
+  const P = camFov.prev; camFov.prev = cur;
+  if (!P || !q || !P.q || t - P.t < 10 || t - P.t > 140 || sd < 2 || P.sd < 2) return;
+  let d = qmul(qconj(P.q), q); if (d[3] < 0) d = d.map((v) => -v);
+  const ty = 2 * d[1], tx = 2 * d[0], tz = 2 * d[2], ay = Math.abs(ty);   // the turn, in the camera's own axes (radians)
+  if (ay < 0.25 * DEG || ay > 6 * DEG || Math.abs(tx) > 0.4 * ay || Math.abs(tz) > 0.4 * ay) return;
+  const S = 14, E = new Float32Array(2 * S + 1);   // how far the picture slid: the best match of the two brightness profiles
+  for (let s = -S; s <= S; s++) { let e = 0; for (let x = S; x < W - S; x++) e += Math.abs(prof[x] - P.prof[x - s]); E[s + S] = e; }
+  let bi = 0; for (let i = 1; i < E.length; i++) if (E[i] < E[bi]) bi = i;
+  if (bi === 0 || bi === E.length - 1) return;
+  const mean = E.reduce((a, b) => a + b, 0) / E.length; if (E[bi] > 0.6 * mean) return;
+  const den = E[bi - 1] - 2 * E[bi] + E[bi + 1], sh = bi - S + (den > 0 ? 0.5 * (E[bi - 1] - E[bi + 1]) / den : 0);
+  const f = sh / ty; if (!(f > 0)) return;   // turning left slides the picture right
+  const fovW = 2 * Math.atan((W / 2) / f), fovL = 2 * Math.atan(Math.tan(fovW / 2) * Math.max(vw, vh) / vw) / DEG;
+  if (fovL < 12 || fovL > 110) return;
+  camFov.samples.push(fovL); if (camFov.samples.length > 80) camFov.samples.shift();
+  if (camFov.samples.length >= 18 && camFov.samples.length % 3 === 0) {
+    const s = [...camFov.samples].sort((a, b) => a - b), med = s[s.length >> 1], iqr = s[Math.floor(s.length * 0.75)] - s[Math.floor(s.length * 0.25)];
+    if (iqr > 0.25 * med) return;
+    if (camFov.src !== 'learned' || Math.abs(med - camFov.value) >= 1) { camFov.value = med; camFov.src = 'learned'; }
+    const all = readLS(FOV_KEY) || {}; all[camFov.key] = Math.round(med * 10) / 10; writeLS(FOV_KEY, all);
+    const lenses = readLS(LENS_KEY) || {}; lenses[camSel.devId] = { fov: Math.round(med * 10) / 10 }; writeLS(LENS_KEY, lenses);
+    if (DEBUG) console.log('[fov] learned', med.toFixed(1), 'from', s.length);
+    if (med < LENS_MIN && camSel.list.length > 1 && !camSel.manualPick) {   // a zoomed-in lens: try the next back camera
+      const next = camSel.list.find((d) => d.deviceId !== camSel.devId && !camSel.tried.has(d.deviceId) && (lensFovOf(d.deviceId) ?? 99) >= LENS_MIN);
+      if (next) useLens(next.deviceId, `This camera is zoomed in (${Math.round(med)}°): trying the next one…`);
+    }
+  }
+}
+const arLag = () => { const s = camFov.lagS; if (!s.length) return 60; const a = [...s].sort((x, y) => x - y); return clamp(a[a.length >> 1], 20, 160); };
 $('ar-camnote-close').addEventListener('click', () => { $('ar-camnote').hidden = true; });
 $('ar-camnote-copy').addEventListener('click', async () => {
   const url = $('ar-camnote-link').href, btn = $('ar-camnote-copy');
@@ -1487,7 +1720,8 @@ function targetBearing(f) {
 }
 function openAR(f, mode) {
   arF = f; arMode = mode; arScan = 0; arShardGot = false; arOpen = true;
-  orient.compass = false; orient.tilt = false; orient.manual = true; orient.heading = 0; orient.elev = 0; orient.steady = 0;
+  orient.compass = false; orient.manual = true; orient.heading = 0; orient.elev = 0; orient.steady = 0;
+  camFov.frameT = null; camFov.lagS = []; camSel.tried = new Set(); camSel.manualPick = !!readLS(CAM_KEY)?.manual;
   startOrientation(); startCamera();
   const c = f.ch ? chapterOf(f) : null; fieldAccent(c);
   $('ar-kicker').textContent = mode === 'record' ? 'Survey · record bearing' : `${f.title} · ${mode === 'point' ? 'task' : 'look'}`;
@@ -1543,7 +1777,14 @@ function buildARItems() {
 function arLoop(now) {
   if (!arOpen) return;
   arRAF = requestAnimationFrame(arLoop);
-  const w = arEl.clientWidth, h = arEl.clientHeight, vfov = HFOV * h / w;
+  const w = arEl.clientWidth, h = arEl.clientHeight, camOn = arEl.classList.contains('cam');
+  if (camOn) fovLoad();
+  updateArView(w, h);
+  // the view: the sensors at the moment the picture now on screen was taken; without sensors, the drag and arrow keys
+  if (!orient.manual && orient.hist.length && performance.now() - orient.last < 1500) {
+    const tq = camOn ? (camFov.frameT != null && now - camFov.frameT < 250 ? camFov.frameT : now - arLag()) : now;
+    orient.qv = fused(histAt(tq)); setDerived(orient.qv);
+  } else { orient.manual = true; orient.qv = qManual(); }
   const items = arItems._items || [];
   const dh = Math.abs(wrapDeg(orient.heading - orient.prevH)); orient.prevH = orient.heading;
   // scanning: hold still (compass) or hold the button (no compass)
@@ -1564,32 +1805,34 @@ function arLoop(now) {
   arItems.querySelectorAll('[data-i]').forEach((el) => {
     const it = items[+el.dataset.i];
     if (it.hidden) { el.style.display = 'none'; return; }
-    const dx = wrapDeg(it.b - orient.heading), dy = (it.e || 0) - orient.elev;
-    const x = w / 2 + dx / HFOV * w, y = h * 0.45 - dy / vfov * h;
-    el.style.display = Math.abs(dx) < HFOV ? '' : 'none';
-    el.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`;
+    const p = arProject(dirBE(it.b, it.e || 0));
+    if (p.behind || p.x < -w * 0.5 || p.x > w * 1.5) { el.style.display = 'none'; return; }
+    el.style.display = '';
+    el.style.transform = `translate(${p.x.toFixed(1)}px, ${p.y.toFixed(1)}px) translate(-50%, -50%)`;
   });
   arRibbon.querySelectorAll('span').forEach((el) => {
-    const dx = wrapDeg(+el.dataset.d - orient.heading), x = w / 2 + dx / HFOV * w;
-    el.style.display = Math.abs(dx) < HFOV * 0.7 ? '' : 'none';
-    el.style.transform = `translateX(${x}px)`;
+    const dx = wrapDeg(+el.dataset.d - orient.heading), x = w / 2 + Math.tan(clamp(dx, -80, 80) * DEG) / arView.tx * w / 2;
+    el.style.display = Math.abs(dx) < 80 && Math.abs(x - w / 2) < w * 0.6 ? '' : 'none';
+    el.style.transform = `translateX(${x.toFixed(1)}px)`;
   });
   if (orient.compass) $('ar-where').textContent = `Facing ${dirWord(orient.heading)} · ${Math.round(orient.heading)}°`;
+  else if (!orient.manual) $('ar-where').textContent = `No compass: north is a guess · ${Math.round(orient.heading)}°`;
   else if (now - arT0 > 1600) $('ar-where').textContent = `No compass here: drag to turn · ${Math.round(orient.heading)}°`;
   catchFrame(now, w, h);
+  if (DEBUG && window.__afterAr) window.__afterAr(now, w, h);
 }
 /* drag to turn when there is no compass */
 let arDrag = null;
 arEl.addEventListener('pointerdown', (e) => {
   if (e.target.closest('button')) return;
-  if (orient.compass || e.target.closest('.ar-camnote')) return;
+  if (!orient.manual || e.target.closest('.ar-camnote')) return;
   arDrag = { x: e.clientX, y: e.clientY, h: orient.heading, e: orient.elev }; arEl.setPointerCapture(e.pointerId); cat.autoTilt = false;
 });
 arEl.addEventListener('pointermove', (e) => {
   if (!arDrag) return;
   const w = arEl.clientWidth;
-  orient.heading = (arDrag.h - (e.clientX - arDrag.x) / w * HFOV + 360) % 360;
-  orient.elev = clamp(arDrag.e + (e.clientY - arDrag.y) / w * HFOV, -40, 50);
+  orient.heading = (arDrag.h - (e.clientX - arDrag.x) / w * arView.hfov + 360) % 360;
+  orient.elev = clamp(arDrag.e + (e.clientY - arDrag.y) / w * arView.hfov, -50, 50);
 });
 arEl.addEventListener('pointerup', () => { arDrag = null; });
 arEl.addEventListener('pointercancel', () => { arDrag = null; });
@@ -2117,7 +2360,10 @@ if (TEST) {
    With GPS (like the Trail AR, no WebXR needed, so iPhones too): the shard first waits at its real spot in the site (zone
    centre or a spot set in survey mode) under a pillar of green light. Walk to it; within 10–20 m (more when GPS is poor) it
    flies down and lands on the ground a few metres in front of you, and the catch begins. Without GPS the scan / look-around
-   step finds it, and it lands the same way. The ground is a virtual plane at phone height below the camera. */
+   step finds it, and it lands the same way. The ground is a virtual plane at phone height below the camera.
+   v20 (the user's phone video: "shaking too much, doesn't stick, too close"): the camera follows the fused gyro/compass
+   orientation and the lens's real angle (field.js: orient.qv, arView), it lands 4.5 m away and is smaller, and its hops
+   aside are visible little jumps instead of slides. */
 const THREE_URL = 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
 let threeP = null;
 function loadThree() { if (!threeP) threeP = import(THREE_URL).catch((e) => { threeP = null; throw e; }); return threeP; }
@@ -2126,8 +2372,8 @@ const withTimeout = (p, ms) => Promise.race([p, new Promise((_, no) => setTimeou
 const buzz = (p) => { if (navigator.vibrate) try { navigator.vibrate(p); } catch { /* */ } };
 
 const RUNE_RING = null;   // e.g. 'catch/ring.png': an engraved ring picture to replace the plain outer ring (not made yet)
-const GROUND = { eye: 1.45, ahead: 3.0, hover: 0.5 };   // phone height above the ground; where the shard lands; how high it floats
-const CATCH = { dist: 2.4, size: 0.72, hitR: 0.42, orbR: 0.1, ringMax: 0.6, ringMin: 0.15, period: 1.9, flick: 520, g: 9.8 };
+const GROUND = { eye: 1.45, ahead: 4.5, hover: 0.35 };   // phone height above the ground; where the shard lands (v20: 4.5 m, was 3 m: too close); how high it floats
+const CATCH = { dist: 4.7, size: 0.46, hitR: 0.36, orbR: 0.1, ringMax: 0.42, ringMin: 0.11, period: 1.9, flick: 520, g: 9.8 };   // v20: a smaller shard (was 0.72 m)
 const THROWS = [{ name: 'Excellent', max: 0.42, bonus: 50, p: 0.45 }, { name: 'Great', max: 0.68, bonus: 25, p: 0.3 }, { name: 'Nice', max: 1.01, bonus: 10, p: 0.15 }];
 const MISS_LINES = ['Whoosh, just past it! Drag or flick straight at the shard.', 'Close! Try again.', 'Missed. Let go of the orb right on the shard.'];
 const ESCAPE_LINES = ['It broke free! Once more.', 'Almost had it! Again!', 'It wriggled out. Throw again!'];
@@ -2258,7 +2504,7 @@ async function readyCatch(f) {   // three.js and the scene, once
   return arOpen && arF === f;
 }
 function resetCatch(f) {
-  Object.assign(cat, { on: true, f, autoTilt: true, ox: 0, oy: 0, otx: 0, oty: 0, throws: 0, misses: 0, escapes: 0, fly: null, seq: null, land: null, spot: null, sp: null, staleT: 0, sayT: 0, prev: 0 });
+  Object.assign(cat, { on: true, f, autoTilt: true, hop: null, ox: 0, oy: 0, otx: 0, oty: 0, throws: 0, misses: 0, escapes: 0, fly: null, seq: null, land: null, spot: null, sp: null, staleT: 0, sayT: 0, prev: 0 });
   const G = cat.gl;
   G.root.scale.setScalar(1); G.gem.scale.setScalar(CATCH.size); G.root.visible = true; G.glow.material.opacity = 0.8; G.orb.visible = false; G.flash.material.opacity = 0;
   G.pillar.visible = false; G.burst.forEach((s) => { s.material.opacity = 0; });
@@ -2322,21 +2568,23 @@ function catchFrame(now, w, h) {
   if (!cat.on || !cat.gl) return;
   const G = cat.gl, t = now / 1000, dt = Math.min(0.05, (now - (cat.prev || now)) / 1000); cat.prev = now;
   if (w !== cat.w || h !== cat.h) { G.renderer.setSize(w, h, false); cat.w = w; cat.h = h; }
-  const cam = G.cam, vfov = 2 * Math.atan(Math.tan(HFOV / 2 * DEG) * h / w) / DEG;
-  cam.aspect = w / h; cam.fov = vfov; cam.setViewOffset(w, h, 0, h * 0.05, w, h); cam.updateProjectionMatrix();   // the horizon at 45 % of the height, like the compass items
-  cam.rotation.set(orient.elev * DEG, -orient.heading * DEG, 0); cam.updateMatrixWorld();
-  // the shard floats at its bearing, bobs, turns, and now and then hops aside
-  if (cat.state === 'aim' && now > cat.nextDodge) dodge(now);
-  const k = Math.min(1, dt * 3); cat.ox += (cat.otx - cat.ox) * k; cat.oy += (cat.oty - cat.oy) * k;
+  // v20: the camera's real field of view and the full phone orientation (roll too), centred like the camera picture
+  const cam = G.cam;
+  if (cam.aspect !== w / h || Math.abs(cam.fov - arView.vfov) > 0.01 || cam.view?.enabled) { cam.aspect = w / h; cam.fov = arView.vfov; cam.clearViewOffset(); cam.updateProjectionMatrix(); }
   // no tilt sensor (a computer, the Claude app): look down at the landed shard by itself, until the player drags the view
-  if (!orient.tilt && cat.autoTilt && !arDrag && (cat.state === 'land' || cat.state === 'aim')) orient.elev += (cat.e - orient.elev) * Math.min(1, dt * 2.5);
+  if (orient.manual && cat.autoTilt && !arDrag && (cat.state === 'land' || cat.state === 'aim')) { orient.elev += (cat.e - 2 - orient.elev) * Math.min(1, dt * 2.5); orient.qv = qManual(); }
+  cam.quaternion.set(orient.qv[0], orient.qv[1], orient.qv[2], orient.qv[3]); cam.updateMatrixWorld();
+  // the shard stays on its spot, bobs and turns; now and then (and after a miss) it hops aside, in a visible little jump
+  if (cat.state === 'aim' && now > cat.nextDodge) dodge(now);
+  const H = cat.hop;
+  if (H) { const k = clamp((now - H.t0) / 520, 0, 1), s = smooth(k); cat.ox = lerp(H.x0, cat.otx, s); cat.oy = lerp(H.y0, cat.oty, s) + Math.sin(Math.PI * k) * 0.28; if (k >= 1) cat.hop = null; }
   if (cat.state === 'approach') approachFrame(now, dt, w, h);
   else if (cat.state === 'land') landFrame(now);
   else if (!cat.seq) anchorPos(G.root.position, cat.b, cat.e, cat.d, cat.ox, cat.oy + (reduceMotion ? 0 : 0.05 * Math.sin(t * 2.1)));
   // light and shade on the ground under the shard
   const gy = -GROUND.eye + 0.01, sc = G.root.scale.x, lift = Math.max(0, G.root.position.y - gy);
   G.shade.position.set(G.root.position.x, gy, G.root.position.z); G.pool.position.set(G.root.position.x, gy + 0.005, G.root.position.z);
-  G.shade.scale.setScalar(1.0 * sc); G.pool.scale.setScalar((2.0 + 0.2 * Math.sin(t * 2)) * sc);
+  G.shade.scale.setScalar(0.7 * sc); G.pool.scale.setScalar((1.4 + 0.14 * Math.sin(t * 2)) * sc);
   const seen = G.root.visible && cat.state !== 'caught';
   G.shade.material.opacity = seen ? 0.35 * clamp(1.6 - lift / (2 * sc), 0, 1) : 0;
   G.pool.material.opacity = seen ? 0.7 * clamp(1.8 - lift / (2 * sc), 0, 1) * (cat.state === 'land' ? 1.8 : 1) : 0;
@@ -2360,12 +2608,12 @@ function catchFrame(now, w, h) {
     G.ringG.position.copy(G.root.position); G.ringG.quaternion.copy(cam.quaternion);
   }
   updateFly(dt, now); updateSeq(now, dt);
-  // an arrow at the edge when the shard is out of sight
-  const dYaw = wrapDeg(cat.b - orient.heading), dEl = cat.e - orient.elev;
-  const off = (cat.state === 'aim' || cat.state === 'approach') && (Math.abs(dYaw) > HFOV * 0.47 || Math.abs(dEl) > vfov * 0.42);
+  // an arrow at the edge when the shard is out of sight (measured in the camera's own frame, so roll is right too)
+  const P = arProject([G.root.position.x, G.root.position.y, G.root.position.z]);
+  const off = (cat.state === 'aim' || cat.state === 'approach') && (P.behind || P.x < 24 || P.x > w - 24 || P.y < h * 0.14 || P.y > h * 0.78);
   arrowEl.hidden = !off;
   if (off) {
-    let dx = dYaw / HFOV, dy = -dEl / vfov; const m = Math.hypot(dx, dy) || 1; dx /= m; dy /= m;
+    let dx = P.cx, dy = -P.cy; const m = Math.hypot(dx, dy); if (m < 1e-4) { dx = 1; dy = 0; } else { dx /= m; dy /= m; }
     const sx = (w / 2 - 40) / Math.max(0.001, Math.abs(dx)), sy = (h * 0.32) / Math.max(0.001, Math.abs(dy)), s = Math.min(sx, sy);
     arrowEl.style.transform = `translate(${(w / 2 + dx * s).toFixed(0)}px, ${(h * 0.45 + dy * s).toFixed(0)}px) rotate(${(Math.atan2(dy, dx) / DEG + 90).toFixed(0)}deg)`;
   }
@@ -2407,11 +2655,12 @@ function landFrame(now) {
   G.pillar.material.opacity *= 0.9; if (k > 0.5) G.pillar.visible = false;
   if (k >= 1) { G.flash.position.copy(end).y -= GROUND.hover * 0.9; G.flash.material.opacity = 0.8; G.flash.scale.setScalar(1.2); setTimeout(() => { if (cat.gl) cat.gl.flash.material.opacity = 0; }, 160); beginAim(); }
 }
-function dodge(now) {
+function dodge(now) {   // a hop to one side and back later: on the ground, in a little arc (v20; it used to slide, which looked like bad tracking)
   const side = Math.random() < 0.5 ? -1 : 1;
-  cat.otx = Math.abs(cat.otx) > 0.1 && Math.random() < 0.6 ? 0 : side * (0.22 + Math.random() * 0.3);
-  cat.oty = (Math.random() - 0.4) * 0.25;
-  cat.nextDodge = now + (reduceMotion ? 6000 : 3200) + Math.random() * 3500;
+  cat.hop = { t0: now, x0: cat.ox, y0: cat.oy };
+  cat.otx = Math.abs(cat.otx) > 0.1 && Math.random() < 0.6 ? 0 : side * (0.25 + Math.random() * 0.35);
+  cat.oty = 0;
+  cat.nextDodge = now + (reduceMotion ? 9000 : 6000) + Math.random() * 4000;
 }
 
 /* ---------- throwing: flick the orb up; the swipe's direction aims, its speed sets how far it flies */
@@ -2532,7 +2781,8 @@ function updateSeq(now, dt) {
     return;
   }
   // it breaks free: the orb bursts and the shard flies back to its place
-  if (cat.state !== 'escape') { cat.state = 'escape'; sound('escape'); buzz(25); pop('Broke free!'); G.root.visible = true; S.back = G.orb.position.clone(); }
+  if (cat.state !== 'escape') { cat.state = 'escape'; sound('escape'); buzz(25); pop('Broke free!'); S.back = G.orb.position.clone(); }
+  G.root.visible = true;   // every frame: the line above the wobbles hides it again (v19 bug: the shard stayed invisible after it broke free)
   const k = Math.min(1, end / 550);
   G.orb.scale.setScalar(1 + k * 1.6); G.orbBall.material.opacity = 0.78 * (1 - k); G.orbGlow.material.opacity = 0.85 * (1 - k);
   const home = anchorPos(tmpV(), cat.b, cat.e, cat.d, cat.ox, cat.oy);
@@ -2577,7 +2827,7 @@ if (fieldOn) startLocation();
 updateTestUI();
 if (TEST && !loc.sim) setTimeout(testCard, 300);
 else if (!fieldHash(location.hash.slice(1)) && !fieldSave().seenIntro) setTimeout(fieldIntroCard, 300);
-if (DEBUG) window.game = { FIELD, ASSEMBLY, save, loc, orient, view, simulateAt, testWalk, testMove, TEST, arrive, fieldAction, fieldTotal, FIELD_MAX, drawMap, perf, get arOpen() { return arOpen; }, get card() { return card; } };
+if (DEBUG) window.game = { FIELD, ASSEMBLY, save, loc, orient, view, arView, arProject, dirBE, camFov, camSel, arLag, simulateAt, testWalk, testMove, TEST, arrive, fieldAction, fieldTotal, FIELD_MAX, drawMap, perf, get arOpen() { return arOpen; }, get card() { return card; } };
 
 
 </script>

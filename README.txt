@@ -10,6 +10,11 @@ WHAT IS IN THIS FOLDER
                   The 3D shard uses three.js from jsDelivr, loaded when a site is near; without it the shard is tapped.
                   With GPS the shard first waits at its spot (zone centre, or a spot set with ?survey > "Set shard spot here")
                   under a pillar of light; walk to it and it lands on the ground in front of you. Works in Safari too (no WebXR).
+                  Camera view (v20, from the city map): the main back lens at 1× and its whole 4:3 picture (camera button
+                  top right when the phone has several back cameras); the lens's angle is learned while you turn (gyro vs
+                  how far the picture slides) and saved; the gyro turns the view and the compass only sets north, slowly,
+                  so the shard neither shakes nor slides; the view uses the orientation from when the picture was taken.
+                  The city map on the same site (wave84mn.github.io) and this game share their lens measurements.
   logo/           the 3D badge for the start screen (peridot-mesh.txt + textures) and its pictures (peridot-badge*.png)
   landing/        the start screen's pictures, made with Higgsfield: night-wide.jpg (computers), night-tall.jpg (phones),
                   orb.jpg and trail.jpg (the pictures on the two menu cards), frame.webp (the slate frame of the cards)
