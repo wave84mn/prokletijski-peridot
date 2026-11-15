@@ -422,7 +422,7 @@ button { font: inherit; color: inherit; }
           <span class="mode-art" aria-hidden="true"><img src="landing/orb.jpg" alt="" width="240" height="240" decoding="async"></span>
           <span class="mode-body">
             <span class="mode-kicker">From anywhere</span>
-            <span class="mode-title">Virtual missions</span>
+            <span class="mode-title">Virtual trail missions</span>
             <span class="mode-desc">Nine missions in 360° photos and a 3D walk.</span>
             <span class="mode-foot"><span class="mode-prog" id="prog-virtual"></span><span class="mode-cta" id="cta-virtual">Play</span></span>
           </span>
@@ -431,7 +431,7 @@ button { font: inherit; color: inherit; }
           <span class="mode-art" aria-hidden="true"><img src="landing/trail.jpg" alt="" width="240" height="240" decoding="async"></span>
           <span class="mode-body">
             <span class="mode-kicker">On site</span>
-            <span class="mode-title">In the field</span>
+            <span class="mode-title">AR trail missions</span>
             <span class="mode-desc">Fifteen real places. Your phone notices when you arrive, or type the code from the site’s plaque.</span>
             <span class="mode-foot"><span class="mode-prog" id="prog-field"></span><span class="mode-cta" id="cta-field">Start</span></span>
           </span>
@@ -3393,7 +3393,7 @@ let renderer;
 try {
   renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
 } catch (err) {
-  document.body.insertAdjacentHTML('beforeend', '<div class="nogl"><p>The virtual missions need WebGL, which is turned off or not supported in this browser. Try a current version of Chrome, Safari or Firefox. <a href="field.html">The field game</a> works without it.</p></div>');
+  document.body.insertAdjacentHTML('beforeend', '<div class="nogl"><p>The virtual trail missions need WebGL, which is turned off or not supported in this browser. Try a current version of Chrome, Safari or Firefox. <a href="field.html">The field game</a> works without it.</p></div>');
   clearTimeout(window.__peridotBoot);
   throw err;
 }
@@ -6151,8 +6151,8 @@ function refreshLanding() {   // progress on the two cards: a pip per mission pi
   const dots = Array.from({ length: FIELD_COUNT }, (_, i) => `<i${i < f.sites ? ' class="on"' : ''}></i>`).join('');
   $('prog-field').innerHTML = `<span class="pips dots" aria-hidden="true">${dots}</span><span>${f.started ? `<b>${f.sites}/${FIELD_COUNT}</b> sites done${f.parts ? `<span class="more"> · ${f.parts}/3 parts</span>` : ''}` : `<b>0/${FIELD_COUNT}</b> sites visited`}</span>`;
   $('cta-field').textContent = f.started ? 'Continue' : 'Start';
-  $('go-virtual').setAttribute('aria-label', `Virtual missions. ${n} of ${MISSIONS.length} pieces found. ${$('cta-virtual').textContent}.`);
-  $('go-field').setAttribute('aria-label', `In the field. ${f.sites} of ${FIELD_COUNT} sites done. ${$('cta-field').textContent}.`);
+  $('go-virtual').setAttribute('aria-label', `Virtual trail missions. ${n} of ${MISSIONS.length} pieces found. ${$('cta-virtual').textContent}.`);
+  $('go-field').setAttribute('aria-label', `AR trail missions. ${f.sites} of ${FIELD_COUNT} sites done. ${$('cta-field').textContent}.`);
 }
 
 /* ---------------------------------------------------------------- moving between the start screen and the map */

@@ -38,7 +38,7 @@ THE PRINTED FIELD MAP
   If the game folder is not /p/, change the three places that say /p/ in that file.
 
 LINKS (for QR codes, posters, the website)
-  /p/                       start screen: choose the virtual missions or the field game
+  /p/                       start screen: choose "Virtual trail missions" or "AR trail missions" (the field game)
   /p/#missions              straight to the valley map
   /p/#<mission>             the map opens on that mission's card:
                             #gusinje  #square  #vezir  #george  #anthony  #springs  #grlja  #oko  #grebaje

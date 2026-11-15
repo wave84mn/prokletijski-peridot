@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>In the field · Prokletijski Peridot</title>
+<title>AR trail missions · Prokletijski Peridot</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -269,7 +269,7 @@ body { background: var(--obsidian); }
   .home-btn { width: 48px; }
   .home-btn img { width: 32px; }
   .top .place .kicker { display: none; }
-  .top .place h1 { font-size: 20px; }
+  .top .place h1 { font-size: clamp(15px, 4.3vw, 20px); letter-spacing: 0.02em; }   /* "AR trail missions" fits on a 360 px phone */
   .top .score { padding: 6px 10px 7px; }
   .top .score b { font-size: 24px; }
 }
@@ -427,7 +427,7 @@ textarea.export { width: 100%; box-sizing: border-box; min-height: 180px; font: 
     <a class="home-btn glass" id="btn-home" href="./" aria-label="Prokletijski Peridot start screen"><img src="logo/peridot-badge-sm.png" alt="" width="100" height="122"></a>
     <div class="place glass">
       <p class="kicker">Prokletijski Peridot</p>
-      <h1>In the field</h1>
+      <h1>AR trail missions</h1>
       <ul class="parts-mini" id="top-parts" aria-label="Device parts found"></ul>
     </div>
   </div>
@@ -1139,7 +1139,7 @@ function fieldCard() {
   const asm = `<p class="route-head" style="--route: var(--peridot)"><i></i>Visitor centre · assembly<span></span></p><ul class="sheet-list field-list"><li><button data-id="f:open:A"><span class="fnum">★</span><span class="n">${esc(ASSEMBLY.title)}<small>Bring all three parts${SURVEY ? ` · code ${ASSEMBLY.code}` : ''}</small></span>${aSt}</button></li></ul>`;
   const on = fieldOn && loc.state !== 'off';
   showCard({
-    field: 'list', kicker: 'In the field', title: fieldRank(), big: [fieldTotal(), FIELD_MAX],
+    field: 'list', kicker: 'AR trail missions', title: fieldRank(), big: [fieldTotal(), FIELD_MAX],
     html: `<p class="locline ${loc.state}">${esc(locLine())}</p>${partsSVG()}`,
     list: chapters + asm,
     actions: [
@@ -1167,7 +1167,7 @@ function fieldIntroCard() {
   fieldAccent(null);
   fieldSave().seenIntro = true; persist();
   showCard({
-    field: 'intro', kicker: 'In the field', title: 'The device that held the gem',
+    field: 'intro', kicker: 'AR trail missions', title: 'The device that held the gem',
     html: '<img class="intro-badge" src="logo/peridot-badge.png" alt="" width="532" height="648">',
     body: ['The peridot once sat in a device built by the valley’s first people: a water-and-sky reckoner. With sunlight, shadows and the level of the springs, it told when the snowmelt would come. No magic, just patient watching.',
       'A later people broke it and hid its three parts where each belonged: the frame in the town, the water lens along the water, the sky needle under the peaks. Photos cannot show them. You have to stand there.',
