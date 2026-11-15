@@ -2354,6 +2354,141 @@ if (TEST) {
   try { const p = JSON.parse(store.get('peridot.field.testpos') || 'null'); if (Array.isArray(p) && p.length === 2) simulateAt(p[0], p[1]); } catch { /* */ }
 }
 
+/* ================================================================ THE PERIDOT (shared: the missions' shards, the valley-map pins,
+   the cub's pendant, and the shard caught in the field game's camera view)
+   v2 (15 Nov 2026, the user: "more beautiful, more realistic, and glowing more beautiful"):
+   - a real brilliant cut: table, 8 star facets, 8 kite (bezel) facets, 16 upper-girdle facets, a thin girdle, 16 lower-girdle
+     facets, 8 pavilion mains to the culet (73 facets; the old one had 32);
+   - its own gem shader in two passes. The far side of the stone, seen through it, shows the light bouncing inside: deep olive
+     green where it is thick, lime and gold where light gets through. The near side reflects a little studio (soft boxes and a
+     ring of small lights, so every facet flashes as it turns) with the Fresnel of peridot (refractive index about 1.66), and
+     lets the inside show through. Facets sparkle one at a time. A soft light glows inside and breathes;
+   - a warmer halo and a slowly turning star of light around it.
+   Peridot colours: yellow-green to olive (lime #a8d43a, olive #2f6b0d, gold highlights #f6f0a8).
+   Works with any three.js (passed in as T): the start page imports it, the field page loads it on demand. */
+function peridotKit(T) {
+  // ---- the cut: y is the stone's axis (table up, culet down); girdle radius 1, table at y 0.42, culet at y −1.1
+  const n = 8, A = (k) => (k / n) * Math.PI * 2, P = (r, a, y) => new T.Vector3(Math.cos(a) * r, y, Math.sin(a) * r);
+  const gb = 0.035, C = new T.Vector3(0, -1.1, 0), TOP = new T.Vector3(0, 0.42, 0), mid = new T.Vector3(0, -0.2, 0);
+  const Tb = [], S = [], Gm = [], Gh = [], Bm = [], Bh = [], L = [];
+  for (let i = 0; i < n; i++) {
+    Tb.push(P(0.55, A(i), 0.42)); S.push(P(0.8, A(i + 0.5), 0.3));
+    Gm.push(P(1, A(i), gb)); Gh.push(P(1, A(i + 0.5), gb)); Bm.push(P(1, A(i), -gb)); Bh.push(P(1, A(i + 0.5), -gb));
+    L.push(P(0.46, A(i + 0.5), -0.6));
+  }
+  const pos = [];
+  const tri = (a, b, c) => {   // wound outwards
+    const nr = new T.Vector3().subVectors(b, a).cross(new T.Vector3().subVectors(c, a));
+    if (nr.dot(new T.Vector3().add(a).add(b).add(c).multiplyScalar(1 / 3).sub(mid)) < 0) [b, c] = [c, b];
+    pos.push(a.x, a.y, a.z, b.x, b.y, b.z, c.x, c.y, c.z);
+  };
+  for (let i = 0; i < n; i++) {
+    const j = (i + 1) % n, p = (i + n - 1) % n;
+    tri(TOP, Tb[i], Tb[j]);                                     // table
+    tri(Tb[i], Tb[j], S[i]);                                    // star facets
+    tri(Tb[i], S[p], Gm[i]); tri(Tb[i], Gm[i], S[i]);           // kite (bezel) facets
+    tri(S[i], Gm[i], Gh[i]); tri(S[i], Gh[i], Gm[j]);           // upper girdle facets
+    tri(Gm[i], Gh[i], Bm[i]); tri(Gh[i], Bh[i], Bm[i]);         // girdle band
+    tri(Gh[i], Gm[j], Bh[i]); tri(Gm[j], Bm[j], Bh[i]);
+    tri(Bm[i], Bh[i], L[i]); tri(Bh[i], Bm[j], L[i]);           // lower girdle facets
+    tri(Bm[i], L[i], C); tri(Bm[i], C, L[p]);                   // pavilion mains
+  }
+  const geo = new T.BufferGeometry(); geo.setAttribute('position', new T.Float32BufferAttribute(pos, 3)); geo.computeVertexNormals();   // flat facets
+
+  // ---- the shader
+  const uniforms = { uTime: { value: 0 }, uGlow: { value: 1 } };
+  const vertexShader = `
+    varying vec3 vN; varying vec3 vV; varying vec3 vO;
+    void main() {
+      vec4 mv = modelViewMatrix * vec4(position, 1.0);
+      vN = normalize(normalMatrix * normal); vV = -mv.xyz; vO = normal;
+      gl_Position = projectionMatrix * mv;
+    }`;
+  const fragmentShader = `
+    uniform float uTime, uGlow, uBack;
+    varying vec3 vN; varying vec3 vV; varying vec3 vO;
+    vec3 lin(vec3 c) { return pow(c, vec3(2.2)); }
+    float hash(vec3 p) { return fract(sin(dot(p, vec3(12.9898, 78.233, 37.719))) * 43758.5453); }
+    vec3 studio(vec3 d) {   // the little studio the stone reflects: dark teal room, two soft boxes, a ring of small lights, green bounce
+      vec3 c = mix(vec3(0.010, 0.022, 0.020), vec3(0.05, 0.09, 0.085), d.y * 0.5 + 0.5);
+      c += vec3(1.0, 0.97, 0.9) * 3.2 * smoothstep(0.90, 0.975, dot(d, normalize(vec3(-0.45, 0.75, 0.5))));
+      c += vec3(0.85, 0.95, 1.0) * 2.0 * smoothstep(0.93, 0.985, dot(d, normalize(vec3(0.85, 0.25, -0.3))));
+      c += vec3(0.45, 0.85, 0.12) * 0.7 * smoothstep(0.2, 1.0, -d.y);
+      for (int i = 0; i < 14; i++) {
+        float f = float(i), y = 1.0 - (f + 0.5) / 7.0, r = sqrt(max(0.0, 1.0 - y * y)), a = f * 2.39996;
+        c += vec3(1.0, 0.98, 0.86) * 2.6 * smoothstep(0.986, 0.996, dot(d, vec3(cos(a) * r, y, sin(a) * r)));
+      }
+      return c;
+    }
+    vec3 toWorld(vec3 d) { return normalize((vec4(d, 0.0) * viewMatrix).xyz); }
+    void main() {
+      vec3 n = normalize(vN), v = normalize(vV);
+      if (uBack > 0.5) n = -n;                     // the far side, seen from inside the stone
+      float ndv = clamp(dot(n, v), 0.0, 1.0);
+      vec3 LIME = lin(vec3(0.66, 0.83, 0.23)), OLIVE = lin(vec3(0.17, 0.40, 0.04)), GOLD = lin(vec3(0.96, 0.94, 0.62));
+      float fid = hash(floor(vO * 40.0 + 0.5));    // one number per facet
+      float spark = pow(max(0.0, sin(uTime * (0.9 + 1.4 * fid) + fid * 40.0)), 28.0);   // now and then one facet flashes
+      float breathe = 0.5 + 0.5 * sin(uTime * 1.9);
+      vec3 col; float alpha = 1.0; vec3 white = vec3(0.0);
+      if (uBack > 0.5) {
+        vec3 e = studio(toWorld(reflect(-v, n)));
+        float l = dot(e, vec3(0.3, 0.59, 0.11));
+        col = mix(OLIVE * 0.28, LIME * 0.95, pow(smoothstep(0.06, 1.7, l), 0.8));  // thick and dark, or lit through: olive to lime
+        col = mix(col, mix(LIME, GOLD, 0.5), smoothstep(1.4, 3.0, l) * 0.6);         // the brightest bounces turn golden
+        col *= 0.5 + 0.5 * ndv;
+        col += LIME * uGlow * (0.12 + 0.1 * breathe) * (0.3 + 0.7 * ndv);          // the light inside, breathing
+        white = GOLD * spark * 1.2;
+      } else {
+        vec3 R = reflect(-v, n), Tr = refract(-v, n, 1.0 / 1.66);
+        float F = 0.0615 + 0.9385 * pow(1.0 - ndv, 5.0);
+        vec3 refl = studio(toWorld(R)), thru = studio(toWorld(Tr));
+        float rl = dot(refl, vec3(0.3, 0.59, 0.11));
+        col = thru * LIME * 0.22 + LIME * uGlow * 0.08 * pow(1.0 - ndv, 1.5);       // the body colour through the near facets, a lit rim
+        white = refl * F * 1.1 + vec3(1.0, 0.99, 0.9) * spark * 1.3;                 // the surface reflection stays white, like on a real stone
+        alpha = clamp(0.1 + F * 0.8 + rl * F * 0.4 + spark * 0.6, 0.0, 1.0);
+      }
+      float Lc = max(dot(col, vec3(0.3, 0.59, 0.11)), 1e-4);
+      col *= (1.0 - exp(-Lc * 1.5)) / (Lc * 1.5) * 1.2;                             // soft curve on brightness only, so the green stays green
+      col += 1.0 - exp(-white * 1.2);
+      gl_FragColor = vec4(col, alpha);
+      #include <colorspace_fragment>
+    }`;
+  const mk = (back) => new T.ShaderMaterial({
+    uniforms: { ...uniforms, uBack: { value: back ? 1 : 0 } }, vertexShader, fragmentShader, toneMapped: false,
+    side: back ? T.BackSide : T.FrontSide, transparent: !back, depthWrite: back,
+  });
+  const back = mk(true), front = mk(false);
+  const tick = () => { uniforms.uTime.value = performance.now() / 1000; };
+  function mesh() {   // one stone: the far side, then the near side over it
+    const g = new T.Group(), b = new T.Mesh(geo, back), f = new T.Mesh(geo, front);
+    f.renderOrder = 2; b.onBeforeRender = tick; g.add(b, f); g.userData.peridot = true;
+    return g;
+  }
+  // ---- glow pictures: a warm halo (white-gold heart, lime, olive edge) and a four-point star of light
+  const canvasTex = (size, draw) => { const c = document.createElement('canvas'); c.width = c.height = size; draw(c.getContext('2d'), size); const t = new T.CanvasTexture(c); t.colorSpace = T.SRGBColorSpace; return t; };
+  const glowTex = canvasTex(256, (g, s) => {
+    const gr = g.createRadialGradient(s / 2, s / 2, 0, s / 2, s / 2, s / 2);
+    // light around the stone rather than over its face (the stone covers about the inner fifth): a soft ring that fades out
+    gr.addColorStop(0, 'rgba(214,250,120,0.32)'); gr.addColorStop(0.16, 'rgba(226,255,150,0.62)'); gr.addColorStop(0.24, 'rgba(196,240,80,0.5)');
+    gr.addColorStop(0.45, 'rgba(150,215,50,0.2)'); gr.addColorStop(0.72, 'rgba(110,180,40,0.06)'); gr.addColorStop(1, 'rgba(110,180,40,0)');
+    g.fillStyle = gr; g.fillRect(0, 0, s, s);
+  });
+  const flareTex = canvasTex(256, (g, s) => {
+    const m = s / 2;
+    g.globalCompositeOperation = 'lighter';
+    const ray = (ang, len, w, a) => {
+      g.save(); g.translate(m, m); g.rotate(ang);
+      const gr = g.createLinearGradient(0, 0, len, 0); gr.addColorStop(0, `rgba(250,255,210,${a})`); gr.addColorStop(0.35, `rgba(214,250,120,${a * 0.45})`); gr.addColorStop(1, 'rgba(180,240,80,0)');
+      g.fillStyle = gr; g.beginPath(); g.moveTo(0, -w); g.lineTo(len, 0); g.lineTo(0, w); g.closePath(); g.fill(); g.restore();
+    };
+    for (let k = 0; k < 4; k++) ray(k * Math.PI / 2, m, 3.2, 0.95);
+    for (let k = 0; k < 4; k++) ray(Math.PI / 4 + k * Math.PI / 2, m * 0.5, 2, 0.5);
+    const c = g.createRadialGradient(m, m, 0, m, m, m * 0.18); c.addColorStop(0, 'rgba(255,255,230,0.9)'); c.addColorStop(1, 'rgba(255,255,230,0)');
+    g.fillStyle = c; g.fillRect(0, 0, s, s);
+  });
+  return { geo, back, front, mesh, glowTex, flareTex, uniforms, tick, mats: new Set([back, front]) };
+}
+
 /* ================================================================ CATCH THE SHARD (in the spirit of Pokémon GO)
    The look step at a site ends with a peridot shard floating in the camera view, fixed to a compass bearing (it stays put
    while you turn). Flick the crystal orb up at it; a throw that lands inside the shrinking gold ring earns a bonus (Nice,
@@ -2408,37 +2543,6 @@ function studioEnv(T, renderer) {   // soft white panels and a green bounce from
   const pm = new T.PMREMGenerator(renderer), tex = pm.fromScene(env, 0.03).texture; pm.dispose();
   return tex;
 }
-function gemGeometry(T) {   // a brilliant marquise: pointed-oval girdle (two arcs through the tips), star and kite facets on the crown, a table, a keel below
-  const n = 22, h = 0.5, w = 0.25, R = (h * h + w * w) / (2 * w), c = R - w;
-  const rim = (t) => {   // t in [0, 1): right arc from the top tip down, then the left arc back up
-    t = ((t % 1) + 1) % 1;
-    if (t < 0.5) { const y = h * (1 - 4 * t); return [Math.sqrt(Math.max(0, R * R - y * y)) - c, y]; }
-    const y = -h + 4 * h * (t - 0.5); return [c - Math.sqrt(Math.max(0, R * R - y * y)), y];
-  };
-  const ring = (k, sx, sy, z, half) => Array.from({ length: n }, (_, i) => { const [x, y] = rim((i + (half ? 0.5 : 0)) / n); return new T.Vector3(x * sx, y * sy, z); });
-  const G = ring(0, 1, 1, 0, false);                 // girdle
-  const M = ring(0, 0.78, 0.82, 0.12, true);          // crown: star points, half a step round
-  const Tb = ring(0, 0.46, 0.56, 0.19, false);        // table edge
-  const Q = ring(0, 0.62, 0.74, -0.17, true);          // pavilion: kite points
-  const K = ring(0, 0.08, 0.62, -0.32, false);         // keel
-  const C = new T.Vector3(0, 0, -0.03), top = new T.Vector3(0, 0, 0.2), pos = [];
-  const tri = (a, b, d) => {   // wind every facet outwards
-    const nrm = new T.Vector3().subVectors(b, a).cross(new T.Vector3().subVectors(d, a));
-    const ctr = new T.Vector3().add(a).add(b).add(d).multiplyScalar(1 / 3).sub(C);
-    if (nrm.dot(ctr) < 0) [b, d] = [d, b];
-    pos.push(a.x, a.y, a.z, b.x, b.y, b.z, d.x, d.y, d.z);
-  };
-  for (let i = 0; i < n; i++) {
-    const j = (i + 1) % n, p = (i + n - 1) % n;
-    tri(G[i], G[j], M[i]); tri(M[p], G[i], M[i]);        // crown, girdle facets
-    tri(M[p], M[i], Tb[i]); tri(Tb[i], M[i], Tb[j]);     // crown, star facets
-    tri(Tb[i], Tb[j], top);                              // table
-    tri(G[i], G[j], Q[i]); tri(Q[p], G[i], Q[i]);        // pavilion, girdle facets
-    tri(Q[p], Q[i], K[i]); tri(K[i], Q[i], K[j]);        // pavilion, main facets to the keel
-  }
-  const g = new T.BufferGeometry(); g.setAttribute('position', new T.Float32BufferAttribute(pos, 3)); g.computeVertexNormals();
-  return g;
-}
 function buildCatch(T) {
   const renderer = new T.WebGLRenderer({ canvas: $('ar-gl'), alpha: true, antialias: true });
   renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2)); renderer.setClearColor(0x000000, 0);
@@ -2453,9 +2557,14 @@ function buildCatch(T) {
     s.scale.setScalar(scale); parent.add(s); return s;
   };
   const root = new T.Group(), spin = new T.Group(); root.add(spin); scene.add(root);
-  const gemMat = new T.MeshPhysicalMaterial({ color: 0x5fae0e, emissive: 0x2a6e03, emissiveIntensity: 0.42, roughness: 0.02, metalness: 0.25, flatShading: true, clearcoat: 1, clearcoatRoughness: 0.02, iridescence: 0.2, iridescenceIOR: 1.5, envMapIntensity: 3.2 });
-  const gem = new T.Mesh(gemGeometry(T), gemMat); gem.scale.setScalar(CATCH.size); spin.add(gem);
-  const glow = add(0x7dff3a, 0.45, CATCH.size * 2.0, root);
+  // v21: the shared peridot (05-peridot.js): a brilliant cut with its own gem shader, standing upright and turning slowly
+  const K = cat.kit = peridotKit(T);
+  const gem = new T.Group(), stone = K.mesh();
+  stone.scale.set(0.78 * 0.62, 0.62, 0.78 * 0.62); stone.position.y = 0.34 * 0.62; stone.rotation.x = 0.18;   // about as tall as before, centred
+  gem.add(stone); gem.scale.setScalar(CATCH.size); spin.add(gem);
+  const halo = (tex, opacity, scale) => { const s = new T.Sprite(new T.SpriteMaterial({ map: tex, transparent: true, opacity, blending: T.AdditiveBlending, depthWrite: false })); s.scale.setScalar(scale); root.add(s); return s; };
+  const glow = halo(K.glowTex, 0.45, CATCH.size * 2.6);
+  const flare = halo(K.flareTex, 0.35, CATCH.size * 2.4);
   const sparks = Array.from({ length: 8 }, (_, i) => {
     const s = add(0xffffff, 0, 0.09, root), a = i / 8 * Math.PI * 2;
     s.userData = { a, r: CATCH.size * (0.42 + 0.25 * Math.random()), y: (Math.random() - 0.5) * CATCH.size * 0.9, sp: 2 + Math.random() * 3, ph: Math.random() * 6 };
@@ -2494,7 +2603,7 @@ function buildCatch(T) {
   };
   const shade = flat(0x000000, 0.35, T.NormalBlending), pool = flat(0x7dff3a, 0.5, T.AdditiveBlending);
   const burst = Array.from({ length: 26 }, (_, i) => { const s = add(i % 3 ? 0xb6ff4a : 0xffd27a, 0, 0.08, scene); s.userData = { v: new T.Vector3() }; return s; });
-  cat.gl = { renderer, scene, cam, root, spin, gem, gemMat, glow, sparks, ringG, ringIn, ringOut, ringGlow, runes: null, orb, orbBall, orbGlow, flash, burst, pillar, shade, pool };
+  cat.gl = { renderer, scene, cam, root, spin, gem, glow, flare, sparks, ringG, ringIn, ringOut, ringGlow, runes: null, orb, orbBall, orbGlow, flash, burst, pillar, shade, pool };
 }
 
 /* ---------- starting and stopping */
@@ -2592,8 +2701,9 @@ function catchFrame(now, w, h) {
   G.shade.material.opacity = seen ? 0.35 * clamp(1.6 - lift / (2 * sc), 0, 1) : 0;
   G.pool.material.opacity = seen ? 0.7 * clamp(1.8 - lift / (2 * sc), 0, 1) * (cat.state === 'land' ? 1.8 : 1) : 0;
   G.root.lookAt(0, 0, 0);   // the shard's face turns to you, rocking a little
-  G.spin.rotation.set(0, reduceMotion ? 0 : 0.7 * Math.sin(t * 0.9), reduceMotion ? 0 : 0.08 * Math.sin(t * 0.7));
-  if (cat.state === 'aim' || cat.state === 'fly') G.glow.material.opacity = 0.36 + 0.1 * Math.sin(t * 3);
+  G.spin.rotation.set(0, reduceMotion ? 0 : t * 0.6, reduceMotion ? 0 : 0.06 * Math.sin(t * 0.7));   // the stone turns: its facets flash
+  if (cat.state === 'aim' || cat.state === 'fly') G.glow.material.opacity = 0.38 + 0.12 * Math.sin(t * 2.1);
+  G.flare.material.opacity = G.root.visible && cat.state !== 'caught' ? G.glow.material.opacity * 0.75 : 0; G.flare.material.rotation = reduceMotion ? 0 : t * 0.12;
   for (const s of G.sparks) {
     const u = s.userData, a = u.a + t * 0.6;
     s.position.set(Math.cos(a) * u.r, u.y, Math.sin(a) * u.r);
