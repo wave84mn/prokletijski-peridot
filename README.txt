@@ -24,7 +24,7 @@ WHAT IS IN THIS FOLDER
                   The city map on the same site (wave84mn.github.io) and this game share their lens measurements.
   logo/           the 3D badge for the start screen (peridot-mesh.txt + textures) and its pictures (peridot-badge*.png)
   landing/        the start screen's pictures: night-wide.jpg (computers), night-tall.jpg (phones), trail.jpg (the picture on
-                  the game card: the trail crossroad with the signpost and the glowing peridot), menu-mine.jpg,
+                  the game card: the trail crossroad with the signpost), menu-mine.jpg,
                   menu-legend.jpg, menu-visit.jpg, menu-ready.jpg (the pictures on the four menu cards), frame.webp (the
                   slate frame of the cards)
   fieldmap/       the game's map, painted like the printed Game Trails Map (blue-hour relief, glowing rivers, warm town
