@@ -23,8 +23,9 @@ WHAT IS IN THIS FOLDER
                   so the shard neither shakes nor slides; the view uses the orientation from when the picture was taken.
                   The city map on the same site (wave84mn.github.io) and this game share their lens measurements.
   logo/           the 3D badge for the start screen (peridot-mesh.txt + textures) and its pictures (peridot-badge*.png)
-  landing/        the start screen's pictures: night-wide.jpg (computers), night-tall.jpg (phones), phone.jpg (the picture on
-                  the game card), frame.webp (the slate frame of the card)
+  landing/        the start screen's pictures: night-wide.jpg (computers), night-tall.jpg (phones), trail.jpg (the picture on
+                  the game card: the trail crossroad with the signpost and a phone showing the peridot), frame.webp (the slate
+                  frame of the card)
   fieldmap/       the game's map, painted like the printed Game Trails Map (blue-hour relief, glowing rivers, warm town
                   lights): overview.jpg (the valleys), gusinje.webp, vusanje.webp, grebaje.webp (town plans that fade in when
                   you zoom in). Made from the Copernicus DEM and OpenStreetMap by tools/fieldmap in the build folder.
@@ -34,8 +35,8 @@ WHAT IS IN THIS FOLDER
   field-redirect/index.html   forwarder for the address on the printed map (see below)
   three.js 0.160.0 loads from jsDelivr; the fonts load from Google Fonts.
 
-  Updating an earlier copy: the m/ folder (the virtual missions' photos), landing/orb.jpg, landing/trail.jpg and
-  fieldmap/valley3d.jpg are no longer used and can be deleted from the site.
+  Updating an earlier copy: the m/ folder (the virtual missions' photos), landing/orb.jpg, landing/phone.jpg and
+  fieldmap/valley3d.jpg are no longer used and can be deleted from the site. landing/trail.jpg is new: replace the old one.
 
 HOSTING
   Upload the folder as it is to https://xplore-prokletije.com/p/ . Static files only: no database, no build step.
