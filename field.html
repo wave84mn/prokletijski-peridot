@@ -1,0 +1,2585 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>In the field · Prokletijski Peridot</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Big+Shoulders+Display:wght@600;800&display=swap">
+<style>
+:root { box-sizing: border-box; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+body { margin: 0; padding: 0; }
+img { max-width: 100%; }
+[hidden]:not([hidden=until-found i]) { display: none !important; }
+/* ================================================================ PERIDOT UI (shared by the start screen, the virtual missions and the field game)
+   Taken from the badge: obsidian shield, gold rim and lettering, limestone, the peridot. One deliberate dark look: the game always
+   sits over a map or a photograph, never over a page, so there is no light variant. Route colours: town gold, Vusanje turquoise,
+   Grebaje trail red. */
+:root {
+  --obsidian: #121615;      /* panels */
+  --obsidian-2: #1b2120;    /* rows inside panels */
+  --obsidian-3: #2a3231;    /* chips, pressed */
+  --line: rgba(229, 185, 113, 0.26);     /* gold hairline */
+  --line-2: rgba(229, 185, 113, 0.6);
+  --parchment: #f4ecd9;     /* text */
+  --parchment-2: #c8bfaa;   /* quiet text */
+  --gold: #e5b971;          /* the badge's lettering */
+  --gold-2: #b98b4a;
+  --peridot: #b6d12e;       /* the gem: actions and finds */
+  --peridot-hi: #d6ee60;
+  --peridot-ink: #566f0b;   /* peridot dark enough for text on parchment */
+  --leaf: #152107;          /* text on peridot */
+  --rust: #e8866a;          /* wrong answer, on dark */
+  --ink: #10272a;           /* series ink: the night sky over the map, QR codes */
+  --glass: rgba(15, 19, 18, 0.72);
+  --panel: linear-gradient(180deg, rgba(30, 36, 35, 0.97), rgba(15, 19, 18, 0.98));
+  --shade: 0 12px 32px rgba(0, 0, 0, 0.42);
+  --accent: #e5b971;        /* set per route or mission: focus ring, card gem */
+  --town: #c9a13b; --vusanje: #2bb3bf; --grebaje: #e0523f;
+  --f-display: "Big Shoulders Display", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --f-body: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --gem-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 16'%3E%3Cpath d='M5 0C9.2 4 9.2 12 5 16C.8 12 .8 4 5 0Z'/%3E%3C/svg%3E");
+  color-scheme: dark;
+}
+html, body { height: 100%; margin: 0; overflow: hidden; }
+body { background: var(--obsidian); color: var(--parchment); font-family: var(--f-body); font-size: 16px; -webkit-tap-highlight-color: transparent; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* glass: everything that floats over the map or a photo */
+.glass { background: var(--glass); -webkit-backdrop-filter: blur(12px) saturate(1.25); backdrop-filter: blur(12px) saturate(1.25);
+  box-shadow: var(--shade), inset 0 0 0 1px var(--line); color: var(--parchment); }
+
+.place { border-radius: 14px; padding: 8px 14px 9px; min-width: 0; max-width: min(62vw, 360px); }
+.kicker { margin: 0; font-family: var(--f-display); font-weight: 600; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); }
+.place .kicker { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.place h1 { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 1px 0 0; font-family: var(--f-display); font-weight: 800; font-size: 26px; line-height: 1; letter-spacing: 0.02em; text-transform: uppercase; color: var(--parchment); }
+.place .where { margin: 3px 0 0; font-size: 14px; color: var(--parchment-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.top-right { display: flex; gap: 8px; align-items: center; pointer-events: auto; flex: none; }
+.score { border-radius: 14px; padding: 6px 12px 7px; text-align: right; }
+.score b { display: block; font-family: var(--f-display); font-weight: 800; font-size: 28px; line-height: 1; font-variant-numeric: tabular-nums; color: var(--parchment); }
+.score span { font-family: var(--f-display); font-weight: 600; font-size: 12px; letter-spacing: 0.14em; color: var(--gold); text-transform: uppercase; }
+.icon-btn { pointer-events: auto; width: 44px; height: 44px; border: 0; border-radius: 50%; display: grid; place-items: center; cursor: pointer; padding: 0; flex: none; }
+.icon-btn svg { width: 22px; height: 22px; fill: none; stroke: var(--parchment); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.icon-btn:hover svg { stroke: var(--gold); }
+.icon-btn[aria-pressed="false"] .on, .icon-btn[aria-pressed="true"] .off { display: none; }
+.icon-btn.text { width: auto; padding: 0 14px; border-radius: 22px; font-family: var(--f-display); font-weight: 800; font-size: 17px; letter-spacing: 0.08em; color: var(--parchment); }
+
+.bar-btn { pointer-events: auto; height: 48px; border: 0; border-radius: 24px; padding: 0 16px 0 12px; display: inline-flex; gap: 8px; align-items: center; cursor: pointer;
+  font-family: var(--f-display); font-weight: 800; font-size: 17px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--parchment); }
+.bar-btn svg { width: 22px; height: 22px; fill: none; stroke: var(--gold); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.bar-btn:hover:not(:disabled) { box-shadow: var(--shade), inset 0 0 0 1px var(--line-2); }
+.bar-btn:disabled { opacity: 0.5; cursor: default; }
+
+/* the shard icon (trays, lists) */
+.gem { width: 26px; height: 26px; }
+.gem .body { fill: none; stroke: var(--parchment-2); stroke-width: 1.4; stroke-dasharray: 2.4 2; }
+.gem .cut { fill: none; stroke: transparent; stroke-width: 1; }
+@keyframes pop { 0% { transform: scale(0.6); } 100% { transform: scale(1); } }
+@keyframes glow { 0% { filter: brightness(1.8); } 100% { filter: none; } }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.toast { position: fixed; left: 50%; top: calc(max(12px, env(safe-area-inset-top, 0px)) + 86px); transform: translateX(-50%); z-index: 9; border-radius: 22px; padding: 9px 16px;
+  font-weight: 700; font-size: 15px; line-height: 1.35; max-width: min(420px, calc(100% - 32px)); text-align: center; pointer-events: none; transition: opacity 200ms, transform 200ms; }
+.toast[hidden] { display: block !important; opacity: 0; transform: translate(-50%, -8px); }
+
+/* ---------------------------------------------------------------- the card: one at a time, bottom centre */
+.card {
+  position: fixed; z-index: 8; left: 50%; transform: translateX(-50%);
+  bottom: calc(max(12px, env(safe-area-inset-bottom, 0px)) + 62px);
+  width: min(460px, calc(100% - 32px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)));
+  max-height: calc(100% - 200px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+  overflow: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: var(--gold-2) transparent;
+  background: var(--panel); color: var(--parchment); border-radius: 18px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55), inset 0 0 0 1px var(--line), inset 0 1px 0 rgba(255, 236, 200, 0.07);
+  padding: 20px 20px 18px; display: flex; flex-direction: column; gap: 12px; box-sizing: border-box;
+}
+.card > * { flex-shrink: 0; }
+.card.enter { animation: rise 280ms cubic-bezier(.2,.9,.3,1); }
+@keyframes rise { from { opacity: 0; transform: translate(-50%, 16px); } to { opacity: 1; transform: translate(-50%, 0); } }
+.card h2 { margin: 0; font-family: var(--f-display); font-weight: 800; font-size: 38px; line-height: 0.95; letter-spacing: 0.01em; text-transform: uppercase; text-wrap: balance; color: var(--parchment); }
+.card .sub { margin: -4px 0 0; color: var(--parchment-2); font-size: 16px; }
+.card p { margin: 0; line-height: 1.5; max-width: 60ch; }
+.card .body { display: flex; flex-direction: column; gap: 8px; color: #e9e1cd; }
+.card .kicker { display: flex; gap: 8px; align-items: center; }
+.card .kicker::before { content: ""; width: 10px; height: 16px; flex: none; background: var(--accent); -webkit-mask: var(--gem-mask) center / contain no-repeat; mask: var(--gem-mask) center / contain no-repeat; }
+.card.compact { gap: 8px; padding: 14px 16px 14px; }
+.card.compact h2 { font-size: 30px; }
+.banner { display: block; width: 100%; height: 104px; object-fit: cover; border-radius: 12px; background: var(--obsidian-2); box-shadow: inset 0 0 0 1px var(--line); }
+.facts { margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--line); border-radius: 12px; overflow: hidden; border: 1px solid var(--line); }
+.facts div { background: var(--obsidian); padding: 8px 10px; min-width: 0; }
+.facts div:last-child:nth-child(odd) { grid-column: 1 / -1; }
+.facts dt { font-family: var(--f-display); font-weight: 600; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold-2); }
+.facts dd { margin: 2px 0 0; font-weight: 700; font-size: 15px; font-variant-numeric: tabular-nums; color: var(--parchment); }
+.big { display: flex; align-items: baseline; gap: 8px; font-family: var(--f-display); font-variant-numeric: tabular-nums; }
+.big b { font-weight: 800; font-size: 72px; line-height: 0.9; color: var(--parchment); }
+.big span { font-weight: 600; font-size: 22px; color: var(--gold-2); }
+.cub { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 10px; align-items: center; }
+.cub svg { width: 52px; height: 52px; }
+.cub p { background: var(--parchment); color: var(--ink); border-radius: 14px; padding: 9px 12px; font-style: italic; line-height: 1.4; position: relative; }
+.cub p::before { content: ""; position: absolute; left: -7px; top: 50%; margin-top: -7px; border: 7px solid transparent; border-left: 0; border-right-color: var(--parchment); }
+.options { display: flex; flex-direction: column; gap: 8px; }
+.opt { text-align: left; border: 1px solid var(--line); background: var(--obsidian-2); color: var(--parchment); border-radius: 12px; padding: 12px 14px; cursor: pointer; font-size: 16px; line-height: 1.3; display: flex; gap: 10px; align-items: center; }
+.opt:hover:not(:disabled) { border-color: var(--gold); background: #222928; }
+.opt:disabled { cursor: default; }
+.opt .mark { flex: none; width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--parchment-2); display: grid; place-items: center; font-weight: 700; font-size: 13px; color: var(--parchment-2); }
+.opt.correct { background: var(--peridot); border-color: var(--peridot-hi); color: var(--leaf); font-weight: 700; }
+.opt.correct .mark { background: var(--leaf); border-color: var(--leaf); color: var(--peridot); }
+.opt.wrong { border-color: var(--rust); color: var(--rust); background: rgba(232, 134, 106, 0.08); }
+.opt.wrong .mark { border-color: var(--rust); color: var(--rust); }
+.opt.dim { opacity: 0.55; }
+.note { border-radius: 12px; padding: 10px 12px; line-height: 1.45; background: var(--obsidian-2); border-left: 4px solid var(--peridot); color: #e9e1cd; }
+.note.bad { border-left-color: var(--rust); }
+.note b { font-family: var(--f-display); font-weight: 800; font-size: 17px; letter-spacing: 0.05em; text-transform: uppercase; margin-right: 6px; color: var(--gold); }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn { border: 1px solid var(--gold-2); background: transparent; color: var(--parchment); border-radius: 12px; padding: 11px 16px; cursor: pointer;
+  font-family: var(--f-display); font-weight: 800; font-size: 18px; letter-spacing: 0.07em; text-transform: uppercase; }
+.btn:hover:not(:disabled) { background: rgba(229, 185, 113, 0.1); border-color: var(--gold); }
+.btn.primary { flex: 1 1 auto; color: var(--leaf); border-color: #86a01c;
+  background: linear-gradient(180deg, var(--peridot-hi), var(--peridot) 55%, #9fb923); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 6px 18px rgba(160, 196, 34, 0.18); }
+.btn.primary:hover:not(:disabled) { background: linear-gradient(180deg, #e2f57c, #c2dc3a 55%, #a7c228); border-color: var(--peridot-hi); }
+.btn:disabled { opacity: 0.55; cursor: progress; }
+.foot { display: flex; gap: 12px; align-items: center; justify-content: space-between; flex-wrap: wrap; border-top: 1px solid var(--line); padding-top: 12px; font-size: 13px; color: var(--parchment-2); }
+.foot img { height: 34px; width: auto; background: #fff; border-radius: 6px; padding: 3px 6px; }
+
+.sheet-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.sheet-list button { width: 100%; display: grid; grid-template-columns: 92px minmax(0, 1fr) auto; gap: 12px; align-items: center; text-align: left; border: 1px solid var(--line); background: var(--obsidian-2); color: var(--parchment); border-radius: 12px; padding: 6px 10px 6px 6px; cursor: pointer; }
+.sheet-list button:hover { border-color: var(--gold); background: #222928; }
+.sheet-list button[aria-current="true"] { border-color: var(--gold); }
+.sheet-list img { width: 92px; height: 36px; object-fit: cover; border-radius: 8px; display: block; background: var(--obsidian-3); }
+.sheet-list .n { font-weight: 700; min-width: 0; line-height: 1.25; }
+.sheet-list .n small { display: block; font-weight: 400; font-size: 13px; color: var(--parchment-2); }
+.sheet-list .s { font-family: var(--f-display); font-weight: 800; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; border-radius: 10px; padding: 3px 8px; background: var(--obsidian-3); color: var(--parchment-2); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.sheet-list .s.done { background: var(--peridot); color: var(--leaf); }
+.route-head { display: flex; gap: 8px; align-items: center; margin: 4px 0 -2px; font-family: var(--f-display); font-weight: 800; font-size: 15px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--parchment); }
+.route-head i { width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--obsidian); box-shadow: 0 0 0 1px var(--route); background: var(--route); }
+.route-head span { margin-left: auto; font-weight: 600; font-size: 13px; color: var(--parchment-2); letter-spacing: 0.08em; font-variant-numeric: tabular-nums; }
+
+/* the stamp: a light ticket, so the QR code scans */
+.stamp { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: center; background: var(--parchment); color: var(--ink); border-radius: 12px; padding: 12px;
+  box-shadow: inset 0 0 0 1px rgba(16, 39, 42, 0.12); }
+.stamp code { display: block; font-family: var(--f-display); font-weight: 800; font-size: 34px; letter-spacing: 0.08em; line-height: 1; user-select: all; }
+.stamp p { font-size: 14px; color: #45504d; margin-top: 4px; }
+.stamp canvas { width: 96px; height: 96px; image-rendering: pixelated; }
+
+@media (max-width: 520px) {
+  .bar-btn .label { display: none; }
+  .bar-btn { width: 48px; padding: 0; justify-content: center; }
+  .place h1 { font-size: 22px; }
+  .gem { width: 23px; height: 23px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .card.enter { animation: none; }
+  .toast { transition: none; }
+}
+
+/* ================================================================ THIS PAGE: the field game, played on site
+   Layout: a north-up map of the sites fills the screen (OpenStreetMap tiles, or a sketch when tiles cannot load). Header top left
+   (home badge, chapter parts), points top right, the guide bar and two buttons along the bottom, one card at a time over them.
+   The map itself stays light, like paper; everything floating over it uses the obsidian panels. */
+:root { --map-ink: #3e5a5c; --map-paper: #e7eadb; }
+body { background: var(--obsidian); }
+.map { position: fixed; inset: 0; touch-action: none; overflow: hidden; background: var(--map-paper); cursor: grab; }
+.map.tiled { background: #f2efe9; }
+.map svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.sk-river { fill: none; stroke: #8fd3db; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+.sk-road-c { fill: none; stroke: #b9bfae; stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; }
+.sk-road { fill: none; stroke: #fffdf4; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+.sk-label { font-family: var(--f-display); font-weight: 800; font-size: 15px; letter-spacing: 0.12em; text-transform: uppercase; fill: var(--map-ink); text-anchor: middle;
+  paint-order: stroke; stroke: var(--map-paper); stroke-width: 4px; stroke-linejoin: round; }
+.sk-label.town { font-size: 20px; letter-spacing: 0.2em; fill: var(--ink); }
+.sk-label.peak { font-size: 14px; fill: #6d6a5c; }
+.zone { fill: rgba(233, 195, 90, 0.18); stroke: #c9a13b; stroke-width: 2; stroke-dasharray: 6 5; }
+.zone.done { fill: rgba(182, 209, 46, 0.2); stroke: var(--peridot-ink); }
+.zone.here, .zone.inside { fill: rgba(43, 127, 255, 0.14); stroke: #2b7fff; stroke-dasharray: none; }
+.zone.locked { fill: rgba(16, 39, 42, 0.06); stroke: var(--map-ink); }
+.aimline { stroke: #2b7fff; stroke-width: 2.5; stroke-dasharray: 2 7; stroke-linecap: round; opacity: 0.8; }
+.mk { cursor: pointer; }
+.mk path { fill: #e9c35a; stroke: #1a1d1c; stroke-width: 2.5; }
+.mk text { font-family: var(--f-display); font-weight: 800; font-size: 15px; text-anchor: middle; fill: #1a1d1c; pointer-events: none; }
+.mk.done path { fill: var(--peridot); }
+.mk.here path { fill: #8fb9ff; }
+.mk.locked path { fill: #d5d9cc; stroke: var(--map-ink); }
+.mk.sel path { stroke-width: 4; filter: drop-shadow(0 0 6px rgba(16, 39, 42, 0.45)); }
+.mk.cluster circle { fill: #e9c35a; stroke: #1a1d1c; stroke-width: 2.5; }
+.mk-name { font-family: var(--f-body); font-weight: 700; font-size: 13px; text-anchor: middle; fill: var(--ink); pointer-events: none;
+  paint-order: stroke; stroke: rgba(255, 255, 255, 0.92); stroke-width: 4px; stroke-linejoin: round; }
+.me-acc { fill: rgba(43, 127, 255, 0.14); stroke: rgba(43, 127, 255, 0.45); stroke-width: 1; }
+.me-cone { fill: rgba(43, 127, 255, 0.28); }
+.me-dot { fill: #2b7fff; stroke: #fff; stroke-width: 3.5; filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.35)); }
+.map-note { position: fixed; z-index: 3; left: max(16px, env(safe-area-inset-left, 0px)); bottom: calc(max(12px, env(safe-area-inset-bottom, 0px)) + 176px);
+  font-size: 12px; color: var(--map-ink); background: rgba(242, 243, 237, 0.85); border-radius: 8px; padding: 3px 8px; pointer-events: none; }
+.map-credit { position: fixed; z-index: 3; right: max(4px, env(safe-area-inset-right, 0px)); bottom: calc(max(4px, env(safe-area-inset-bottom, 0px)) + 0px);
+  font-size: 11px; color: #333; background: rgba(255, 255, 255, 0.8); padding: 1px 6px; border-radius: 4px 0 0 0; }
+.map-credit a { color: inherit; }
+
+/* header: home badge, title with the device parts, points */
+.top { position: fixed; z-index: 5; left: 0; right: 0; top: 0; display: flex; gap: 8px; justify-content: space-between; align-items: flex-start; pointer-events: none;
+  padding: max(12px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 0 max(16px, env(safe-area-inset-left, 0px)); }
+.top > * { pointer-events: auto; }
+.top-left { display: flex; gap: 8px; align-items: stretch; min-width: 0; }
+.home-btn { flex: none; width: 54px; border-radius: 14px; display: grid; place-items: center; text-decoration: none; }
+.home-btn img { width: 38px; height: auto; display: block; filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.5)); transition: transform 200ms ease; }
+.home-btn:hover img { transform: scale(1.06); }
+.top .place { max-width: min(52vw, 320px); }
+.top .place .kicker { white-space: normal; }
+.parts-mini { list-style: none; margin: 6px 0 0; padding: 0; display: flex; gap: 6px; }
+.parts-mini li { width: 28px; height: 28px; border-radius: 8px; display: grid; place-items: center; border: 1.5px dashed rgba(200, 191, 170, 0.6); color: var(--parchment-2); }
+.parts-mini li svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.parts-mini li.got { border: 1.5px solid var(--pc); background: var(--pc); color: #15130c; }
+.score { border: 0; cursor: pointer; }
+
+.map-tools { position: fixed; z-index: 5; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(max(12px, env(safe-area-inset-bottom, 0px)) + 176px);
+  display: flex; flex-direction: column; gap: 8px; }
+.map-tools .icon-btn[aria-pressed="true"] { background: #2b7fff; }
+.map-tools .icon-btn[aria-pressed="true"] svg { stroke: #fff; }
+
+/* the guide: where to go next */
+.dock { position: fixed; z-index: 5; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; gap: 8px; align-items: center; pointer-events: none;
+  padding: 0 max(16px, env(safe-area-inset-right, 0px)) max(12px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
+.dock > * { pointer-events: auto; }
+.guide { width: min(460px, 100%); box-sizing: border-box; border: 0; border-radius: 18px; padding: 10px 14px 10px 10px; cursor: pointer; text-align: left; color: var(--parchment);
+  display: grid; grid-template-columns: 60px minmax(0, 1fr); gap: 12px; align-items: center; background: var(--panel);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45), inset 0 0 0 1px var(--line), inset 0 1px 0 rgba(255, 236, 200, 0.07); }
+.guide:hover { box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45), inset 0 0 0 1px var(--line-2), inset 0 1px 0 rgba(255, 236, 200, 0.09); }
+.guide .dial { position: relative; width: 60px; height: 60px; border-radius: 50%; display: grid; place-items: center;
+  background: radial-gradient(circle at 50% 38%, #26302e, #0c100f 72%); box-shadow: inset 0 0 0 1px var(--line-2); }
+.guide .dial svg { width: 34px; height: 34px; fill: none; stroke: var(--gold); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+#g-arrow { width: 40px; height: 40px; transition: transform 250ms ease-out; }
+#g-arrow path { fill: var(--peridot); stroke: var(--peridot); }
+.guide .ring { position: absolute; inset: -4px; --k: 0; pointer-events: none; }
+.guide .ring svg { width: 68px; height: 68px; transform: rotate(-90deg); }
+.guide .ring circle { fill: none; stroke: var(--peridot); stroke-width: 5; stroke-linecap: round; stroke-dasharray: 201; stroke-dashoffset: calc(201 * (1 - var(--k))); }
+.guide .txt { min-width: 0; }
+.guide .kicker { margin: 0; }
+.guide b { display: block; font-family: var(--f-display); font-weight: 800; font-size: 24px; line-height: 1.05; letter-spacing: 0.01em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.guide span { display: block; color: var(--parchment-2); font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#g-icon[hidden], #g-arrow[hidden] { display: none; }
+.dock-row { display: flex; gap: 8px; width: min(460px, 100%); }
+.dock-row .bar-btn { flex: 1 1 0; justify-content: center; }
+.card { bottom: calc(max(12px, env(safe-area-inset-bottom, 0px)) + 12px); max-height: calc(100% - 120px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)); }
+@media (max-width: 520px) {
+  .dock-row .bar-btn .label { display: inline; }
+  .dock-row .bar-btn { width: auto; padding: 0 10px; }
+  .home-btn { width: 48px; }
+  .home-btn img { width: 32px; }
+  .top .place .kicker { display: none; }
+  .top .place h1 { font-size: 20px; }
+  .top .score { padding: 6px 10px 7px; }
+  .top .score b { font-size: 24px; }
+}
+
+/* inside the cards */
+.intro-badge { display: block; width: 112px; height: auto; margin: 2px auto -2px; filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.55)); }
+.locline { margin: 0; font-size: 14px; color: var(--parchment-2); }
+.locline.on::before { content: "● "; color: #5b9dff; }
+.parts { display: flex; gap: 8px; }
+.parts .part { flex: 1 1 0; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 4px 6px; border-radius: 12px; border: 1.5px dashed rgba(200, 191, 170, 0.55); color: var(--parchment-2); }
+.parts .part svg { width: 30px; height: 30px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.parts .part b { font-family: var(--f-display); font-weight: 800; font-size: 14px; letter-spacing: 0.08em; text-transform: uppercase; }
+.parts .part.got { border: 1.5px solid var(--pc); background: var(--pc); color: #15130c; }
+.field-list button { grid-template-columns: 40px minmax(0, 1fr) auto; }
+.field-list .fnum { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 10px; background: var(--obsidian-3); color: var(--gold); font-family: var(--f-display); font-weight: 800; font-size: 15px; letter-spacing: 0.04em; }
+.sheet-list .s.on { background: #e9c35a; color: #15130c; }
+.clues { margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 4px; line-height: 1.45; }
+.qline { font-weight: 700; }
+.codebox input, .numbox input { font-family: var(--f-display); font-weight: 800; font-size: 34px; letter-spacing: 0.18em; text-transform: uppercase; text-align: center;
+  width: 100%; box-sizing: border-box; border: 1.5px solid var(--gold-2); border-radius: 12px; padding: 8px 10px; background: var(--parchment); color: var(--ink); }
+.codebox input:focus, .numbox input:focus { outline: 3px solid var(--peridot); outline-offset: 1px; }
+.codebox.small input { font-size: 22px; letter-spacing: 0.04em; }
+.numbox { display: grid; grid-template-columns: 56px minmax(0, 1fr) 56px; gap: 8px; align-items: stretch; }
+.numbox .btn { font-size: 28px; padding: 0; }
+.numbox input { letter-spacing: 0.02em; -moz-appearance: textfield; }
+.numbox input::-webkit-outer-spin-button, .numbox input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.survey { border: 1.5px dashed var(--rust); border-radius: 12px; padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; font-size: 14px; }
+.survey p { margin: 0; line-height: 1.4; }
+.plaque { display: grid; grid-template-columns: minmax(0, 1fr) 120px; gap: 10px; align-items: center; background: var(--parchment); color: var(--ink); border-radius: 10px; padding: 8px; }
+.plaque code { display: block; font-family: var(--f-display); font-weight: 800; font-size: 34px; letter-spacing: 0.12em; }
+.plaque small { display: block; font-size: 11px; color: #45504d; word-break: break-all; }
+.plaque canvas { width: 120px; height: 120px; image-rendering: pixelated; }
+textarea.export { width: 100%; box-sizing: border-box; min-height: 180px; font: 12px/1.35 ui-monospace, Menlo, monospace; border-radius: 10px; border: 1px solid var(--line); padding: 8px; background: var(--obsidian-2); color: var(--parchment); }
+
+/* the look-around view: camera (or a drawn horizon) with a compass ribbon */
+.ar { position: fixed; inset: 0; z-index: 11; overflow: hidden; touch-action: none; user-select: none; -webkit-user-select: none;
+  background: linear-gradient(180deg, rgba(6, 14, 16, 0.15), rgba(6, 14, 16, 0.35)), url("landing/night-tall.jpg") center / cover, linear-gradient(180deg, #1d3a48 0%, #6f949b 46%, #2c4337 47%, #121f19 100%); }
+@media (min-aspect-ratio: 1/1) { .ar { background: linear-gradient(180deg, rgba(6, 14, 16, 0.15), rgba(6, 14, 16, 0.35)), url("landing/night-wide.jpg") center / cover, #0b1618; } }   /* without a camera: the start screen's valley */
+.ar.cam { background: #000; }
+.ar video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: none; }
+.ar.cam video { display: block; }
+.ar-ribbon { position: absolute; left: 0; right: 0; top: calc(max(12px, env(safe-area-inset-top, 0px)) + 86px); height: 26px; pointer-events: none; }
+.ar-ribbon span { position: absolute; left: 0; top: 0; width: 2px; height: 10px; margin-left: -1px; background: rgba(244, 236, 217, 0.75); }
+.ar-ribbon span.cardinal { width: 30px; height: 26px; margin-left: -15px; background: none; text-align: center; color: var(--parchment); font-family: var(--f-display); font-weight: 800; font-size: 18px; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8); }
+.ar-items { position: absolute; inset: 0; pointer-events: none; }
+.ar-label { position: absolute; left: 0; top: 0; border-radius: 12px; padding: 6px 12px; text-align: center; white-space: nowrap; }
+.ar-label b { display: block; font-family: var(--f-display); font-weight: 800; font-size: 18px; letter-spacing: 0.04em; text-transform: uppercase; }
+.ar-label small { font-size: 13px; color: var(--parchment-2); }
+.ar-shard { position: absolute; left: 0; top: 0; pointer-events: auto; width: 84px; height: 84px; border: 0; border-radius: 50%; padding: 12px; cursor: pointer;
+  background: radial-gradient(circle, rgba(214, 240, 90, 0.85) 0%, rgba(182, 209, 46, 0.35) 45%, rgba(182, 209, 46, 0) 70%); animation: bob 1.6s ease-in-out infinite; }
+.ar-shard .gem { width: 60px; height: 60px; }
+.ar-shard .gem .body { fill: var(--peridot); stroke: var(--leaf); stroke-width: 1.2; stroke-dasharray: none; }
+.ar-shard .gem .cut { stroke: var(--leaf); opacity: 0.55; }
+.ar-shard.got { animation: none; opacity: 0; transition: opacity 800ms, transform 800ms; }
+@keyframes bob { 0%,100% { margin-top: -5px; } 50% { margin-top: 5px; } }
+.ar-aim { position: absolute; left: 50%; top: 45%; width: 92px; height: 92px; margin: -46px 0 0 -46px; border-radius: 50%; pointer-events: none;
+  border: 3px solid var(--parchment); box-shadow: 0 0 0 2px rgba(6, 12, 12, 0.55), inset 0 0 0 2px rgba(6, 12, 12, 0.55); }
+.ar-aim span { position: absolute; left: 50%; top: 50%; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: var(--peridot); box-shadow: 0 0 0 2px #0b0f0e; }
+.ar-scan { position: absolute; left: 50%; top: 45%; width: 120px; height: 120px; margin: -60px 0 0 -60px; pointer-events: none; --k: 0; }
+.ar-scan svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.ar-scan circle { fill: none; stroke: var(--peridot); stroke-width: 6; stroke-linecap: round; stroke-dasharray: 339.3; stroke-dashoffset: calc(339.3 * (1 - var(--k))); }
+.ar-top { position: absolute; left: 0; right: 0; top: 0; display: flex; gap: 8px; align-items: flex-start;
+  padding: max(12px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 0 max(16px, env(safe-area-inset-left, 0px)); }
+.ar-bottom { position: absolute; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; gap: 10px; align-items: center;
+  padding: 0 max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
+.ar-say { width: min(460px, 100%); box-sizing: border-box; border-radius: 16px; padding: 10px 14px 10px 10px; display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 12px; align-items: center; }
+.ar-say svg { width: 44px; height: 44px; }
+.ar-say .ari { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; display: block; box-shadow: 0 0 0 2px #e5b971, 0 0 0 4px rgba(10, 12, 12, 0.7), 0 4px 10px rgba(0, 0, 0, 0.45); }
+.ar-say p { margin: 0; line-height: 1.4; font-size: 16px; }
+.ar-buttons { display: flex; gap: 8px; width: min(460px, 100%); }
+.ar-buttons .btn { flex: 0 0 auto; }
+.ar-buttons .btn:not(.primary) { background: var(--glass); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+.ar-buttons .btn.primary { flex: 1 1 auto; font-size: 20px; padding: 14px 16px; }
+.ar.holding .ar-buttons .btn.primary { background: linear-gradient(180deg, #f6d99a, var(--gold) 55%, #c99a52); border-color: var(--gold); color: #2a1a05; }
+/* test mode: a bar at the top, a joystick on the map, a walk button in the camera view */
+.test-bar { position: fixed; z-index: 6; left: 50%; transform: translateX(-50%); top: calc(max(10px, env(safe-area-inset-top, 0px)) + 92px);
+  display: flex; align-items: center; gap: 6px; padding: 5px 6px 5px 12px; border-radius: 999px; white-space: nowrap; font-size: 13px;
+  color: #241a05; background: linear-gradient(180deg, #f8dea4, #e5b971); box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(60, 40, 8, 0.4); }
+.test-bar button { border: 0; border-radius: 999px; padding: 5px 10px; font: inherit; font-weight: 700; color: var(--parchment); background: rgba(24, 20, 10, 0.85); cursor: pointer; }
+.joy { position: fixed; z-index: 6; left: max(16px, env(safe-area-inset-left, 0px)); bottom: calc(max(12px, env(safe-area-inset-bottom, 0px)) + 214px);
+  width: 112px; height: 112px; border-radius: 50%; touch-action: none; cursor: grab;
+  background: radial-gradient(circle, rgba(12, 16, 14, 0.25), rgba(12, 16, 14, 0.6)); box-shadow: 0 0 0 2px rgba(229, 185, 113, 0.7), 0 8px 20px rgba(0, 0, 0, 0.35); }
+.joy-knob { position: absolute; left: 50%; top: 50%; width: 48px; height: 48px; margin: -24px 0 0 -24px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff3cf, #e5b971 55%, #b07e3c); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.45); pointer-events: none; }
+.joy-label { position: absolute; left: 0; right: 0; bottom: -20px; text-align: center; font-size: 12px; font-weight: 700; color: #241a05; text-shadow: 0 0 6px rgba(255, 255, 255, 0.9); pointer-events: none; }
+.ar-walk { position: absolute; left: max(14px, env(safe-area-inset-left, 0px)); bottom: calc(100% + 10px); display: flex; flex-direction: column; align-items: center; gap: 2px;
+  width: 78px; padding: 10px 4px 8px; border: 0; border-radius: 18px; touch-action: none; cursor: pointer; font-size: 11px; font-weight: 700; color: #241a05;
+  background: linear-gradient(180deg, #f8dea4, #e5b971); box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4); }
+.ar-walk svg { width: 30px; height: 30px; fill: #241a05; }
+.ar-walk.on { background: linear-gradient(180deg, #e8ff9a, var(--peridot)); transform: scale(0.96); }
+
+/* when the camera can't start: why, and where it will work */
+.ar-camnote { position: absolute; z-index: 3; left: 50%; transform: translateX(-50%); top: calc(max(12px, env(safe-area-inset-top, 0px)) + 120px);
+  width: min(460px, calc(100% - 32px)); box-sizing: border-box; border-radius: 16px; padding: 12px 14px; box-shadow: 0 0 0 1px rgba(229, 185, 113, 0.65), 0 8px 22px rgba(0, 0, 0, 0.45); }
+.ar-camnote p { margin: 0 0 6px; font-size: 14px; line-height: 1.4; }
+.ar-camnote a { display: block; margin: 0 0 8px; font-weight: 700; font-size: 15px; color: #e2f58a; word-break: break-all; user-select: all; -webkit-user-select: all; }
+.ar-camnote-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+.ar-camnote-btns button { border: 0; border-radius: 999px; padding: 7px 12px; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; color: #241a05; background: linear-gradient(180deg, #f8dea4, #e5b971); }
+.ar-camnote-btns button:last-child { color: var(--parchment); background: rgba(24, 20, 10, 0.85); box-shadow: 0 0 0 1px rgba(229, 185, 113, 0.5); }
+
+/* catching the shard: the 3D layer over the camera, the crystal orb to flick, the result words, an arrow when the shard is out of sight */
+.ar-gl { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
+.ar.catching .ar-buttons, .ar.catching .ar-scan, .ar.catching .ar-aim { display: none; }
+.ar.approaching .ar-scan, .ar.approaching .ar-aim { display: none; }
+.ar-dist { position: absolute; left: 0; top: 0; margin: 0; padding: 4px 10px; border-radius: 999px; pointer-events: none; white-space: nowrap;
+  font-family: var(--f-display); font-weight: 800; font-size: 18px; letter-spacing: 0.04em; color: #e2f58a;
+  background: rgba(10, 14, 12, 0.72); box-shadow: 0 0 0 1px rgba(182, 209, 46, 0.6), 0 4px 12px rgba(0, 0, 0, 0.45); }
+.ar-orb { position: relative; width: 88px; height: 88px; flex: none; border: 0; padding: 0; border-radius: 50%; cursor: grab; touch-action: none;
+  background: radial-gradient(circle at 34% 28%, rgba(255, 255, 255, 0.95) 0 6%, rgba(255, 255, 255, 0) 17%),
+    radial-gradient(circle at 50% 62%, rgba(196, 255, 92, 0.6) 0%, rgba(70, 200, 196, 0.38) 42%, rgba(14, 52, 60, 0.55) 70%, rgba(214, 252, 255, 0.95) 72.5%, rgba(214, 252, 255, 0) 77%);
+  box-shadow: 0 0 28px rgba(125, 255, 74, 0.45), 0 12px 24px rgba(0, 0, 0, 0.45); animation: orb-idle 2.2s ease-in-out infinite; }
+.ar-orb span { position: absolute; inset: 18%; border-radius: 50%; background: conic-gradient(from 30deg, rgba(255, 255, 255, 0) 0 30%, rgba(255, 255, 255, 0.35) 38%, rgba(255, 255, 255, 0) 46% 100%); animation: orb-spin 5s linear infinite; }
+.ar-orb.dragging { animation: none; cursor: grabbing; }
+.ar-orb.gone { visibility: hidden; }
+.ar-orb:focus-visible { outline: 3px solid var(--parchment); outline-offset: 4px; }
+@keyframes orb-idle { 0%, 100% { translate: 0 0; } 50% { translate: 0 -6px; } }
+@keyframes orb-spin { to { transform: rotate(360deg); } }
+.ar-arrow { position: absolute; left: 0; top: 0; width: 46px; height: 46px; margin: -23px 0 0 -23px; pointer-events: none; filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.65)); }
+.ar-arrow svg { width: 100%; height: 100%; animation: arrow-nudge 1s ease-in-out infinite; }
+.ar-arrow path { fill: var(--peridot); stroke: #0b0f0e; stroke-width: 1.6; stroke-linejoin: round; }
+@keyframes arrow-nudge { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+.ar-pop { position: absolute; left: 0; right: 0; top: 27%; margin: 0; text-align: center; pointer-events: none; opacity: 0;
+  font-family: var(--f-display); font-weight: 800; font-size: clamp(38px, 11vw, 66px); letter-spacing: 0.04em; text-transform: uppercase; color: var(--parchment);
+  text-shadow: 0 0 20px rgba(0, 0, 0, 0.5), 0 3px 10px rgba(0, 0, 0, 0.75); }
+.ar-pop.show { animation: pop 1.4s ease-out forwards; }
+.ar-pop.gold { color: #f8dfa6; background: linear-gradient(180deg, #fff3cf 0%, #f2cf86 45%, #c8914a 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 1px #3a2408) drop-shadow(0 3px 8px rgba(0, 0, 0, 0.7)); text-shadow: none; }
+.ar-pop.green { color: #d6ee60; background: linear-gradient(180deg, #f6ffd0 0%, #d6ee60 45%, #86a814 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 1px #1d2c05) drop-shadow(0 0 14px rgba(125, 255, 74, 0.55)) drop-shadow(0 3px 8px rgba(0, 0, 0, 0.7)); text-shadow: none; }
+@keyframes pop { 0% { opacity: 0; transform: scale(0.6); } 14% { opacity: 1; transform: scale(1.1); } 28% { transform: scale(1); } 72% { opacity: 1; } 100% { opacity: 0; transform: translateY(-18px); } }
+/* on the map: a shard floats over every site that still holds one */
+.mk-shard .b { animation: shard-bob 2.2s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+#map-over .mk-shard path { fill: #c9ec3a; stroke: #26400a; stroke-width: 1.3; stroke-linejoin: round; filter: drop-shadow(0 0 3px rgba(182, 209, 46, 0.9)); }
+#map-over .mk-shard path.cut { fill: none; stroke: rgba(38, 64, 10, 0.55); stroke-width: 1; filter: none; }
+#map-over .mk-shard path.hl { fill: rgba(255, 255, 255, 0.85); stroke: none; filter: none; }
+#map-over .mk-shard .halo { fill: rgba(182, 209, 46, 0.28); stroke: rgba(214, 238, 96, 0.8); stroke-width: 1.5; animation: shard-halo 1.4s ease-out infinite; transform-box: fill-box; transform-origin: center; }
+.mk-shard.near .b { animation: shard-bob 1.1s ease-in-out infinite; }
+@keyframes shard-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+@keyframes shard-halo { 0% { transform: scale(0.6); opacity: 1; } 100% { transform: scale(1.6); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .ar-shard, .ar-orb, .ar-orb span, .ar-arrow svg, .mk-shard .b, .mk-shard .halo { animation: none; }
+}
+</style>
+</head>
+<body>
+<div class="map" id="map" aria-label="Map of the sites">
+  <svg id="map-svg" xmlns="http://www.w3.org/2000/svg"><g id="map-tiles"></g><g id="map-over"></g><g id="map-me"></g></svg>
+</div>
+<p class="map-note" id="map-sketch-note" hidden>Sketch map · roads approximate</p>
+<p class="map-credit" id="map-credit" hidden>© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors</p>
+
+<header class="top">
+  <div class="top-left">
+    <a class="home-btn glass" id="btn-home" href="./" aria-label="Prokletijski Peridot start screen"><img src="logo/peridot-badge-sm.png" alt="" width="100" height="122"></a>
+    <div class="place glass">
+      <p class="kicker">Prokletijski Peridot</p>
+      <h1>In the field</h1>
+      <ul class="parts-mini" id="top-parts" aria-label="Device parts found"></ul>
+    </div>
+  </div>
+  <div class="top-right">
+    <button class="score glass" id="top-pts-btn" aria-label="Points and sites"><b id="top-points">0</b><span id="top-done">0/15 sites</span></button>
+    <button class="icon-btn glass btn-sound" aria-pressed="true" aria-label="Sound">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path class="on" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/><path class="off" d="M17 9l5 6M22 9l-5 6"/></svg>
+    </button>
+  </div>
+</header>
+
+<div class="test-bar" id="test-bar" hidden role="region" aria-label="Test mode">
+  <span><b>Test mode</b> · progress kept apart</span>
+  <button data-test="f:test" type="button">Start near…</button>
+  <button data-test="f:test-exit" type="button">Leave</button>
+</div>
+<div class="joy" id="joy" hidden role="application" aria-label="Walk (test mode): drag the knob, or use W A S D"><span class="joy-knob" id="joy-knob"></span><span class="joy-label">Walk</span></div>
+
+<div class="map-tools" id="map-tools">
+  <button class="icon-btn glass" id="btn-me" aria-pressed="false" aria-label="Show my position">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><circle cx="12" cy="12" r="7.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+  </button>
+  <button class="icon-btn glass" id="btn-plus" aria-label="Zoom in"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+  <button class="icon-btn glass" id="btn-minus" aria-label="Zoom out"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+</div>
+
+<div class="dock" id="dock">
+  <button class="guide" id="guide" data-act="f:list" aria-live="polite">
+    <span class="dial">
+      <svg id="g-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.1-7-11.5a7 7 0 0 1 14 0C19 14.9 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
+      <svg id="g-arrow" viewBox="0 0 40 40" hidden aria-hidden="true"><path d="M20 4 L31 33 L20 26 L9 33 Z" stroke-width="1.5" stroke-linejoin="round"/></svg>
+      <span class="ring" id="g-ring" hidden aria-hidden="true"><svg viewBox="0 0 68 68"><circle cx="34" cy="34" r="32"/></svg></span>
+    </span>
+    <span class="txt"><span class="kicker" id="g-kicker"></span><b id="g-title"></b><span id="g-line"></span></span>
+  </button>
+  <div class="dock-row">
+    <button class="bar-btn glass" id="btn-sites"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg><span class="label">Sites</span></button>
+    <button class="bar-btn glass" id="btn-code"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 10v4M11 10v4M15 10v4M18 10v4"/></svg><span class="label">Code</span></button>
+  </div>
+</div>
+<section class="ar" id="ar" hidden aria-label="Look around through your camera">
+  <video id="ar-video" playsinline muted autoplay></video>
+  <canvas class="ar-gl" id="ar-gl" aria-hidden="true"></canvas>
+  <div class="ar-ribbon" id="ar-ribbon" aria-hidden="true"></div>
+  <div class="ar-items" id="ar-items"></div>
+  <div class="ar-aim" id="ar-aim" hidden aria-hidden="true"><span></span></div>
+  <div class="ar-scan" id="ar-scan" hidden aria-hidden="true"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="54"/></svg></div>
+  <p class="ar-dist" id="ar-dist" hidden></p>
+  <div class="ar-arrow" id="ar-arrow" hidden aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M20 3 L35 31 L20 24 L5 31 Z"/></svg></div>
+  <p class="ar-pop" id="ar-pop" aria-live="assertive"></p>
+  <header class="ar-top">
+    <button class="icon-btn glass" id="ar-close" aria-label="Close the camera view">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <div class="place glass">
+      <p class="kicker" id="ar-kicker">Look</p>
+      <h1 id="ar-title">Look around</h1>
+      <p class="where" id="ar-where" aria-live="polite"></p>
+    </div>
+  </header>
+  <div class="ar-camnote glass" id="ar-camnote" role="status" hidden>
+    <p id="ar-camnote-text"></p>
+    <a id="ar-camnote-link" href="#" target="_blank" rel="noopener" hidden></a>
+    <div class="ar-camnote-btns">
+      <button type="button" id="ar-camnote-copy" hidden>Copy link</button>
+      <button type="button" id="ar-camnote-close">OK, play here</button>
+    </div>
+  </div>
+  <footer class="ar-bottom">
+    <button class="ar-walk" id="ar-walk" type="button" hidden aria-label="Hold to walk the way your phone faces (test mode; or hold W)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3.5c1.2 0 2 1.6 2 3.6S10.2 10 9 10 7 8.9 7 7.1 7.8 3.5 9 3.5zM8 11.5h2.2l.4 3H7.6zM15 7.5c1.2 0 2 1.6 2 3.6S16.2 14 15 14s-2-1.1-2-2.9.8-3.6 2-3.6zM14 15.5h2.2l.4 3h-3z"/></svg><span>Hold to walk</span></button>
+    <button class="ar-orb" id="ar-orb" type="button" hidden aria-label="Crystal orb: drag it up to the shard and let go, or flick it; or press Enter to throw"><span></span></button>
+    <div class="ar-say glass" id="ar-saybox">
+      <img class="ari" src="catch/ari.jpg" alt="" width="120" height="120">
+      <p id="ar-say" aria-live="polite"></p>
+    </div>
+    <div class="ar-buttons">
+      <button class="btn" id="ar-hint" hidden>Hint −25</button>
+      <button class="btn primary" id="ar-act">Here</button>
+    </div>
+  </footer>
+</section>
+<div class="toast glass" id="toast" role="status" hidden></div>
+<section class="card" id="card" hidden aria-live="polite"></section>
+<script type="module">
+const DEG = Math.PI / 180;
+const DEBUG = new URLSearchParams(location.search).has('debug');
+const CUB = 'Ari';   // the bear cub's working name (game design document); change it here only
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const smooth = (k) => { k = clamp(k, 0, 1); return k * k * (3 - 2 * k); };
+const wrapDeg = (d) => ((d % 360) + 540) % 360 - 180;
+const lerp = (a, b, k) => a + (b - a) * k;
+const fmt = (n) => Math.round(n).toLocaleString('en-US');
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const coarse = matchMedia('(pointer: coarse)').matches;
+let framed = true; try { framed = window.self !== window.top; } catch { framed = true; }
+const store = {
+  get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch { /* storage unavailable */ } },
+};
+const GEM_SVG = '<svg class="gem" viewBox="0 0 24 24" aria-hidden="true"><path class="body" d="M7.5 3.5h9l4 5.5L12 20.5 3.5 9z"/><path class="cut" d="M3.5 9h17M7.5 3.5 10 9l2 11.5M16.5 3.5 14 9l-2 11.5"/></svg>';
+const LOOK_SVG = '<svg class="gem" viewBox="0 0 24 24" aria-hidden="true"><path class="body" d="M6.5 20.5V10a5.5 5.5 0 0 1 11 0v10.5z"/><path class="cut" d="M3.5 20.5h17M12 4.5V9"/></svg>';
+const CUB_SVG = '<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="15" cy="15" r="9.5" fill="#7a4a26"/><circle cx="49" cy="15" r="9.5" fill="#7a4a26"/><circle cx="15" cy="15" r="4.6" fill="#c99a6b"/><circle cx="49" cy="15" r="4.6" fill="#c99a6b"/><circle cx="32" cy="33" r="23" fill="#8a5630"/><ellipse cx="32" cy="42" rx="11" ry="8.6" fill="#ddb98f"/><ellipse cx="32" cy="38" rx="4.4" ry="3.1" fill="#24170e"/><path d="M32 41v3.2M28.5 45.2q3.5 2.6 7 0" fill="none" stroke="#24170e" stroke-width="1.6" stroke-linecap="round"/><circle cx="22.5" cy="29" r="3" fill="#24170e"/><circle cx="41.5" cy="29" r="3" fill="#24170e"/><circle cx="23.4" cy="28" r="1" fill="#fff"/><circle cx="42.4" cy="28" r="1" fill="#fff"/><path d="M28 55.5h8l2.4 3.2L32 63.5l-6.4-4.8z" fill="#b6d12e" stroke="#566f0b" stroke-width="1.2" stroke-linejoin="round"/></svg>';
+const TEST = new URLSearchParams(location.search).has('test') || store.get('peridot.field.test') === '1';   // test mode: play anywhere by walking virtually
+const SAVE_KEY = TEST ? 'peridot.game.test.v1' : 'peridot.game.v1';   // shared with the virtual game on the same site; this page only touches save.field. Test mode keeps its own record.
+const save = (() => { let s = null; try { s = JSON.parse(store.get(SAVE_KEY) || 'null'); } catch { s = null; } return s && typeof s === 'object' ? s : {}; })();
+function persist() {   // only the field part is ours: the virtual missions on the start page keep the rest of this record
+  let cur = null; try { cur = JSON.parse(store.get(SAVE_KEY) || 'null'); } catch { cur = null; }
+  const out = cur && typeof cur === 'object' ? cur : {};
+  out.field = save.field;
+  store.set(SAVE_KEY, JSON.stringify(out));
+}
+let app = 'map';
+/* ---------------------------------------------------------------- toast + sound */
+let toastTimer = 0;
+function toast(text, ms = 2600) {
+  const el = $('toast'); el.textContent = text; el.hidden = false;
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => { el.hidden = true; }, ms);
+}
+let audio = null, soundOn = store.get('peridot.sound') !== 'off';
+const soundButtons = [...document.querySelectorAll('.btn-sound')];
+soundButtons.forEach((b) => b.setAttribute('aria-pressed', String(soundOn)));
+function tone(freq, t0, dur, gain = 0.12, type = 'sine') {
+  const o = audio.createOscillator(), g = audio.createGain();
+  o.type = type; o.frequency.value = freq; g.gain.setValueAtTime(0, t0);
+  g.gain.linearRampToValueAtTime(gain, t0 + 0.015); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+  o.connect(g).connect(audio.destination); o.start(t0); o.stop(t0 + dur + 0.05);
+}
+function sound(kind) {
+  if (!soundOn) return;
+  try {
+    audio ||= new (window.AudioContext || window.webkitAudioContext)();
+    if (audio.state === 'suspended') audio.resume();
+    const t = audio.currentTime + 0.01;
+    if (kind === 'shard') { tone(1046.5, t, 0.5); tone(1568, t + 0.09, 0.7, 0.09); tone(2093, t + 0.18, 0.9, 0.05); }
+    if (kind === 'right') { tone(784, t, 0.35); tone(1175, t + 0.1, 0.5); }
+    if (kind === 'wrong') { tone(220, t, 0.35, 0.1, 'triangle'); }
+    if (kind === 'done') { [523, 659, 784, 1046].forEach((f, i) => tone(f, t + i * 0.12, 0.7, 0.09)); }
+    if (kind === 'tap') { tone(660, t, 0.12, 0.05); }
+    if (kind === 'whoosh') { tone(392, t, 0.35, 0.05, 'triangle'); tone(523, t + 0.08, 0.4, 0.04, 'triangle'); }
+    if (kind === 'piece') { [784, 988, 1175, 1568, 2093].forEach((f, i) => tone(f, t + i * 0.09, 0.8, 0.07)); }
+    if (kind === 'throw') { tone(330, t, 0.18, 0.05, 'triangle'); tone(660, t + 0.05, 0.22, 0.04, 'triangle'); }
+    if (kind === 'hit') { tone(1760, t, 0.25, 0.07); tone(2637, t + 0.03, 0.35, 0.05); }
+    if (kind === 'wobble') { tone(150, t, 0.16, 0.12, 'triangle'); tone(300, t, 0.08, 0.04); }
+    if (kind === 'caught') { [784, 1046.5, 1318.5, 1568, 2093].forEach((f, i) => tone(f, t + i * 0.07, 0.9, 0.07)); tone(523, t, 1.2, 0.05, 'triangle'); }
+    if (kind === 'escape') { tone(880, t, 0.12, 0.08, 'square'); tone(440, t + 0.06, 0.25, 0.06, 'triangle'); }
+    if (kind === 'miss') { tone(260, t, 0.25, 0.06, 'triangle'); }
+  } catch { /* audio unavailable */ }
+}
+soundButtons.forEach((b) => b.addEventListener('click', () => {
+  soundOn = !soundOn; soundButtons.forEach((x) => x.setAttribute('aria-pressed', String(soundOn)));
+  store.set('peridot.sound', soundOn ? 'on' : 'off'); sound('tap');
+}));
+
+/* ---------------------------------------------------------------- the field card (map and missions) */
+const cardEl = $('card');
+let card = null;
+function showCard(model) {
+  card = model;
+  const h = [];
+  h.push(`<p class="kicker">${esc(model.kicker)}</p>`);
+  h.push(`<h2 id="card-title">${esc(model.title)}</h2>`);
+  if (model.sub) h.push(`<p class="sub">${esc(model.sub)}</p>`);
+  if (model.banner) h.push(`<img class="banner" src="${esc(model.banner)}" alt="">`);
+  if (model.big) h.push(`<div class="big"><b>${fmt(model.big[0])}</b><span>/ ${fmt(model.big[1])} points</span></div>`);
+  if (model.html) h.push(model.html);
+  if (model.cub) h.push(`<div class="cub">${CUB_SVG}<p>${esc(model.cub)}</p></div>`);
+  if (model.data) h.push(`<dl class="facts">${model.data.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>`);
+  if (model.body) h.push(`<div class="body">${model.body.map((p) => `<p>${esc(p)}</p>`).join('')}</div>`);
+  if (model.html2) h.push(model.html2);
+  if (model.options) {
+    h.push(`<div class="options" role="group" aria-label="Answers">${model.options.map((o, i) =>
+      `<button class="opt ${o.state || ''}" data-id="${o.id}" ${model.answered ? 'disabled' : ''}><span class="mark" aria-hidden="true">${o.state === 'correct' ? '✓' : o.state === 'wrong' ? '✕' : 'ABCD'[i]}</span><span>${esc(o.label)}</span></button>`).join('')}</div>`);
+  }
+  if (model.note) h.push(`<p class="note ${model.note.tone}"><b>${esc(model.note.head)}</b>${esc(model.note.text)}</p>`);
+  if (model.rules) h.push(`<p class="sub">${esc(model.rules)}</p>`);
+  if (model.list) h.push(model.list);
+  if (model.actions) h.push(`<div class="actions">${model.actions.map((a) => `<button class="btn ${a.primary ? 'primary' : ''}" data-id="${a.id}" ${a.disabled ? 'disabled' : ''}>${esc(a.label)}</button>`).join('')}</div>`);
+  cardEl.innerHTML = h.join('');
+  cardEl.classList.toggle('compact', !!model.compact);
+  cardEl.setAttribute('aria-labelledby', 'card-title');
+  const wasHidden = cardEl.hidden;
+  cardEl.hidden = false;
+  if (wasHidden && !reduceMotion) { cardEl.classList.remove('enter'); void cardEl.offsetWidth; cardEl.classList.add('enter'); }
+  cardEl.scrollTop = 0;
+  model.onShow?.(cardEl);
+  updateFieldChip();
+}
+const STAMP_ALPHABET = '23456789ABCDEFGHJKMNPQRSTUVWXYZ';
+function stampCheck(body) { let s = 0; for (let i = 0; i < body.length; i++) s += (i + 1) * STAMP_ALPHABET.indexOf(body[i]); return STAMP_ALPHABET[s % STAMP_ALPHABET.length]; }
+function newStamp(prefix = 'F') { const r = new Uint8Array(3); crypto.getRandomValues(r); let b = prefix; for (const x of r) b += STAMP_ALPHABET[x % STAMP_ALPHABET.length]; return `PRK-${b}${stampCheck(b)}`; }
+const stampUrl = (code) => `https://xplore-prokletije.com/p/staff?c=${code}`;
+const QR = (() => {
+  const SPEC = [null, [16, 10, 1], [28, 16, 1], [44, 26, 1], [64, 18, 2], [86, 24, 2], [108, 16, 4]];   // [data codewords, ec per block, blocks]
+  const mul = (x, y) => { let z = 0; for (let i = 7; i >= 0; i--) { z = (z << 1) ^ ((z >>> 7) * 0x11d); z ^= ((y >>> i) & 1) * x; } return z & 0xff; };
+  function divisor(deg) {
+    const r = new Array(deg).fill(0); r[deg - 1] = 1; let root = 1;
+    for (let i = 0; i < deg; i++) {
+      for (let j = 0; j < deg; j++) { r[j] = mul(r[j], root); if (j + 1 < deg) r[j] ^= r[j + 1]; }
+      root = mul(root, 2);
+    }
+    return r;
+  }
+  function remainder(data, div) {
+    const r = div.map(() => 0);
+    for (const b of data) { const f = b ^ r.shift(); r.push(0); div.forEach((c, i) => { r[i] ^= mul(c, f); }); }
+    return r;
+  }
+  const MASKS = [(x, y) => (x + y) % 2 === 0, (x, y) => y % 2 === 0, (x) => x % 3 === 0, (x, y) => (x + y) % 3 === 0,
+    (x, y) => (Math.floor(x / 3) + Math.floor(y / 2)) % 2 === 0, (x, y) => (x * y) % 2 + (x * y) % 3 === 0,
+    (x, y) => ((x * y) % 2 + (x * y) % 3) % 2 === 0, (x, y) => ((x + y) % 2 + (x * y) % 3) % 2 === 0];
+  function encode(text) {
+    const bytes = [...new TextEncoder().encode(text)];
+    let ver = 1; while (ver <= 6 && 12 + 8 * bytes.length > SPEC[ver][0] * 8) ver++;
+    if (ver > 6) throw new Error('QR text too long');
+    const [nData, nEc, nBlocks] = SPEC[ver], size = 17 + 4 * ver;
+    // bit stream
+    const bits = [];
+    const put = (v, n) => { for (let i = n - 1; i >= 0; i--) bits.push((v >>> i) & 1); };
+    put(4, 4); put(bytes.length, 8); bytes.forEach((b) => put(b, 8));
+    put(0, Math.min(4, nData * 8 - bits.length));
+    while (bits.length % 8) bits.push(0);
+    const data = [];
+    for (let i = 0; i < bits.length; i += 8) data.push(parseInt(bits.slice(i, i + 8).join(''), 2));
+    for (let p = 0xec; data.length < nData; p ^= 0xec ^ 0x11) data.push(p);
+    // error correction, interleaved
+    const per = nData / nBlocks, div = divisor(nEc), blocks = [];
+    for (let b = 0; b < nBlocks; b++) { const d = data.slice(b * per, (b + 1) * per); blocks.push([...d, ...remainder(d, div)]); }
+    const cw = [];
+    for (let i = 0; i < per + nEc; i++) for (const bl of blocks) cw.push(bl[i]);
+    // function patterns
+    const mod = Array.from({ length: size }, () => new Array(size).fill(false));
+    const fn = Array.from({ length: size }, () => new Array(size).fill(false));
+    const set = (x, y, d) => { mod[y][x] = d; fn[y][x] = true; };
+    for (let i = 0; i < size; i++) { set(6, i, i % 2 === 0); set(i, 6, i % 2 === 0); }
+    for (const [cx, cy] of [[3, 3], [size - 4, 3], [3, size - 4]]) {
+      for (let dy = -4; dy <= 4; dy++) for (let dx = -4; dx <= 4; dx++) {
+        const x = cx + dx, y = cy + dy, dist = Math.max(Math.abs(dx), Math.abs(dy));
+        if (x >= 0 && x < size && y >= 0 && y < size) set(x, y, dist !== 2 && dist !== 4);
+      }
+    }
+    if (ver >= 2) {
+      const a = 4 * ver + 10;
+      for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) set(a + dx, a + dy, Math.max(Math.abs(dx), Math.abs(dy)) !== 1);
+    }
+    const drawFormat = (mask) => {
+      const d = (0 << 3) | mask;   // level M
+      let rem = d; for (let i = 0; i < 10; i++) rem = (rem << 1) ^ ((rem >>> 9) * 0x537);
+      const f = ((d << 10) | rem) ^ 0x5412, bit = (i) => ((f >>> i) & 1) === 1;
+      for (let i = 0; i <= 5; i++) set(8, i, bit(i));
+      set(8, 7, bit(6)); set(8, 8, bit(7)); set(7, 8, bit(8));
+      for (let i = 9; i < 15; i++) set(14 - i, 8, bit(i));
+      for (let i = 0; i < 8; i++) set(size - 1 - i, 8, bit(i));
+      for (let i = 8; i < 15; i++) set(8, size - 15 + i, bit(i));
+      set(8, size - 8, true);
+    };
+    drawFormat(0);
+    // data, zigzag from the bottom right
+    let i = 0;
+    for (let right = size - 1; right >= 1; right -= 2) {
+      if (right === 6) right = 5;
+      for (let vert = 0; vert < size; vert++) {
+        for (let j = 0; j < 2; j++) {
+          const x = right - j, up = ((right + 1) & 2) === 0, y = up ? size - 1 - vert : vert;
+          if (!fn[y][x] && i < cw.length * 8) { mod[y][x] = ((cw[i >>> 3] >>> (7 - (i & 7))) & 1) === 1; i++; }
+        }
+      }
+    }
+    // pick the mask with the lowest penalty
+    const apply = (m) => { for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) if (!fn[y][x] && MASKS[m](x, y)) mod[y][x] = !mod[y][x]; };
+    const penalty = () => {
+      let p = 0, dark = 0;
+      for (let k = 0; k < 2; k++) for (let a = 0; a < size; a++) {
+        let run = 1;
+        for (let b = 1; b <= size; b++) {
+          const same = b < size && (k ? mod[b][a] : mod[a][b]) === (k ? mod[b - 1][a] : mod[a][b - 1]);
+          if (same) run++; else { if (run >= 5) p += run - 2; run = 1; }
+        }
+      }
+      for (let y = 0; y < size - 1; y++) for (let x = 0; x < size - 1; x++) { const c = mod[y][x]; if (c === mod[y][x + 1] && c === mod[y + 1][x] && c === mod[y + 1][x + 1]) p += 3; }
+      const pat = [1, 0, 1, 1, 1, 0, 1];
+      for (let y = 0; y < size; y++) for (let x = 0; x <= size - 7; x++) {
+        let row = true, col = true;
+        for (let t = 0; t < 7; t++) { if (+mod[y][x + t] !== pat[t]) row = false; if (+mod[x + t][y] !== pat[t]) col = false; }
+        if (row) p += 40; if (col) p += 40;
+      }
+      for (const r of mod) for (const c of r) dark += c;
+      p += Math.floor(Math.abs(dark * 20 - size * size * 10) / (size * size)) * 10;
+      return p;
+    };
+    let best = 0, bestP = Infinity;
+    for (let m = 0; m < 8; m++) { apply(m); drawFormat(m); const p = penalty(); if (p < bestP) { bestP = p; best = m; } apply(m); }
+    apply(best); drawFormat(best);
+    return mod;
+  }
+  return { encode };
+})();
+function drawQR(cv, text, { fg = '#10272a', bg = '#ffffff', x = 0, y = 0, size = null, quiet = 3 } = {}) {
+  let mod; try { mod = QR.encode(text); } catch { return; }
+  const g = cv.getContext('2d'), n = mod.length + quiet * 2, s = size ?? Math.min(cv.width, cv.height), k = s / n;
+  g.fillStyle = bg; g.fillRect(x, y, s, s); g.fillStyle = fg;
+  for (let r = 0; r < mod.length; r++) for (let c = 0; c < mod.length; c++) if (mod[r][c]) g.fillRect(Math.floor(x + (c + quiet) * k), Math.floor(y + (r + quiet) * k), Math.ceil(k), Math.ceil(k));
+}
+
+function closeCard() { const was = card; card = null; cardEl.hidden = true; was?.onClose?.(); updateFieldChip(); }
+cardEl.addEventListener('click', (e) => {
+  const b = e.target.closest('[data-id]'); if (!b || b.disabled) return;
+  const id = b.dataset.id; sound('tap');
+  if (id === 'close') closeCard(); else if (id.startsWith('f:')) fieldAction(id.slice(2));
+});
+window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && card && !arOpen) closeCard(); });
+
+/* ================================================================ ON-SITE LAYER ("In the field")
+   15 missions that unlock only on the spot: GPS zone + dwell, or the 4-character code on the site's Peridot plaque
+   (the plaque's QR opens #field-<id>-<code>). Each mission: arrive → look (camera + compass) → task → field note + question.
+   Three chapters return the parts of the device that held the gem (frame, water lens, sky needle); the assembly at the
+   visitor centre closes the story. Location is used only on this phone; nothing about where the player walks is sent.
+   Staff tools: ?survey (set zone centres, record bearings and answers on site, plaque codes + QR, export settings). */
+
+const SURVEY = new URLSearchParams(location.search).has('survey');
+const PLACES = {   // far targets for labels and pointing tasks [lat, lon]
+  shkoder: [42.0683, 19.5126], pec: [42.6593, 20.2887], plav: [42.5966, 19.9451], gusinje: [42.5638, 19.8330],
+  oko: [42.5119, 19.8348], grlja: [42.5229, 19.8416], karanfili: [42.4949, 19.7732],   // Karanfili: from the map sketch (record on site)
+};
+const ZONE = { town: { r: 35, dwell: 20, acc: 30 }, valley: { r: 60, dwell: 20, acc: 50 }, view: { r: 80, dwell: 30, acc: 60 } };
+const FP = { arrive: 100, catch: 100, catchBonus: 50, task: 150, q: 50, hint: 25, chapter: 500, assembly: 1000 };   // catch: the shard in the camera, + up to 50 for an Excellent throw
+const SITE_MAX = FP.arrive + FP.catch + FP.catchBonus + FP.task + FP.q;
+
+const FIELD_CHAPTERS = [
+  { n: 1, id: 'town', name: 'Gusinje town', part: 'The frame', short: 'Frame', color: '#c9a13b', ids: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8'],
+    intro: 'The frame held the gem. Its keepers were the town’s families, at the crossroads where caravans and peoples met. Eight stops on foot, about two hours.',
+    end: 'The frame is whole: setting, hinge and keystones. Next, the water lens. It waits where the water comes out of the rock.' },
+  { n: 2, id: 'water', name: 'Springs and Vusanje', part: 'The water lens', short: 'Lens', color: '#2bb3bf', ids: ['V1', 'V2', 'V3', 'V4'],
+    intro: 'The lens read the water, so it was hidden along the water: from Ali Pasha’s Springs up to the eye of the Skakavica. By car or bike between stops.',
+    end: 'The water lens is whole and clear again. One part is left: the sky needle, waiting under the highest walls in Grebaje.' },
+  { n: 3, id: 'sky', name: 'Grebaje', part: 'The sky needle', short: 'Needle', color: '#e0523f', ids: ['G1', 'G2', 'G3'],
+    intro: 'The needle read the sun’s shadow. It waits in Grebaje, under the Karanfili. Volušnica is an optional half-day climb for the top rank.',
+    end: 'The sky needle is in Ari’s paws. Bring all three parts to the visitor centre in Gusinje to put the device back together.' },
+];
+const OBSERVE_NOTE = 'TO Gusinje is still checking this one on site, so every honest answer earns the points for now.';
+
+const FIELD = [
+  /* ---------------- chapter 1: Gusinje town, the frame */
+  { id: 'T1', ch: 1, title: 'Ali Pasha Square', heritage: 'Cultural heritage', zone: { lat: 42.5635, lon: 19.8330, ...ZONE.town }, twin: 'square', code: '72VQ',
+    story: 'The frame was kept where the roads met. Caravans crossed this square on their way to the sea and to Kosovo.',
+    look: { mode: 'sky', say: 'Turn slowly: the old caravan roads still point the way.', labels: [{ name: 'Towards Peć', place: 'pec' }, { name: 'Vusanje', place: 'grlja' }], shard: { place: 'pec', elev: 6 } },
+    task: { type: 'point', target: 'shkoder', tol: 25, prompt: 'Caravans left this square for Shkodër and the sea. Point your phone the way they went, then tap Here.',
+      hint: 'Shkodër lies south-west, beyond the mountains.', after: 'Shkodër is about 60 km south-west as the crow flies; the caravans took the mountain passes.' },
+    fact: { title: 'A caravan station', text: ['In the 14th century Gusinje was a caravan station on the route from Ragusa (Dubrovnik) and Cattaro (Kotor) through Scutari (Shkodër) to Peć.', 'The square is named after Ali Pasha of Gusinje (1828–1888), a commander of the League of Prizren.'] },
+    q: { q: 'Which route was Gusinje a caravan station on?', options: ['Ragusa – Cattaro – Scutari – Peć', 'Venice – Vienna', 'Athens – Belgrade', 'Sarajevo – Split'], a: 0 } },
+  { id: 'T2', ch: 1, title: 'Vizier’s Mosque', heritage: 'Cultural heritage', zone: { lat: 42.5637, lon: 19.8316, ...ZONE.town }, twin: 'vezir', code: '6DYP', worship: true,
+    story: 'First keystone: what the town builds, its people far away keep.',
+    look: { mode: 'scan', what: 'the wooden porch and the minaret', say: 'Hold your phone towards the porch and the minaret, and keep it still.' },
+    task: { type: 'number', prompt: 'Count the wooden posts that hold up the porch.', answer: null, hint: 'Count only the posts that reach the ground.' },
+    fact: { title: 'Stone, wood and gifts from afar', text: ['A stone prayer hall with a wooden porch and minaret, the most striking of Gusinje’s religious buildings.', 'It was thoroughly repaired in 1992 with gifts from people of Gusinje living in the United States. Sources disagree on when it was first built.'] },
+    q: { q: 'Who paid for the 1992 repair?', options: ['People of Gusinje living in the USA', 'The Ottoman state', 'The national park', 'A hotel company'], a: 0 } },
+  { id: 'T3', ch: 1, title: 'St. George’s Church', heritage: 'Cultural heritage', zone: { lat: 42.5626, lon: 19.8294, ...ZONE.town }, twin: 'george', code: 'PY2J', worship: true,
+    story: 'Second keystone, kept between two houses of prayer on one street.',
+    look: { mode: 'scan', what: 'the bell tower', say: 'Find the bell tower and hold it in the ring.' },
+    task: { type: 'choice', prompt: 'Look around the churchyard. Where is the bell tower?', options: ['Apart from the church, to the north-east', 'On top of the church roof', 'Over the gate', 'There is no bell tower'], a: 0,
+      hint: 'Look across the yard, not up at the roof.' },
+    fact: { title: 'One street, several faiths', text: ['The Serbian Orthodox Church of St. George was built in 1926, in the reign of King Aleksandar.', 'It stands about 50 m from the Vizier’s Mosque: few towns keep a mosque and churches this close.'] },
+    q: { q: 'When was St. George’s Church built?', options: ['1926', '1765', '1899', '1626'], a: 0 } },
+  { id: 'T4', ch: 1, title: 'New Mosque (Radončića)', heritage: 'Cultural heritage', zone: { lat: 42.56409, lon: 19.83402, ...ZONE.town }, twin: null, code: 'G4J6', worship: true, zoneNote: 'Centre from the drone photo fit: check on site.',
+    story: 'Ari learns that every family left its mark on the town.',
+    look: { mode: 'scan', what: 'the dome and the minaret', say: 'Hold the dome and the minaret in the ring.' },
+    task: { type: 'number', prompt: 'Count the windows on the side of the mosque that faces the square.', answer: null, hint: 'Count every window you can see on that wall, upstairs and down.' },
+    fact: { title: 'A family’s mosque', text: ['Built in 1899 by the Radončić family.', 'Gusinje’s mosques reflect the brotherhoods and families that built them.'] },
+    q: { q: 'Which family built this mosque?', options: ['Radončić', 'Bušatlija', 'Čekaj', 'Neković'], a: 0 } },
+  { id: 'T5', ch: 1, title: 'Čekića Mosque', heritage: 'Cultural heritage', zone: null, twin: null, code: '653F', worship: true, hidden: true,
+    story: 'Third keystone: the oldest walls keep the oldest secret.',
+    clues: ['It is the oldest mosque still standing in the town.', 'A brotherhood from the Triepshi built it.', 'Ask anyone for “Čekića džamija”.'],
+    look: { mode: 'scan', what: 'the old walls', say: 'Hold the oldest walls in the ring.' },
+    task: { type: 'number', prompt: 'How many steps lead up to the entrance?', answer: null, hint: 'Count from the street level to the door.' },
+    fact: { title: 'The oldest walls', text: ['Built in 1687 by the Cekaj (Čekić) brotherhood, it is the oldest preserved mosque in Gusinje.', 'Each of the town’s old mosques stands for the brotherhood that built it.'] },
+    q: { q: 'What do Gusinje’s old mosques reflect?', options: ['The brotherhoods that built them', 'The sultans who visited', 'The rivers nearby', 'The seasons of the year'], a: 0 } },
+  { id: 'T6', ch: 1, title: 'The stone towers', heritage: 'Cultural heritage', zone: null, twin: null, code: 'E3K5',
+    story: 'The frame’s hinge was hidden in thick stone walls.',
+    look: { mode: 'scan', what: 'a narrow tower window', say: 'Find a narrow window high in the tower and hold it in the ring.' },
+    task: { type: 'number', prompt: 'How many floors does the tower have?', answer: null, hint: 'Count the rows of windows, from the ground up.' },
+    fact: { title: 'Home and fortress', text: ['The stone tower houses (kule) were built by leading families in Ottoman times.', 'They were homes and defences at once: thick walls and narrow windows, in a turbulent border region.'] },
+    q: { q: 'What were the kule built for?', options: ['A home and a defence at once', 'Prayer', 'A market hall', 'A water mill'], a: 0 } },
+  { id: 'T7', ch: 1, title: 'Grnčar footbridge', heritage: 'Natural heritage', zone: { lat: 42.56529, lon: 19.83191, ...ZONE.town }, twin: 'gusinje', code: '5NB8', zoneNote: 'Centre from the drone photo fit: check on site.',
+    story: 'Ari splashes in: the frame’s setting stone lay in the riverbed all along.',
+    look: { mode: 'scan', what: 'the river', say: 'Point at the water under the bridge and hold still.' },
+    task: { type: 'point', target: 'plav', tol: 30, prompt: 'Which way does the river run? Point downstream, towards Plav, then tap Here.',
+      hint: 'Watch which way the water carries a leaf.', after: 'The river flows east towards Plav, where it meets the Lim.' },
+    fact: { title: 'The town of geese', text: ['One theory says Gusinje’s name comes from guska, goose, for the wetlands along the Grnčar.', 'The Vruja, which rises at Ali Pasha’s Springs, joins the river east of the town.'] },
+    q: { q: 'One theory says the name Gusinje comes from…', options: ['geese', 'gold', 'the gusle', 'a sultan'], a: 0 } },
+  { id: 'T8', ch: 1, title: 'St. Anthony, Dolja', heritage: 'Cultural heritage', zone: { lat: 42.5600, lon: 19.8211, ...ZONE.town }, twin: 'anthony', code: '2BXB', worship: true, last: true,
+    story: 'At the gate Ari finds the last keystone. The patron of lost things kept it safe.',
+    look: { mode: 'scan', what: 'the tower door', say: 'Hold the church tower door in the ring.' },
+    task: { type: 'choice', prompt: 'Read the sign by the gate. In how many languages does it welcome you?', options: ['1', '2', '3', '4'], a: 2, hint: 'Montenegrin, Albanian and…' },
+    fact: { title: 'Patron of lost things', text: ['The Catholic church in Dolja was built in 1933–1936 and renovated in 2011 with gifts from emigrants.', 'St. Anthony, Shna Ndou in Albanian, is invoked to find lost things.'] },
+    q: { q: 'St. Anthony is the patron of…', options: ['lost things', 'travellers', 'mountains', 'springs'], a: 0 } },
+
+  /* ---------------- chapter 2: springs and Vusanje, the water lens */
+  { id: 'V1', ch: 2, title: 'Ali Pasha’s Springs', heritage: 'Natural and cultural heritage', zone: { lat: 42.549, lon: 19.826, ...ZONE.valley }, twin: 'springs', code: 'H2PF',
+    story: 'The lens was hidden where the water comes back into the light.',
+    look: { mode: 'scan', what: 'the rock where the water comes out', say: 'Point at the foot of the rock where the water comes out, and hold still.' },
+    task: { type: 'number', prompt: 'From the marked spot, how many separate jets of water can you count coming out of the rock?', answer: null, hint: 'Count the white jets, not the ripples.' },
+    fact: { title: 'Water from the rock', text: ['About 2 km south of Gusinje, the Vruja rises here in many small springs straight out of the rock.', 'Every year on Ilindan, 2 August, people gather at the springs, many of them emigrants home for the summer.'] },
+    q: { q: 'When is the traditional gathering at the springs?', options: ['2 August (Ilindan)', '1 May', '13 June', '31 December'], a: 0 } },
+  { id: 'V2', ch: 2, title: 'Grlja waterfall', heritage: 'Natural heritage', zone: { lat: 42.5229, lon: 19.8416, ...ZONE.valley }, twin: 'grlja', code: 'QSWT',
+    story: 'The lens’s rim, polished by the water, waits on the edge of the gorge.',
+    look: { mode: 'scan', what: 'the gorge', say: 'From the viewing spot, point into the gorge and hold still. Stay behind the edge.' },
+    task: { type: 'observe', prompt: 'Close your eyes for ten seconds and listen. How loud is the fall today?', options: ['Roaring', 'Strong', 'Gentle'],
+      after: 'The fall is loudest in late spring, when the snow melts in the high mountains. That is exactly what the old reckoner was built to foresee.' },
+    fact: { title: 'A river that goes underground', text: ['The Grlja drops into a deep, narrow canyon right by the road.', 'The Skakavica, which rises at Oko Skakavice, joins the Grlja about 2.5 km below its source.'] },
+    q: { q: 'Where does the Skakavica begin?', options: ['At Oko Skakavice', 'At Ali Pasha’s Springs', 'In Lake Plav', 'In Grebaje'], a: 0 } },
+  { id: 'V3', ch: 2, title: 'Oko Skakavice', heritage: 'Natural heritage', zone: { lat: 42.5119, lon: 19.8348, ...ZONE.valley }, twin: 'oko', code: 'QBJU', last: true,
+    story: 'The lens rises from the bottom of the eye, clear as the water.',
+    look: { mode: 'scan', what: 'the blue water', say: 'Point at the middle of the pool and hold still.' },
+    task: { type: 'observe', prompt: 'What colour is the water right now?', options: ['Turquoise', 'Azure blue', 'Blue-green', 'Deep blue', 'Grey-green'],
+      after: 'The colour shifts from turquoise to azure with the time of day and the light. Come back at another hour and see.' },
+    fact: { title: 'The eye of the Skakavica', text: ['A karst spring about 30 × 25 m and 8 m deep, one of the strongest in Prokletije.', 'The water stays around 4.5–5 °C all year. No swimming: it is very cold.'] },
+    q: { q: 'How cold is the water?', options: ['About 5 °C', 'About 12 °C', 'About 18 °C', 'It is frozen'], a: 0 } },
+  { id: 'V4', ch: 2, title: 'View of Vusanje', heritage: 'Natural and cultural heritage', zone: null, twin: null, code: 'RZFX', zoneSize: 'view', bonus: true,
+    story: 'From up here Ari spots where the sky needle waits: under the high walls of Grebaje.',
+    look: { mode: 'sky', say: 'Turn slowly and find the places you already know.', labels: [{ name: 'Gusinje', place: 'gusinje' }, { name: 'Grlja waterfall', place: 'grlja' }], shard: { place: 'grlja', elev: 4 } },
+    task: { type: 'point', target: 'oko', tol: 30, prompt: 'The Ropojana valley starts at Oko Skakavice. Point towards it, then tap Here.',
+      hint: 'Follow the valley up, away from Gusinje.', after: 'Beyond Oko Skakavice the Ropojana valley runs on to the Albanian border.' },
+    fact: { title: 'Gateway to the high peaks', text: ['Above Vusanje the view opens over the Ropojana valley, one of the most beautiful in Prokletije.', 'The Peaks of the Balkans trail, a 192 km circuit through Montenegro, Albania and Kosovo, passes through here.'] },
+    q: { q: 'Which three countries does the Peaks of the Balkans trail cross?', options: ['Montenegro, Albania, Kosovo', 'Montenegro, Serbia, Croatia', 'Albania, Greece, North Macedonia', 'Montenegro, Bosnia, Serbia'], a: 0 } },
+
+  /* ---------------- chapter 3: Grebaje, the sky needle */
+  { id: 'G1', ch: 3, title: 'Under the Karanfili', heritage: 'Natural heritage', zone: { lat: 42.5218, lon: 19.7863, ...ZONE.view }, twin: 'grebaje', code: 'AU3Z',
+    story: 'The needle waits under the highest walls.',
+    look: { mode: 'scan', what: 'the wall of peaks', say: 'Point at the high limestone walls and hold still.' },
+    task: { type: 'point', target: 'karanfili', tol: 35, prompt: 'Point at Veliki vrh, the highest of the three Karanfili peaks, then tap Here.',
+      hint: 'It is the peak in the middle of the crest.', after: 'Veliki vrh is 2,490 m; the North peak 2,460 m and the South peak 2,441 m.' },
+    fact: { title: 'The Karanfili', text: ['Grebaje lies about 15 minutes’ drive from Gusinje, under the limestone massif of the Karanfili.', 'Its peaks: Veliki vrh 2,490 m in the middle, the North peak 2,460 m and the South peak 2,441 m.'] },
+    q: { q: 'How high is Veliki vrh?', options: ['2,490 m', '1,879 m', '2,534 m', '2,694 m'], a: 0 } },
+  { id: 'G2', ch: 3, title: 'Katun life', heritage: 'Cultural heritage', zone: null, twin: null, code: 'HWTK', zoneSize: 'valley', last: true,
+    story: 'The herders kept the needle where the sun could always find it.',
+    look: { mode: 'scan', what: 'the katun hut', say: 'Hold the hut in the ring.' },
+    task: { type: 'observe', prompt: 'Look around the katun. What do you see that a herder needs?', options: ['Animals grazing', 'Milk or cheese', 'Hay or firewood', 'All of these'],
+      after: 'Ask your host about a herder’s day: up before the sun, milking, cheese, and the walk to the pasture.' },
+    fact: { title: 'Summer on the pastures', text: ['Katuns are summer settlements: families took their herds up to the high pastures for the warm months.', 'Some katuns in Grebaje now welcome guests.'] },
+    q: { q: 'When did families live in the katun?', options: ['In summer', 'In winter', 'All year', 'Only at weddings'], a: 0 } },
+  { id: 'G3', ch: 3, title: 'Volušnica summit', heritage: 'Natural heritage', zone: null, twin: null, code: 'ECQ4', zoneSize: 'view', bonus: true, offline: true,
+    story: 'Up here the needle catches the first and last sun. Ari polishes it until it shines.',
+    look: { mode: 'scan', what: 'the Karanfili across the valley', say: 'Point across Grebaje at the Karanfili and hold still.' },
+    task: { type: 'choice', prompt: 'At midday, stand with the sun behind you. Which way does your shadow point?', options: ['North', 'South', 'East', 'West'], a: 0,
+      hint: 'At midday the sun stands in the south.', after: 'At midday the sun is due south, so shadows point north. A needle’s shadow tells the time and the season: that is how the old reckoner worked.' },
+    fact: { title: 'The classic view', text: ['Volušnica, 1,879 m, gives the classic view of the Karanfili across Grebaje.', 'The trail has no water and takes half a day: start early and carry enough.'] },
+    q: { q: 'How high is Volušnica?', options: ['1,879 m', '2,490 m', '1,014 m', '2,534 m'], a: 0 } },
+];
+const ASSEMBLY = { id: 'A', title: 'The reckoner', zone: null, code: 'SB6R',
+  riddle: [
+    { q: 'The frame: two of its keystones were kept about 50 m apart. Where?', options: ['The Vizier’s Mosque and St. George’s Church', 'Grlja and Oko Skakavice', 'The square and Volušnica', 'Two katuns in Grebaje'], a: 0 },
+    { q: 'The water lens: how deep is the eye of the Skakavica?', options: ['About 8 m', 'About 1 m', 'About 30 m', 'Nobody knows'], a: 0 },
+    { q: 'The sky needle: what does it read?', options: ['The sun’s shadow', 'The wind', 'The stars only', 'Bird songs'], a: 0 },
+  ] };
+const FIELD_BY_ID = Object.fromEntries(FIELD.map((f) => [f.id, f]));
+const chapterOf = (f) => FIELD_CHAPTERS[f.ch - 1];
+const FIELD_MAX = FIELD.length * SITE_MAX + FIELD_CHAPTERS.length * FP.chapter + FP.assembly;
+
+/* plaque codes: 3 characters + the stamp check character, so typos are caught */
+const normCode = (s) => String(s || '').toUpperCase().replace(/[^0-9A-Z]/g, '');
+const PAGE_URL = 'https://xplore-prokletije.com/field/';   // where this page is hosted (plaque QR codes point here)
+const plaqueUrl = (id, code) => `${PAGE_URL}#field-${id}-${code}`;
+
+/* ---------------------------------------------------------------- staff overrides (survey mode, this device) */
+const SURVEY_KEY = 'peridot.field.survey';
+let survey = {}; try { survey = JSON.parse(store.get(SURVEY_KEY) || '{}') || {}; } catch { survey = {}; }
+function applySurvey() {
+  for (const f of [...FIELD, ASSEMBLY]) {
+    const o = survey[f.id]; if (!o) continue;
+    if (o.lat != null) f.zone = { ...(ZONE[f.zoneSize || (f.ch === 1 ? 'town' : f.ch ? 'valley' : 'town')] || ZONE.town), ...(f.zone || {}), lat: o.lat, lon: o.lon, ...(o.r ? { r: o.r } : {}) };
+    if (o.cleared) f.zone = null;
+    if (f.task && o.bearing != null) f.task.bearing = o.bearing;
+    if (f.task && o.answer != null) f.task.answer = o.answer;
+    if (o.sLat != null) f.shardAt = { lat: o.sLat, lon: o.sLon };
+  }
+}
+const shardSpot = (f) => f.shardAt || (f.zone ? { lat: f.zone.lat, lon: f.zone.lon } : null);   // where the shard waits (survey can move it)
+applySurvey();
+if (TEST) for (const f of [...FIELD, ASSEMBLY]) if (f.zone) f.zone = { ...f.zone, dwell: 5 };   // test mode: arriving takes 5 s, not 20–30
+function saveSurvey() { store.set(SURVEY_KEY, JSON.stringify(survey)); }
+
+/* ---------------------------------------------------------------- progress */
+function fieldSave() {
+  if (!save.field || typeof save.field !== 'object') save.field = {};
+  save.field.m ||= {}; save.field.ch ||= {};
+  return save.field;
+}
+const frec = (id) => fieldSave().m[id] || null;
+const fieldDone = (id) => !!frec(id)?.done;
+const fieldPts = (r) => r ? (r.arrived ? FP.arrive : 0) + (r.catch || 0) + (r.task || 0) + (r.q || 0) : 0;
+function fieldTotal() {
+  const fs = fieldSave();
+  return FIELD.reduce((a, f) => a + fieldPts(fs.m[f.id]), 0) + Object.values(fs.ch).filter(Boolean).length * FP.chapter + (fs.assembled ? FP.assembly : 0);
+}
+const chapterDone = (c) => c.ids.filter((id) => !FIELD_BY_ID[id].bonus).every(fieldDone);
+const partsHome = () => FIELD_CHAPTERS.filter((c) => fieldSave().ch[c.n]).length;
+function fieldRank() {
+  const fs = fieldSave();
+  if (fs.assembled && FIELD.every((f) => fieldDone(f.id)) && fieldTotal() >= 0.9 * FIELD_MAX) return 'Guardian of the Peridot in the Field';
+  if (fs.assembled) return 'Field Keeper';
+  if (partsHome() >= 1) return 'Field Scout';
+  return FIELD.some((f) => frec(f.id)?.arrived) ? 'On the trail' : 'Not in the field yet';
+}
+
+/* ---------------------------------------------------------------- geometry */
+function distM(a, b) {
+  const R = 6371000, p1 = a[0] * DEG, p2 = b[0] * DEG, dp = (b[0] - a[0]) * DEG, dl = (b[1] - a[1]) * DEG;
+  const h = Math.sin(dp / 2) ** 2 + Math.cos(p1) * Math.cos(p2) * Math.sin(dl / 2) ** 2;
+  return 2 * R * Math.asin(Math.min(1, Math.sqrt(h)));
+}
+function bearingDeg(a, b) {
+  const p1 = a[0] * DEG, p2 = b[0] * DEG, dl = (b[1] - a[1]) * DEG;
+  const y = Math.sin(dl) * Math.cos(p2), x = Math.cos(p1) * Math.sin(p2) - Math.sin(p1) * Math.cos(p2) * Math.cos(dl);
+  return (Math.atan2(y, x) / DEG + 360) % 360;
+}
+const fmtDist = (m) => m < 1000 ? `${Math.round(m / 5) * 5} m` : `${(m / 1000).toFixed(m < 10000 ? 1 : 0)} km`;
+const COMPASS8 = ['north', 'north-east', 'east', 'south-east', 'south', 'south-west', 'west', 'north-west'];
+const dirWord = (deg) => COMPASS8[Math.round(((deg % 360) + 360) % 360 / 45) % 8];
+
+/* ---------------------------------------------------------------- location (watchPosition, dwell)
+   Fixes go through a jump filter (a fix that implies > 45 m/s beyond both accuracies is held back until 3 agree),
+   then the position used for zones and the map is the accuracy-weighted mean of the last 6 s of fixes.
+   Dwell: enter a zone at r + half the accuracy (≤ 10 m; accuracy within the zone's limit), stay counted up to r + 10–25 m, and a short absence
+   (≤ 6 s, e.g. one bad fix) does not reset the count. A fix older than 60 s or a hidden page stops the count (some phones send no new fix while you stand still). */
+const GEO = { window: 6000, maxSpeed: 45, grace: 6000, fresh: 60000, show: 120000, hold: 5000 };   // fresh: some phones send no new fix while you stand still
+const loc = { state: 'off', fix: null, last: null, watch: null, sim: false, recent: [], err: '', rejected: 0, jumps: [] };
+let fieldOn = store.get('peridot.field.on') === '1';
+const dwellSince = {}, dwellSeen = {};
+let nearId = null, arrivedPrompt = null;
+function startLocation() {
+  if (TEST) { fieldOn = true; refreshFieldMarkers(); if (!loc.sim) testCard(); return; }   // test mode: a pretend position you walk with the joystick
+  fieldOn = true; store.set('peridot.field.on', '1'); refreshFieldMarkers();
+  if (loc.sim || loc.watch != null) return;
+  if (!navigator.geolocation) { loc.state = 'unavailable'; updateFieldChip(); return; }
+  if (!loc.fix) loc.state = 'asking';
+  updateFieldChip();
+  try {
+    loc.watch = navigator.geolocation.watchPosition(onFix, (e) => {
+      loc.err = e?.message || '';
+      if (e && e.code === 1) {   // permission denied: stop asking
+        loc.state = 'denied';
+        if (loc.watch != null) { try { navigator.geolocation.clearWatch(loc.watch); } catch { /* */ } loc.watch = null; }
+      } else if (!loc.fix) loc.state = 'unavailable';   // no signal yet: keep watching, a fix may still come
+      updateFieldChip(); if (card?.field === 'list') fieldCard();
+    }, { enableHighAccuracy: true, maximumAge: 3000 });
+  } catch { loc.state = 'unavailable'; updateFieldChip(); }
+}
+function pauseLocation() {   // page hidden: stop the GPS (battery); the count restarts when the page is back
+  if (loc.watch != null) { try { navigator.geolocation.clearWatch(loc.watch); } catch { /* */ } loc.watch = null; }
+  for (const k of Object.keys(dwellSince)) { delete dwellSince[k]; delete dwellSeen[k]; }
+}
+function stopLocation() {
+  pauseLocation();
+  loc.state = 'off'; loc.fix = null; loc.last = null; loc.recent = []; loc.jumps = []; loc.sim = false; fieldOn = false; store.set('peridot.field.on', '0');
+  refreshFieldMarkers(); updateFieldChip();
+}
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) pauseLocation();
+  else if (fieldOn && !loc.sim && loc.state !== 'denied') startLocation();
+});
+function acceptRaw(fx) {   // false = held back as a jump
+  const prev = loc.last;
+  if (!prev || loc.sim) return true;
+  if (fx.t - prev.t > GEO.hold) { loc.jumps = []; loc.recent = []; return 'reset'; }   // nothing accepted for a while: take it
+  const dt = Math.max(0.5, (fx.t - prev.t) / 1000), d = distM([prev.lat, prev.lon], [fx.lat, fx.lon]);
+  if (d - fx.acc - prev.acc <= GEO.maxSpeed * dt) { loc.jumps = []; return true; }
+  loc.jumps.push(fx); if (loc.jumps.length > 6) loc.jumps.shift();
+  const n = loc.jumps.length;
+  if (n >= 3) {   // three fixes agree with each other: it is a real move (or a long gap), take it and start fresh
+    const a = loc.jumps[n - 3], ok = loc.jumps.slice(n - 2).every((p) => distM([a.lat, a.lon], [p.lat, p.lon]) <= a.acc + p.acc + GEO.maxSpeed * Math.max(1, (p.t - a.t) / 1000));
+    if (ok) { loc.recent = loc.jumps.slice(n - 3, n - 1); loc.jumps = []; return 'reset'; }
+  }
+  loc.rejected++;
+  return false;
+}
+function smoothFix(now) {   // accuracy-weighted mean of the last few seconds of fixes
+  const pts = loc.recent.filter((p) => now - p.t <= GEO.window);
+  if (!pts.length) return loc.last;
+  let w = 0, la = 0, lo = 0;
+  for (const p of pts) { const k = 1 / Math.max(4, p.acc) ** 2; w += k; la += p.lat * k; lo += p.lon * k; }
+  const last = pts[pts.length - 1];
+  return { lat: la / w, lon: lo / w, acc: last.acc, t: last.t, n: pts.length };
+}
+function onFix(p) {
+  if (loc.sim) return;
+  const fx = { lat: p.coords.latitude, lon: p.coords.longitude, acc: Number.isFinite(p.coords.accuracy) ? p.coords.accuracy : 999, t: Date.now() };
+  if (!Number.isFinite(fx.lat) || !Number.isFinite(fx.lon)) return;
+  const ok = acceptRaw(fx);
+  if (!ok) return;
+  loc.state = 'on'; loc.last = fx;
+  loc.recent.push(fx); if (loc.recent.length > 60) loc.recent.shift();
+  loc.fix = smoothFix(fx.t);
+  placePlayer(); fieldTick();
+}
+function simulateAt(lat, lon) {
+  if (loc.watch != null) { try { navigator.geolocation.clearWatch(loc.watch); } catch { /* */ } loc.watch = null; }
+  fieldOn = true; loc.sim = true; loc.state = 'on';
+  loc.fix = loc.last = { lat, lon, acc: 8, t: Date.now() }; loc.recent = [loc.fix];
+  if (TEST) store.set('peridot.field.testpos', JSON.stringify([lat, lon]));
+  placePlayer(); fieldTick(); updateTestUI();
+}
+const fixFresh = () => loc.fix && Date.now() - loc.fix.t < GEO.show;
+const fixLive = () => loc.fix && Date.now() - loc.fix.t < GEO.fresh && !document.hidden;
+function hereLL(f) {   // where bearings are measured from: this phone, else the zone centre
+  if (fixFresh()) return [loc.fix.lat, loc.fix.lon];
+  if (f?.zone) return [f.zone.lat, f.zone.lon];
+  return PLACES.gusinje;
+}
+function zoneOf(f) { return f.zone || null; }
+const ALL_SITES = [...FIELD, ASSEMBLY];
+function adoptJump(now) {
+  const j = loc.jumps[loc.jumps.length - 1];
+  if (!j || !loc.last || now - loc.last.t <= GEO.hold) return;
+  loc.jumps = []; loc.recent = []; onFix({ coords: { latitude: j.lat, longitude: j.lon, accuracy: j.acc } });
+}
+function fieldTick() {
+  if (loc.sim && loc.fix) loc.fix.t = loc.last.t = Date.now();
+  const now = Date.now();
+  if (!loc.sim && loc.jumps.length) adoptJump(now);
+  if (!fixFresh()) { nearId = null; for (const k of Object.keys(dwellSince)) { delete dwellSince[k]; delete dwellSeen[k]; } updateFieldChip(); return; }
+  const me = [loc.fix.lat, loc.fix.lon], live = fixLive(), acc = loc.fix.acc;
+  let best = null, bestD = Infinity, nearest = null, nearestD = Infinity;
+  for (const f of ALL_SITES) {
+    const z = f.zone; if (!z) continue;
+    const d = distM(me, [z.lat, z.lon]);
+    if (d < nearestD && !(f.hidden && d > 60 && !frec(f.id)?.arrived)) { nearestD = d; nearest = f; }
+    if (!live) continue;
+    const holding = dwellSince[f.id] != null;
+    const inside = holding ? d <= z.r + clamp(acc, 10, 25) && acc <= z.acc * 1.5 : d <= z.r + Math.min(acc / 2, 10) && acc <= z.acc;
+    if (inside && d < bestD) { best = f; bestD = d; }
+  }
+  for (const k of Object.keys(dwellSince)) {
+    if (best && k !== best.id) { delete dwellSince[k]; delete dwellSeen[k]; }
+    else if (now - dwellSeen[k] > GEO.grace) { delete dwellSince[k]; delete dwellSeen[k]; }
+  }
+  nearId = nearest ? nearest.id : null;
+  loc.nearD = nearestD;
+  if (best) {
+    dwellSince[best.id] ??= now; dwellSeen[best.id] = now;
+    const z = best.zone, done = best.id === 'A' ? fieldSave().arrivedA : frec(best.id)?.arrived;
+    if (!done && now - dwellSince[best.id] >= z.dwell * 1000) arrive(best.id, 'gps');
+  }
+  updateFieldChip();
+}
+setInterval(fieldTick, 1000);
+
+/* ---------------------------------------------------------------- arriving */
+const canInterrupt = () => !arOpen && app === 'map' && (!card || ['list', 'intro', 'mission', 'done', 'chapter'].includes(card.field));
+function arrive(id, how) {
+  if (id === 'A') {
+    if (fieldSave().arrivedA) return;
+    fieldSave().arrivedA = how; persist(); sound('piece');
+    arrivedPrompt = 'A'; toast(`${CUB}: “The visitor centre! Let’s put it back together.”`, 3200);
+    if (canInterrupt()) assemblyCard();
+    return;
+  }
+  const f = FIELD_BY_ID[id], fs = fieldSave();
+  if (fs.m[id]?.arrived) return;
+  fs.m[id] = { ...(fs.m[id] || {}), arrived: how, at: Date.now() };
+  persist(); refreshFieldMarkers(); sound('piece');
+  arrivedPrompt = id; prefetchThree();
+  toast(`+${FP.arrive} · You’re at ${f.title}`, 2800);
+  if (navigator.vibrate) try { navigator.vibrate([60, 40, 60]); } catch { /* */ }
+  if (canInterrupt()) fieldMissionCard(id);
+  updateFieldChip();
+}
+
+/* ---------------------------------------------------------------- cards */
+function fieldAccent(c) { document.documentElement.style.setProperty('--accent', c ? c.color : '#c9a13b'); }
+function locLine() {
+  if (loc.sim) return `Test position · ${loc.fix ? `${loc.fix.lat.toFixed(5)}, ${loc.fix.lon.toFixed(5)}` : ''}`;
+  if (loc.state === 'on' && fixFresh()) return `Location on · ±${Math.round(loc.fix.acc)} m`;
+  if (loc.state === 'asking' || (loc.state === 'on' && !fixFresh())) return 'Finding your position…';
+  if ((loc.state === 'denied' || loc.state === 'unavailable') && framed) return 'Location does not work inside this preview. On the game’s website it does; here, use the 4-character plaque codes.';
+  if (loc.state === 'denied') return 'Location is blocked for this page. Every site also has a plaque with a 4-character code.';
+  if (loc.state === 'unavailable') return 'Location is not available here. Every site also has a plaque with a 4-character code.';
+  return 'Location is off.';
+}
+function statusOf(f) {
+  const r = frec(f.id);
+  if (r?.done) return { cls: 'done', text: fmt(fieldPts(r)) };
+  if (r?.arrived) return { cls: 'on', text: 'On site' };
+  if (fixFresh() && f.zone && !(f.hidden)) return { cls: '', text: fmtDist(distM([loc.fix.lat, loc.fix.lon], [f.zone.lat, f.zone.lon])) };
+  if (!f.zone || f.hidden) return { cls: '', text: 'Code' };
+  return { cls: '', text: 'New' };
+}
+function fieldCard() {
+  fieldAccent(null);
+  const fs = fieldSave();
+  const chapters = FIELD_CHAPTERS.map((c) => {
+    const list = c.ids.map((id) => FIELD_BY_ID[id]);
+    const n = list.filter((f) => fieldDone(f.id)).length;
+    const items = list.map((f) => {
+      const st = statusOf(f);
+      const sub = `${f.heritage}${f.bonus ? ' · bonus' : ''}${SURVEY ? ` · code ${f.code}${f.zone ? '' : ' · zone not set'}` : ''}`;
+      return `<li><button data-id="f:open:${f.id}"><span class="fnum">${f.id}</span><span class="n">${esc(f.title)}<small>${esc(sub)}</small></span><span class="s ${st.cls}">${esc(st.text)}</span></button></li>`;
+    }).join('');
+    return `<p class="route-head" style="--route: ${c.color}"><i></i>${c.n} · ${esc(c.name)} · ${esc(c.part)}<span>${fs.ch[c.n] ? '✓' : `${n}/${list.length}`}</span></p><ul class="sheet-list field-list">${items}</ul>`;
+  }).join('');
+  const aSt = fs.assembled ? `<span class="s done">${fmt(FP.assembly)}</span>` : `<span class="s">${partsHome()}/3 parts</span>`;
+  const asm = `<p class="route-head" style="--route: var(--peridot)"><i></i>Visitor centre · assembly<span></span></p><ul class="sheet-list field-list"><li><button data-id="f:open:A"><span class="fnum">★</span><span class="n">${esc(ASSEMBLY.title)}<small>Bring all three parts${SURVEY ? ` · code ${ASSEMBLY.code}` : ''}</small></span>${aSt}</button></li></ul>`;
+  const on = fieldOn && loc.state !== 'off';
+  showCard({
+    field: 'list', kicker: 'In the field', title: fieldRank(), big: [fieldTotal(), FIELD_MAX],
+    html: `<p class="locline ${loc.state}">${esc(locLine())}</p>${partsSVG()}`,
+    list: chapters + asm,
+    actions: [
+      ...(on ? [] : [{ id: 'f:loc-on', label: 'Turn on location', primary: true }]),
+      { id: 'f:code', label: 'Enter a plaque code', primary: on },
+      ...(fs.seenIntro ? [] : [{ id: 'f:intro', label: 'How it works' }]),
+      ...(SURVEY ? [{ id: 'f:export', label: 'Export settings' }] : []),
+      ...(on && !TEST ? [{ id: 'f:loc-off', label: 'Turn off location' }] : []),
+      TEST ? { id: 'f:test', label: 'Test mode: start near a site' } : { id: 'f:test-on', label: 'Test mode (play anywhere)' },
+      { id: 'close', label: 'Close' },
+    ],
+  });
+  updateFieldChip();
+}
+function partsSVG() {
+  const fs = fieldSave();
+  return `<div class="parts" aria-label="Device parts found: ${partsHome()} of 3">${FIELD_CHAPTERS.map((c) => `<span class="part ${fs.ch[c.n] ? 'got' : ''}" style="--pc:${c.color}">${PART_ICON[c.n]}<b>${esc(c.short)}</b></span>`).join('')}</div>`;
+}
+const PART_ICON = {
+  1: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7l8-4 8 4v10l-8 4-8-4z"/><path d="M8 9l4-2 4 2v6l-4 2-4-2z"/></svg>',
+  2: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M7 13c2-2 3 2 5 0s3 2 5 0"/></svg>',
+  3: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v14"/><path d="M5 20h14"/><path d="M12 17l7 3"/><circle cx="12" cy="3.5" r="1.2"/></svg>',
+};
+function fieldIntroCard() {
+  fieldAccent(null);
+  fieldSave().seenIntro = true; persist();
+  showCard({
+    field: 'intro', kicker: 'In the field', title: 'The device that held the gem',
+    html: '<img class="intro-badge" src="logo/peridot-badge.png" alt="" width="532" height="648">',
+    body: ['The peridot once sat in a device built by the valley’s first people: a water-and-sky reckoner. With sunlight, shadows and the level of the springs, it told when the snowmelt would come. No magic, just patient watching.',
+      'A later people broke it and hid its three parts where each belonged: the frame in the town, the water lens along the water, the sky needle under the peaks. Photos cannot show them. You have to stand there.',
+      'At each site: arrive (your phone notices after 20 seconds, or type the code from the site’s plaque), find the peridot shard through your camera and catch it, do one small task, and read the field note.'],
+    cub: `${CUB}: “Photos can’t show it. We have to go there, on foot. Ready?”`,
+    rules: 'Your location stays on this phone. Respect places of worship: all tasks are done from outside.',
+    actions: [{ id: 'f:go', label: 'Turn on location and start', primary: true }, { id: 'f:code', label: 'I have a plaque code' }, { id: 'f:test-on', label: 'Try it at home (test mode)' }],
+  });
+}
+function chapterStartLine(f) {
+  const c = chapterOf(f);
+  return c.ids[0] === f.id && !c.ids.some((id) => frec(id)?.arrived && id !== f.id) ? c.intro : null;
+}
+function fieldMissionCard(id) {
+  if (id === 'A') { assemblyCard(); return; }
+  const f = FIELD_BY_ID[id], c = chapterOf(f), r = frec(id) || {};
+  fieldAccent(c);
+  if (arrivedPrompt === id && r.arrived) arrivedPrompt = null;
+  const z = zoneOf(f);
+  const where = !z || f.hidden ? (f.hidden ? 'Find it from the clues; its pin appears within 60 m' : 'Plaque code (zone not set yet)')
+    : fixFresh() ? `${fmtDist(distM([loc.fix.lat, loc.fix.lon], [z.lat, z.lon]))} away · zone ${z.r} m` : `Zone ${z.r} m · stay ${z.dwell} s`;
+  const stage = !r.arrived ? 'arrive' : !r.look ? 'look' : r.task == null ? 'task' : r.q == null ? 'fact' : 'done';
+  if (stage === 'look' || (stage === 'arrive' && fixFresh())) prefetchThree();
+  const next = {
+    arrive: f.offline ? 'Volušnica has no signal: type the code from the summit plaque. It is checked on your phone, offline.'
+      : z && !f.hidden ? `Go to the site: the mission starts after ${z.dwell} seconds inside the zone. Or type the code from the site’s Peridot plaque.`
+      : 'Find the site and type the code from its Peridot plaque.',
+    look: 'You’re here, and so is a peridot shard. Find it through your camera and catch it: drag the crystal orb up to it and let go, or flick it.',
+    task: 'Now one small task that needs your eyes on the place.',
+    fact: 'Last step: the field note and one question.',
+    done: `Done: ${fmt(fieldPts(r))} of ${SITE_MAX} points.`,
+  }[stage];
+  const primary = { arrive: null, look: { id: `f:look:${id}`, label: 'Find & catch the shard' }, task: { id: `f:task:${id}`, label: 'Do the task' }, fact: { id: `f:fact:${id}`, label: 'Field note' }, done: null }[stage];
+  const body = [chapterStartLine(f), next].filter(Boolean);
+  if (f.worship && stage !== 'done') body.push('A working place of worship: everything is done from outside. Dress modestly if you go in.');
+  showCard({
+    field: 'mission', fid: id, kicker: `Chapter ${c.n} · ${c.name}${f.bonus ? ' · bonus' : ''}`, title: f.title, sub: f.heritage,
+    cub: `${CUB}: “${f.story}”`,
+    data: [['Status', r.done ? 'Done ✓' : r.arrived ? `On site ✓ (${r.arrived === 'gps' ? 'GPS' : 'code'})` : 'Not visited'], ['Points', `${fmt(fieldPts(r))} / ${SITE_MAX}`],
+      ['Where', where]],
+    html: f.hidden && !r.arrived ? `<ol class="clues">${f.clues.map((t) => `<li>${esc(t)}</li>`).join('')}</ol>` : '',
+    body,
+    html2: SURVEY ? surveyHTML(f) : '',
+    actions: [
+      ...(primary ? [{ ...primary, primary: true }] : []),
+      ...(stage === 'arrive' ? [{ id: `f:code:${id}`, label: 'Enter plaque code', primary: true }] : []),
+      ...(stage === 'done' ? [{ id: `f:fact:${id}`, label: 'Field note' }] : []),
+      ...(z && !f.hidden ? [{ id: `f:map:${id}`, label: 'Show on map' }] : []),
+      ...(TEST && z && (stage === 'arrive' || stage === 'look') ? [{ id: `f:near:${id}`, label: stage === 'arrive' ? 'Test: start 40 m away' : 'Test: step back 40 m' }] : []),
+      ...((SURVEY || DEBUG || TEST) && z && stage === 'arrive' ? [{ id: `f:sim:${id}`, label: 'Test: pretend I’m here' }] : []),
+      { id: 'f:list', label: 'All sites' },
+    ],
+    onShow: (el) => { if (SURVEY) wireSurvey(el, f); },
+  });
+}
+function codeCard(id, msg) {
+  const f = id ? (id === 'A' ? ASSEMBLY : FIELD_BY_ID[id]) : null;
+  fieldAccent(f && f.ch ? chapterOf(f) : null);
+  showCard({
+    field: 'code', fid: id, kicker: 'Plaque code', title: f ? f.title : 'Enter a code',
+    body: ['Each site has a small Peridot plaque with a 4-character code (or scan its QR code with the camera).'],
+    html: `<label class="codebox"><span class="sr">Code</span><input id="f-code" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="6" placeholder="e.g. 7K2P" inputmode="text"></label>`,
+    note: msg ? { tone: 'bad', head: 'Hmm.', text: msg } : null,
+    actions: [{ id: `f:code-go:${id || ''}`, label: 'Confirm', primary: true }, { id: id ? `f:open:${id}` : 'f:list', label: 'Back' }],
+    onShow: (el) => { const i = el.querySelector('#f-code'); i?.focus({ preventScroll: true }); i?.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); fieldAction(`code-go:${id || ''}`); } }); },
+  });
+}
+function checkCode(id, raw) {
+  const v = normCode(raw);
+  if (v.length !== 4) return codeCard(id, 'A plaque code has 4 characters.');
+  const hit = [...FIELD, ASSEMBLY].find((f) => f.code === v);
+  if (!hit) {
+    const ok = stampCheck(v.slice(0, 3)) === v[3];
+    return codeCard(id, ok ? 'That code belongs to no site in this game.' : 'One character looks wrong. Check the plaque again (0 and O, 1 and I are not used).');
+  }
+  if (id && hit.id !== id) return codeCard(id, `That is the code of ${hit.title}, not this site.`);
+  arrive(hit.id, 'code');
+  if (hit.id === 'A') assemblyCard(); else fieldMissionCard(hit.id);
+}
+
+/* the task */
+function taskCard(id, state = {}) {
+  const f = FIELD_BY_ID[id], t = f.task, r = frec(id);
+  fieldAccent(chapterOf(f));
+  if (t.type === 'point') { openAR(f, 'point'); return; }
+  const tries = r.tries || 0;
+  const model = { field: 'task', fid: id, kicker: `${f.title} · task`, title: t.type === 'number' ? 'Count it' : t.type === 'observe' ? 'Look and listen' : 'Look closely', body: [t.prompt] };
+  if (t.type === 'number') {
+    model.html = `<div class="numbox"><button class="btn" data-id="f:num:-1" aria-label="One less">−</button><input id="f-num" type="number" inputmode="numeric" min="0" max="999" value="${state.val ?? ''}" aria-label="Your count"><button class="btn" data-id="f:num:1" aria-label="One more">+</button></div>`;
+    model.actions = [{ id: `f:check:${id}`, label: 'Check', primary: true }, ...(t.hint && !r.hint ? [{ id: `f:hint:${id}`, label: `Hint (−${FP.hint})` }] : []), { id: `f:open:${id}`, label: 'Back' }];
+    model.onShow = (el) => { const i = el.querySelector('#f-num'); i?.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); fieldAction(`check:${id}`); } }); };
+  } else {
+    model.options = t.options.map((label, i) => ({ id: `f:pick:${id}:${i}`, label, state: state.marks?.[i] || '' }));
+    model.actions = [...(t.hint && !r.hint && t.type !== 'observe' ? [{ id: `f:hint:${id}`, label: `Hint (−${FP.hint})` }] : []), { id: `f:open:${id}`, label: 'Back' }];
+  }
+  if (r.hint && t.hint) model.note = { tone: '', head: 'Hint', text: t.hint };
+  if (state.note) model.note = state.note;
+  if (tries) model.rules = `Try ${tries + 1}. Right on the first try: ${FP.task} points, then ${FP.task - 50}, then ${FP.task - 100}.`;
+  showCard(model);
+}
+function taskPoints(r) { return Math.max(0, FP.task - 50 * (r.tries || 0) - (r.hint ? FP.hint : 0)); }
+function finishTask(id, ok, after) {
+  const f = FIELD_BY_ID[id], r = frec(id);
+  r.task = ok ? taskPoints(r) : 0; persist();
+  sound(ok ? 'right' : 'wrong');
+  fieldAccent(chapterOf(f));
+  showCard({
+    field: 'task-done', fid: id, kicker: `${f.title} · task`, title: ok ? `+${r.task}` : 'Not this time',
+    note: { tone: ok ? '' : 'bad', head: ok ? 'Well spotted.' : 'Never mind.', text: after || '' },
+    actions: [{ id: `f:fact:${id}`, label: 'Field note', primary: true }],
+  });
+}
+function factCard(id, state = {}) {
+  const f = FIELD_BY_ID[id], r = frec(id), q = f.q;
+  fieldAccent(chapterOf(f));
+  const answered = r.q != null;
+  const marks = state.marks || (answered ? q.options.map((_, i) => (i === q.a ? 'correct' : 'dim')) : []);
+  showCard({
+    field: 'fact', fid: id, kicker: `${f.title} · field note`, title: f.fact.title, body: f.fact.text,
+    html: `<p class="qline">${esc(q.q)}</p>`,
+    options: q.options.map((label, i) => ({ id: `f:q:${id}:${i}`, label, state: marks[i] || '' })), answered,
+    note: state.note || null,
+    actions: answered ? [{ id: `f:after:${id}`, label: 'Continue', primary: true }] : [{ id: `f:open:${id}`, label: 'Back' }],
+  });
+}
+function missionDoneCard(id) {
+  const f = FIELD_BY_ID[id], r = frec(id), c = chapterOf(f), fs = fieldSave();
+  const newlyComplete = !fs.ch[c.n] && chapterDone(c);
+  if (newlyComplete) { fs.ch[c.n] = Date.now(); persist(); }
+  refreshFieldMarkers();
+  fieldAccent(c);
+  if (newlyComplete) { chapterCard(c); return; }
+  const left = c.ids.filter((x) => !fieldDone(x) && !FIELD_BY_ID[x].bonus).map((x) => FIELD_BY_ID[x].title);
+  sound('done');
+  showCard({
+    field: 'done', fid: id, kicker: `Chapter ${c.n} · ${c.name}`, title: `${f.title} done`, big: [fieldPts(r), SITE_MAX],
+    cub: `${CUB}: “${left.length ? `Next: ${left[0]}.` : 'This chapter is done!'}”`,
+    actions: [{ id: 'f:list', label: 'All sites', primary: true }, { id: 'close', label: 'Close' }],
+  });
+}
+function chapterCard(c) {
+  sound('piece'); fieldAccent(c);
+  showCard({
+    field: 'chapter', kicker: `Chapter ${c.n} complete · +${FP.chapter}`, title: c.part, html: partsSVG(),
+    cub: `${CUB}: “${c.end}”`,
+    actions: [{ id: partsHome() === 3 ? 'f:open:A' : 'f:list', label: partsHome() === 3 ? 'To the visitor centre' : 'All sites', primary: true }, { id: 'close', label: 'Close' }],
+  });
+}
+function assemblyCard(state = {}) {
+  const fs = fieldSave(); fieldAccent(null);
+  if (arrivedPrompt === 'A') arrivedPrompt = null;
+  if (fs.assembled) { finaleCard(); return; }
+  const missing = FIELD_CHAPTERS.filter((c) => !fs.ch[c.n]);
+  if (missing.length) {
+    showCard({ field: 'assembly', kicker: 'Visitor centre', title: ASSEMBLY.title, html: partsSVG(),
+      body: [`Bring all three parts here to put the device back together. Still missing: ${missing.map((c) => c.part.toLowerCase()).join(', ')}.`],
+      actions: [{ id: 'f:list', label: 'All sites', primary: true }, { id: 'close', label: 'Close' }] });
+    return;
+  }
+  if (!fs.arrivedA) {
+    showCard({ field: 'assembly', kicker: 'Visitor centre', title: ASSEMBLY.title, html: partsSVG(),
+      body: ['You have all three parts. Come to the visitor centre in Gusinje: the assembly starts there, or type the code at the desk.'],
+      actions: [{ id: 'f:code:A', label: 'Enter the desk code', primary: true }, ...((SURVEY || DEBUG) && ASSEMBLY.zone ? [{ id: 'f:sim:A', label: 'Test: pretend I’m here' }] : []), { id: 'f:list', label: 'All sites' }] });
+    return;
+  }
+  const k = state.k || 0, q = ASSEMBLY.riddle[k];
+  showCard({ field: 'riddle', kicker: `Assembly · step ${k + 1} of 3`, title: FIELD_CHAPTERS[k].part, html: partsSVG(),
+    body: [q.q], options: q.options.map((label, i) => ({ id: `f:rid:${k}:${i}`, label, state: state.marks?.[i] || '' })),
+    note: state.note || null, cub: k === 0 ? `${CUB}: “Each part only fits if we remember where it was.”` : null,
+    actions: [{ id: 'f:list', label: 'Later' }] });
+}
+function finaleCard() {
+  const fs = fieldSave(); fieldAccent(null);
+  if (!fs.stamp) { fs.stamp = newStamp('F'); persist(); }
+  showCard({
+    field: 'finale', kicker: 'The reckoner works again', title: fieldRank(), big: [fieldTotal(), FIELD_MAX], html: `${partsSVG()}<div class="stamp"><div><code>${esc(fs.stamp)}</code><p>Your field stamp. Show it at the visitor centre.</p></div><canvas id="fstamp-qr" width="96" height="96" aria-label="QR code for ${esc(fs.stamp)}"></canvas></div>`,
+    body: ['The frame holds the lens; the needle stands over it. At noon its shadow falls through the lens onto a notch in the frame, and the notch says: the snowmelt will come early this year.',
+      'The valley has time to clear the river banks before the springs swell. That is what the reckoner was for.'],
+    cub: `${CUB}: “We did it, for real this time. Thank you!”`,
+    actions: [{ id: 'f:list', label: 'All sites', primary: true }, { id: 'close', label: 'Close' }],
+    onShow: (el) => { const cv = el.querySelector('#fstamp-qr'); if (cv) drawQR(cv, stampUrl(fs.stamp)); },
+  });
+}
+
+/* ---------------------------------------------------------------- actions */
+let numVal = '';
+function fieldAction(a) {
+  const [verb, id, arg] = a.split(':');
+  if (verb === 'list') { fieldCard(); return; }
+  if (verb === 'close') { closeCard(); return; }
+  if (verb === 'intro') { fieldIntroCard(); return; }
+  if (TEST && (verb === 'loc-on' || verb === 'go')) { testCard(); return; }
+  if (verb === 'loc-on') { startLocation(); closeCard(); return; }
+  if (verb === 'go') { startLocation(); startOrientation(); keepCompass = true; closeCard(); return; }
+  if (verb === 'loc-off') { stopLocation(); fieldCard(); return; }
+  if (verb === 'open') { if (id === 'A') assemblyCard(); else fieldMissionCard(id); return; }
+  if (verb === 'code') { codeCard(id || null); return; }
+  if (verb === 'code-go') { checkCode(id || null, $('f-code')?.value); return; }
+  if (verb === 'map') { closeCard(); flyToField(id); return; }
+  if (verb === 'test-on') { store.set('peridot.field.test', '1'); location.reload(); return; }
+  if (verb === 'test-exit') { store.set('peridot.field.test', '0'); store.set('peridot.field.testpos', ''); if (new URLSearchParams(location.search).has('test')) location.href = location.pathname + location.hash; else location.reload(); return; }
+  if (verb === 'test-reset') { store.set(SAVE_KEY, '{}'); store.set('peridot.field.testpos', ''); location.reload(); return; }
+  if (verb === 'test') { testCard(); return; }
+  if (verb === 'near') {   // test: 40 m south of the site, so you can walk in
+    const f = id === 'A' ? ASSEMBLY : FIELD_BY_ID[id], z = zoneOf(f);
+    simulateAt(z.lat - 40 / 110540, z.lon); startOrientation(); keepCompass = true; view.follow = true; updateFollowBtn();
+    toast(`Test: 40 m south of ${f.title}. Walk north with the joystick.`, 3200); closeCard(); flyToField(id); return;
+  }
+  if (verb === 'sim') { const f = id === 'A' ? ASSEMBLY : FIELD_BY_ID[id]; const z = zoneOf(f); simulateAt(z.lat + 0.00005, z.lon); toast(`Test position at ${f.title}: wait ${z.dwell} s`, 2400); closeCard(); flyToField(id); return; }
+  if (verb === 'look') { openAR(FIELD_BY_ID[id], 'look'); return; }
+  if (verb === 'task') { taskCard(id); return; }
+  if (verb === 'hint') { const r = frec(id); r.hint = true; persist(); sound('tap'); taskCard(id, { val: $('f-num')?.value }); return; }
+  if (verb === 'num') { const i = $('f-num'); if (i) i.value = String(Math.max(0, (+i.value || 0) + (+id))); sound('tap'); return; }
+  if (verb === 'check') {
+    const f = FIELD_BY_ID[id], t = f.task, r = frec(id), raw = $('f-num')?.value;
+    if (raw === '' || raw == null || !Number.isFinite(+raw)) { taskCard(id, { note: { tone: 'bad', head: 'Your count?', text: 'Type a number first.' } }); return; }
+    const v = Math.round(+raw); r.val = v;
+    if (t.answer == null) { finishTask(id, true, `You counted ${v}. ${OBSERVE_NOTE}`); return; }
+    if (v === t.answer) { finishTask(id, true, `Yes, ${v}.${t.after ? ` ${t.after}` : ''}`); return; }
+    r.tries = (r.tries || 0) + 1; persist(); sound('wrong');
+    if (r.tries >= 3) { finishTask(id, false, `It is ${t.answer}.${t.after ? ` ${t.after}` : ''}`); return; }
+    taskCard(id, { val: v, note: { tone: 'bad', head: 'Not quite.', text: `Count again${v < t.answer ? ': there are more' : ': there are fewer'}.` } });
+    return;
+  }
+  if (verb === 'pick') {
+    const f = FIELD_BY_ID[id], t = f.task, r = frec(id), i = +arg;
+    if (t.type === 'observe') { r.val = t.options[i]; finishTask(id, true, `You saw: ${t.options[i]}. ${t.after || ''}`); return; }
+    if (i === t.a) { finishTask(id, true, t.after || ''); return; }
+    r.tries = (r.tries || 0) + 1; persist(); sound('wrong');
+    r.marks ||= {}; r.marks[i] = 'wrong';
+    if (r.tries >= 3) { finishTask(id, false, `The answer: ${t.options[t.a]}. ${t.after || ''}`); return; }
+    taskCard(id, { marks: r.marks, note: { tone: 'bad', head: 'Not quite.', text: 'Look again and try another answer.' } });
+    return;
+  }
+  if (verb === 'fact') { factCard(id); return; }
+  if (verb === 'q') {
+    const f = FIELD_BY_ID[id], r = frec(id), i = +arg; if (r.q != null) return;
+    const ok = i === f.q.a; r.q = ok ? FP.q : 0; persist(); sound(ok ? 'right' : 'wrong');
+    const marks = f.q.options.map((_, j) => (j === f.q.a ? 'correct' : j === i ? 'wrong' : 'dim'));
+    factCard(id, { marks, note: { tone: ok ? '' : 'bad', head: ok ? `+${FP.q}` : 'Not quite.', text: ok ? 'Right.' : `It’s “${f.q.options[f.q.a]}”.` } });
+    return;
+  }
+  if (verb === 'after') { const r = frec(id); if (!r.done) { r.done = Date.now(); persist(); } missionDoneCard(id); return; }
+  if (verb === 'rid') {
+    const k = +id, i = +arg, q = ASSEMBLY.riddle[k];
+    if (i !== q.a) { sound('wrong'); assemblyCard({ k, marks: { [i]: 'wrong' }, note: { tone: 'bad', head: 'It doesn’t fit.', text: 'Think back to the sites, and try again.' } }); return; }
+    sound('right');
+    if (k < ASSEMBLY.riddle.length - 1) { assemblyCard({ k: k + 1 }); return; }
+    fieldSave().assembled = Date.now(); persist(); refreshFieldMarkers(); sound('done'); finaleCard(); return;
+  }
+  if (verb === 'export') { exportCard(); return; }
+  if (verb === 'copy') { copyExport(); return; }
+}
+
+/* ---------------------------------------------------------------- the look-around view (camera + compass) */
+const arEl = $('ar'), arItems = $('ar-items'), arVideo = $('ar-video'), arRibbon = $('ar-ribbon');
+let arOpen = false, arStream = null, arMode = 'look', arF = null, arRAF = 0, arScan = 0, arShardGot = false, arT0 = 0;
+const orient = { heading: 0, elev: 0, compass: false, tilt: false, last: 0, manual: true, prevH: 0, steady: 0 };
+const HFOV = 58;
+function onOrient(e) {
+  if (e.alpha == null && e.webkitCompassHeading == null) return;
+  const a = (e.alpha || 0) * DEG, b = (e.beta || 0) * DEG, g = (e.gamma || 0) * DEG;
+  const cA = Math.cos(a), sA = Math.sin(a), cB = Math.cos(b), sB = Math.sin(b), cG = Math.cos(g), sG = Math.sin(g);
+  const elev = Math.asin(clamp(-cB * cG, -1, 1)) / DEG;   // back camera's elevation
+  let h = null;
+  if (typeof e.webkitCompassHeading === 'number' && e.webkitCompassHeading >= 0) h = e.webkitCompassHeading;
+  else if (e.absolute || e.type === 'deviceorientationabsolute') { const rA = -cA * sG - sA * sB * cG, rB = -sA * sG + cA * sB * cG; h = (Math.atan2(rA, rB) / DEG + 360) % 360; }
+  orient.elev = lerp(orient.elev, elev, 0.35); if (e.beta != null) orient.tilt = true;
+  if (h == null) return;
+  orient.compass = true; orient.manual = false; orient.last = performance.now();
+  orient.heading = (orient.heading + wrapDeg(h - orient.heading) * 0.3 + 360) % 360;
+}
+async function startOrientation() {
+  try { if (typeof DeviceOrientationEvent !== 'undefined' && DeviceOrientationEvent.requestPermission) await DeviceOrientationEvent.requestPermission(); } catch { /* denied */ }
+  window.addEventListener('deviceorientationabsolute', onOrient);
+  window.addEventListener('deviceorientation', onOrient);
+}
+let keepCompass = false;   // the map's heading cone and guide arrow keep the compass after the camera view closes
+function stopOrientation() { if (keepCompass) return; window.removeEventListener('deviceorientationabsolute', onOrient); window.removeEventListener('deviceorientation', onOrient); }
+/* where the game lives on the web: inside the Claude app (or any other embedding page) the camera, compass and location are blocked */
+const PUBLIC_FIELD = 'https://xplore-prokletije.com/p/field.html';
+const embedded = (() => { try { return window.self !== window.top; } catch { return true; } })();
+function camNote(why) {
+  const el = $('ar-camnote'); if (!el) return;
+  const url = PUBLIC_FIELD + (TEST ? '?test' : '');
+  if (why === 'embedded') {
+    $('ar-camnote-text').textContent = 'The camera can’t start inside the Claude app, so you see a painted valley. To see the peridot in your room, open the game in Chrome or Safari:';
+    const a = $('ar-camnote-link'); a.href = url; a.textContent = url.replace('https://', ''); a.hidden = false; $('ar-camnote-copy').hidden = false;
+  } else {
+    $('ar-camnote-text').textContent = why === 'insecure' ? 'The camera needs a secure (https) address. Open the game from https://…'
+      : why === 'denied' ? 'The camera is blocked for this site. Allow it in the browser (the lock icon by the address, then Camera), close this view and open it again.'
+      : 'No camera found, so you see a painted valley instead.';
+    $('ar-camnote-link').hidden = true; $('ar-camnote-copy').hidden = true;
+  }
+  el.hidden = false;
+}
+async function startCamera() {
+  $('ar-camnote').hidden = true;
+  try {
+    if (!navigator.mediaDevices?.getUserMedia) throw { name: window.isSecureContext === false ? 'insecure' : 'none' };
+    arStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' } }, audio: false });
+    if (!arOpen) { arStream.getTracks().forEach((t) => t.stop()); arStream = null; return; }
+    arVideo.srcObject = arStream; await arVideo.play().catch(() => {});
+    arEl.classList.add('cam');
+  } catch (err) {
+    arEl.classList.remove('cam');
+    if (!arOpen) return;
+    const n = err?.name || '';
+    camNote(embedded ? 'embedded' : n === 'insecure' ? 'insecure' : /NotAllowed|Security|Permission/.test(n) ? 'denied' : 'none');
+  }
+}
+$('ar-camnote-close').addEventListener('click', () => { $('ar-camnote').hidden = true; });
+$('ar-camnote-copy').addEventListener('click', async () => {
+  const url = $('ar-camnote-link').href, btn = $('ar-camnote-copy');
+  try { await navigator.clipboard.writeText(url); btn.textContent = 'Copied'; }
+  catch { const r = document.createRange(); r.selectNodeContents($('ar-camnote-link')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent = 'Select & copy'; }
+  setTimeout(() => { btn.textContent = 'Copy link'; }, 2500);
+});
+function stopCamera() { arStream?.getTracks().forEach((t) => t.stop()); arStream = null; arVideo.srcObject = null; arEl.classList.remove('cam'); }
+function targetBearing(f) {
+  const t = f.task;
+  if (t.bearing != null && (!fixFresh() || !f.zone || distM([loc.fix.lat, loc.fix.lon], [f.zone.lat, f.zone.lon]) < 150)) return t.bearing;
+  return bearingDeg(hereLL(f), PLACES[t.target]);
+}
+function openAR(f, mode) {
+  arF = f; arMode = mode; arScan = 0; arShardGot = false; arOpen = true;
+  orient.compass = false; orient.tilt = false; orient.manual = true; orient.heading = 0; orient.elev = 0; orient.steady = 0;
+  startOrientation(); startCamera();
+  const c = f.ch ? chapterOf(f) : null; fieldAccent(c);
+  $('ar-kicker').textContent = mode === 'record' ? 'Survey · record bearing' : `${f.title} · ${mode === 'point' ? 'task' : 'look'}`;
+  $('ar-title').textContent = mode === 'point' || mode === 'record' ? 'Point and tap Here' : f.look.mode === 'scan' ? 'Hold steady' : 'Look around';
+  $('ar-say').textContent = mode === 'point' ? f.task.prompt : mode === 'record' ? `Stand at the zone centre, point at ${PLACES[f.task.target] ? f.task.target : 'the target'} and tap Here.` : f.look.say;
+  const act = $('ar-act');
+  act.hidden = false;
+  act.textContent = mode === 'point' || mode === 'record' ? 'Here' : f.look.mode === 'scan' ? 'Hold to scan' : 'Skip';
+  $('ar-hint').hidden = !(mode === 'point' && f.task.hint && !frec(f.id)?.hint);
+  $('ar-aim').hidden = !(mode === 'point' || mode === 'record' || f.look?.mode === 'scan');
+  $('ar-scan').hidden = !(mode === 'look' && f.look.mode === 'scan');
+  buildARItems();
+  closeCard(); arEl.hidden = false; updateFieldChip();
+  if (mode === 'look') {
+    const sh = arItems._items.find((it) => it.kind === 'shard'), spot = shardSpot(f);
+    const here = fixFresh() && loc.fix.acc <= 40 ? [loc.fix.lat, loc.fix.lon] : null;
+    if (spot && here && distM(here, [spot.lat, spot.lon]) > landRange()) {   // GPS: the shard waits at its spot; walk to it
+      const prev = { scan: $('ar-scan').hidden, aim: $('ar-aim').hidden, title: $('ar-title').textContent };
+      $('ar-scan').hidden = true; $('ar-aim').hidden = true; act.hidden = true; if (sh) sh.hidden = true;
+      startApproach(f, spot).then((ok) => {
+        if (ok || !arOpen || arF !== f) return;
+        $('ar-scan').hidden = prev.scan; $('ar-aim').hidden = prev.aim; $('ar-title').textContent = prev.title; act.hidden = false;
+        if (sh && f.look.mode === 'sky') sh.hidden = false;
+      });
+    } else if (f.look.mode === 'sky') {   // no GPS: the shard comes down out there; turn to find it, then catch it
+      startCatch(f, sh.b).then((ok) => { if (ok) { sh.hidden = true; $('ar-say').textContent = `${f.look.say} A peridot shard has come down out there too: find it and catch it.`; } });
+    } else prefetchThree();
+  }
+  $('ar-where').textContent = 'Turn on the compass…';
+  arT0 = performance.now();
+  cancelAnimationFrame(arRAF); arRAF = requestAnimationFrame(arLoop);
+}
+function closeAR(next) {
+  stopCatch();
+  arOpen = false; cancelAnimationFrame(arRAF); stopCamera(); stopOrientation();
+  arEl.hidden = true; updateFieldChip();
+  if (next) next(); else if (arF?.id && FIELD_BY_ID[arF.id]) fieldMissionCard(arF.id);
+}
+function buildARItems() {
+  const f = arF, items = [];
+  if (arMode === 'look' && f.look.mode === 'sky') {
+    for (const l of f.look.labels || []) items.push({ kind: 'label', name: l.name, b: bearingDeg(hereLL(f), PLACES[l.place]), e: 3, sub: fmtDist(distM(hereLL(f), PLACES[l.place])) });
+    items.push({ kind: 'shard', b: bearingDeg(hereLL(f), PLACES[f.look.shard.place]) + 8, e: f.look.shard.elev || 6 });
+  }
+  if (arMode === 'look' && f.look.mode === 'scan') items.push({ kind: 'shard', ahead: true, hidden: true });
+  arItems.innerHTML = items.map((it, i) => it.kind === 'label'
+    ? `<div class="ar-label glass" data-i="${i}"><b>${esc(it.name)}</b><small>${esc(it.sub || '')}</small></div>`
+    : `<button class="ar-shard" data-i="${i}" aria-label="Peridot shard: tap to take it">${GEM_SVG}</button>`).join('');
+  arItems._items = items;
+  // ribbon of compass letters
+  arRibbon.innerHTML = Array.from({ length: 24 }, (_, k) => k * 15).map((d) => `<span data-d="${d}" class="${d % 45 ? 'tick' : 'cardinal'}">${d % 90 === 0 ? 'NESW'[d / 90] : d % 45 === 0 ? ['NE', 'SE', 'SW', 'NW'][(d - 45) / 90] : ''}</span>`).join('');
+}
+function arLoop(now) {
+  if (!arOpen) return;
+  arRAF = requestAnimationFrame(arLoop);
+  const w = arEl.clientWidth, h = arEl.clientHeight, vfov = HFOV * h / w;
+  const items = arItems._items || [];
+  const dh = Math.abs(wrapDeg(orient.heading - orient.prevH)); orient.prevH = orient.heading;
+  // scanning: hold still (compass) or hold the button (no compass)
+  if (arMode === 'look' && arF.look.mode === 'scan' && !arShardGot && !cat.on) {
+    const holding = arEl.classList.contains('holding');
+    const still = holding && (!orient.compass || dh < 0.8);
+    arScan = clamp(arScan + (still ? 1 / 150 : -1 / 90), 0, 1);
+    $('ar-scan').style.setProperty('--k', arScan.toFixed(3));
+    if (arScan >= 1 && items[0]?.hidden && !items[0].found) {
+      const it = items[0], f = arF; it.found = true; it.b = orient.heading; it.e = orient.elev; sound('shard'); $('ar-act').hidden = true;
+      startCatch(f, it.b).then((ok) => {
+        if (!arOpen || arF !== f) return;
+        if (ok) $('ar-say').textContent = `There it is, in ${f.look.what}! It drops down in front of you…`;
+        else { it.hidden = false; $('ar-say').textContent = `There it is, in ${f.look.what}! Tap the shard.`; }
+      });
+    }
+  }
+  arItems.querySelectorAll('[data-i]').forEach((el) => {
+    const it = items[+el.dataset.i];
+    if (it.hidden) { el.style.display = 'none'; return; }
+    const dx = wrapDeg(it.b - orient.heading), dy = (it.e || 0) - orient.elev;
+    const x = w / 2 + dx / HFOV * w, y = h * 0.45 - dy / vfov * h;
+    el.style.display = Math.abs(dx) < HFOV ? '' : 'none';
+    el.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`;
+  });
+  arRibbon.querySelectorAll('span').forEach((el) => {
+    const dx = wrapDeg(+el.dataset.d - orient.heading), x = w / 2 + dx / HFOV * w;
+    el.style.display = Math.abs(dx) < HFOV * 0.7 ? '' : 'none';
+    el.style.transform = `translateX(${x}px)`;
+  });
+  if (orient.compass) $('ar-where').textContent = `Facing ${dirWord(orient.heading)} · ${Math.round(orient.heading)}°`;
+  else if (now - arT0 > 1600) $('ar-where').textContent = `No compass here: drag to turn · ${Math.round(orient.heading)}°`;
+  catchFrame(now, w, h);
+}
+/* drag to turn when there is no compass */
+let arDrag = null;
+arEl.addEventListener('pointerdown', (e) => {
+  if (e.target.closest('button')) return;
+  if (orient.compass || e.target.closest('.ar-camnote')) return;
+  arDrag = { x: e.clientX, y: e.clientY, h: orient.heading, e: orient.elev }; arEl.setPointerCapture(e.pointerId); cat.autoTilt = false;
+});
+arEl.addEventListener('pointermove', (e) => {
+  if (!arDrag) return;
+  const w = arEl.clientWidth;
+  orient.heading = (arDrag.h - (e.clientX - arDrag.x) / w * HFOV + 360) % 360;
+  orient.elev = clamp(arDrag.e + (e.clientY - arDrag.y) / w * HFOV, -40, 50);
+});
+arEl.addEventListener('pointerup', () => { arDrag = null; });
+arEl.addEventListener('pointercancel', () => { arDrag = null; });
+arItems.addEventListener('click', (e) => {
+  const b = e.target.closest('.ar-shard'); if (!b || arShardGot) return;
+  arShardGot = true; sound('shard'); b.classList.add('got');
+  const f = arF, r = frec(f.id); r.look = Date.now(); persist();
+  $('ar-say').textContent = `${CUB}: “${f.story}”`;
+  setTimeout(() => closeAR(() => { taskIntro(f.id); }), 1100);
+});
+function taskIntro(id) { const f = FIELD_BY_ID[id]; if (f.task.type === 'point') fieldMissionCard(id); else taskCard(id); }
+const actBtn = $('ar-act');
+actBtn.addEventListener('pointerdown', () => { if (arMode === 'look' && arF.look.mode === 'scan') arEl.classList.add('holding'); });
+['pointerup', 'pointerleave', 'pointercancel'].forEach((ev) => actBtn.addEventListener(ev, () => arEl.classList.remove('holding')));
+actBtn.addEventListener('click', () => {
+  const f = arF;
+  if (cat.state === 'approach') { landNow(); return; }   // can't get closer: it flies to you
+  if (arMode === 'look' && f.look.mode === 'sky') { const r = frec(f.id); r.look = Date.now(); persist(); closeAR(() => taskIntro(f.id)); return; }
+  if (arMode === 'record') {
+    const h = Math.round(orient.heading);
+    survey[f.id] = { ...(survey[f.id] || {}), bearing: h }; saveSurvey(); f.task.bearing = h;
+    toast(`Bearing ${h}° saved${orient.compass ? '' : ' (no compass: drag value)'}`, 2600); closeAR(); return;
+  }
+  if (arMode === 'point') {
+    const r = frec(f.id), want = targetBearing(f), diff = Math.abs(wrapDeg(orient.heading - want));
+    const ok = diff <= f.task.tol;
+    if (ok) { closeAR(() => finishTask(f.id, true, `${Math.round(diff)}° off. ${f.task.after || ''}`)); return; }
+    r.tries = (r.tries || 0) + 1; persist(); sound('wrong');
+    if (r.tries >= 3) { closeAR(() => finishTask(f.id, false, `It is towards the ${dirWord(want)} (${Math.round(want)}°). ${f.task.after || ''}`)); return; }
+    const side = wrapDeg(want - orient.heading) > 0 ? 'right' : 'left';
+    $('ar-say').textContent = diff > 100 ? `Not quite: that is almost the opposite way. Turn around and try again.` : `Not quite: about ${Math.round(diff)}° off. Turn ${diff > 45 ? '' : 'a little '}to the ${side} and try again.`;
+  }
+});
+$('ar-hint').addEventListener('click', () => {
+  const f = arF, r = frec(f.id); r.hint = true; persist(); sound('tap');
+  $('ar-say').textContent = `Hint: ${f.task.hint}`; $('ar-hint').hidden = true;
+});
+$('ar-close').addEventListener('click', () => { sound('tap'); closeAR(); });
+window.addEventListener('keydown', (e) => {
+  if (!arOpen) return;
+  if (e.key === 'Escape') { closeAR(); }
+  else if (e.key === 'ArrowLeft') orient.heading = (orient.heading - 3 + 360) % 360;
+  else if (e.key === 'ArrowRight') orient.heading = (orient.heading + 3) % 360;
+  else if (e.key === 'ArrowUp') orient.elev = clamp(orient.elev + 2, -40, 50);
+  else if (e.key === 'ArrowDown') orient.elev = clamp(orient.elev - 2, -40, 50);
+  else return;
+  e.preventDefault(); e.stopImmediatePropagation();
+}, true);
+
+/* ---------------------------------------------------------------- survey tools (?survey) */
+function surveyHTML(f) {
+  const z = zoneOf(f), o = survey[f.id] || {};
+  const tasks = f.task?.type === 'point' ? `<p>Bearing to target: ${f.task.bearing != null ? `<b>${f.task.bearing}°</b> (recorded)` : `${Math.round(bearingDeg(hereLL(f), PLACES[f.task.target]))}° (computed${f.task.target === 'karanfili' ? ' from the map sketch' : ''})`}</p><button class="btn" data-sv="bearing">Record bearing</button>` : '';
+  const ans = f.task?.type === 'number' ? `<p>Answer: ${f.task.answer != null ? `<b>${f.task.answer}</b>` : 'not set (any count accepted)'}</p><label class="codebox small"><input id="sv-ans" type="number" inputmode="numeric" placeholder="count"></label><button class="btn" data-sv="answer">Save answer</button>` : '';
+  return `<div class="survey"><p class="kicker">Survey (staff)</p>
+    <p>Zone: ${z ? `${z.lat.toFixed(5)}, ${z.lon.toFixed(5)} · r ${z.r} m${o.lat != null ? ' (set on site)' : f.zoneNote ? ` · ${esc(f.zoneNote)}` : ''}` : '<b>not set</b>'}</p>
+    <p>${fixFresh() ? `GPS now ±${Math.round(loc.fix.acc)} m, ${loc.recent.length} fixes` : 'Turn on location to set the centre.'}</p>
+    <div class="actions"><button class="btn" data-sv="centre">Set centre here</button>${o.lat != null ? '<button class="btn" data-sv="clear">Undo</button>' : ''}</div>
+    <p>Shard waits at: ${f.shardAt ? `${f.shardAt.lat.toFixed(5)}, ${f.shardAt.lon.toFixed(5)} (set on site)` : 'the zone centre'}. Pick an open spot people can walk to.</p>
+    <div class="actions"><button class="btn" data-sv="shard">Set shard spot here</button></div>
+    ${tasks}${ans}
+    <div class="plaque"><div><p>Plaque code</p><code>${f.code}</code><small>${esc(plaqueUrl(f.id, f.code))}</small></div><canvas id="sv-qr" width="120" height="120" aria-label="Plaque QR"></canvas></div></div>`;
+}
+function wireSurvey(el, f) {
+  const cv = el.querySelector('#sv-qr'); if (cv) drawQR(cv, plaqueUrl(f.id, f.code));
+  el.querySelectorAll('[data-sv]').forEach((b) => b.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const k = b.dataset.sv;
+    if (k === 'shard') {
+      if (!fixFresh()) { toast('No GPS fix yet.'); return; }
+      const good = loc.recent.filter((p) => Date.now() - p.t < 60000 && p.acc <= 25), use = good.length ? good : [loc.fix];
+      const lat = use.reduce((a, p) => a + p.lat, 0) / use.length, lon = use.reduce((a, p) => a + p.lon, 0) / use.length;
+      survey[f.id] = { ...(survey[f.id] || {}), sLat: +lat.toFixed(6), sLon: +lon.toFixed(6) }; saveSurvey(); applySurvey();
+      toast(`Shard spot set from ${use.length} fix${use.length > 1 ? 'es' : ''}`, 2400);
+    } else if (k === 'centre') {
+      if (!fixFresh()) { toast('No GPS fix yet.'); return; }
+      const good = loc.recent.filter((p) => Date.now() - p.t < 60000 && p.acc <= 25);
+      const use = good.length ? good : [loc.fix];
+      const lat = use.reduce((a, p) => a + p.lat, 0) / use.length, lon = use.reduce((a, p) => a + p.lon, 0) / use.length;
+      survey[f.id] = { ...(survey[f.id] || {}), lat: +lat.toFixed(6), lon: +lon.toFixed(6) }; delete survey[f.id].cleared;
+      saveSurvey(); applySurvey(); rebuildFieldMarkers();
+      toast(`Centre set from ${use.length} fix${use.length > 1 ? 'es' : ''} (±${Math.round(Math.min(...use.map((p) => p.acc)))} m)`, 2600);
+    } else if (k === 'clear') { delete survey[f.id].lat; delete survey[f.id].lon; saveSurvey(); toast('Reload the page to restore the planned centre.', 2600); }
+    else if (k === 'bearing') { openAR(f, 'record'); return; }
+    else if (k === 'answer') { const v = el.querySelector('#sv-ans')?.value; if (v === '') return; survey[f.id] = { ...(survey[f.id] || {}), answer: Math.round(+v) }; saveSurvey(); applySurvey(); toast(`Answer ${Math.round(+v)} saved`); }
+    fieldMissionCard(f.id);
+  }));
+}
+function exportJSON() {
+  const out = {};
+  for (const f of [...FIELD, ASSEMBLY]) out[f.id] = { title: f.title, code: f.code, zone: f.zone ? { lat: f.zone.lat, lon: f.zone.lon, r: f.zone.r } : null, ...(f.task?.bearing != null ? { bearing: f.task.bearing } : {}), ...(f.task?.answer != null ? { answer: f.task.answer } : {}), ...(f.shardAt ? { shard: f.shardAt } : {}), setOnSite: !!survey[f.id] };
+  return JSON.stringify({ game: 'prokletijski-peridot-field', exported: new Date().toISOString(), sites: out }, null, 1);
+}
+function exportCard() {
+  showCard({ field: 'export', kicker: 'Survey', title: 'Export settings', body: ['Send this text to the game builder. It holds every zone centre, bearing and answer set on this phone, plus the plaque codes.'],
+    html: `<textarea id="sv-out" class="export" readonly>${esc(exportJSON())}</textarea>`,
+    actions: [{ id: 'f:copy', label: 'Copy', primary: true }, { id: 'f:list', label: 'Back' }] });
+}
+async function copyExport() {
+  const t = $('sv-out'); if (!t) return;
+  try { await navigator.clipboard.writeText(t.value); toast('Copied.'); } catch { t.select(); toast('Select all and copy.'); }
+}
+
+
+/* ---------------------------------------------------------------- the field map (2D, north up)
+   World units: Web Mercator pixels at zoom 17 (≈ 0.88 m each here). OpenStreetMap tiles when the browser may load them,
+   otherwise a sketch of the roads and rivers between the sites. Markers keep their size on screen; zone circles are true size. */
+const TILE_URL = (z, x, y) => `https://tile.openstreetmap.org/${z}/${x}/${y}.png`;
+const Z0 = 17, TS = 256;
+function W(lat, lon) {
+  const s = TS * 2 ** Z0, x = (lon + 180) / 360 * s;
+  const sl = Math.sin(lat * DEG), y = (0.5 - Math.log((1 + sl) / (1 - sl)) / (4 * Math.PI)) * s;
+  return [x, y];
+}
+const MPP = 156543.03392 * Math.cos(42.54 * DEG) / 2 ** Z0;   // metres per world unit around Gusinje
+const mapEl = $('map'), svg = $('map-svg');
+const view = { cx: 0, cy: 0, s: 0.05, follow: false };
+const tiles = { ok: null, els: new Map(), loaded: 0 };
+let mapW = 0, mapH = 0, selectedId = null;
+
+/* sketch layer: approximate roads and rivers between known points (shown when there are no tiles) */
+const SKETCH = {
+  roads: [
+    [[42.5638, 19.8330], [42.5625, 19.8290], [42.5600, 19.8211], [42.5545, 19.8080], [42.5420, 19.7960], [42.5300, 19.7890], [42.5218, 19.7863]],
+    [[42.5638, 19.8330], [42.5580, 19.8335], [42.5520, 19.8300], [42.5490, 19.8262], [42.5420, 19.8300], [42.5330, 19.8370], [42.5229, 19.8416], [42.5170, 19.8390], [42.5119, 19.8348]],
+  ],
+  rivers: [
+    { name: 'Grnčar', pts: [[42.5250, 19.7900], [42.5420, 19.8000], [42.5560, 19.8150], [42.5640, 19.8270], [42.5655, 19.8319], [42.5690, 19.8450], [42.5760, 19.8600]] },
+    { name: 'Vruja', pts: [[42.5490, 19.8255], [42.5540, 19.8320], [42.5600, 19.8400], [42.5680, 19.8470]] },
+    { name: 'Skakavica', pts: [[42.5119, 19.8348], [42.5160, 19.8400], [42.5229, 19.8420]], dashed: false },
+  ],
+  labels: [
+    { t: 'Gusinje', at: [42.5660, 19.8345], k: 'town' },
+    { t: 'Dolja', at: [42.5590, 19.8190], k: 'place' },
+    { t: 'Vusanje', at: [42.5200, 19.8450], k: 'place' },
+    { t: 'Grebaje', at: [42.5190, 19.7900], k: 'place' },
+    { t: 'Karanfili', at: [42.4949, 19.7732], k: 'peak' },
+    { t: 'Ropojana ↓', at: [42.5040, 19.8300], k: 'place' },
+  ],
+};
+const SK = { roads: SKETCH.roads.map((r) => r.map((p) => W(...p))), rivers: SKETCH.rivers.map((r) => ({ ...r, w: r.pts.map((p) => W(...p)) })), labels: SKETCH.labels.map((l) => ({ ...l, w: W(...l.at) })) };
+
+const toScreen = ([x, y]) => [(x - view.cx) * view.s + mapW / 2, (y - view.cy) * view.s + mapH / 2];
+const toWorld = (sx, sy) => [(sx - mapW / 2) / view.s + view.cx, (sy - mapH / 2) / view.s + view.cy];
+function fitTo(points, pad = 60) {
+  const xs = points.map((p) => p[0]), ys = points.map((p) => p[1]);
+  const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
+  view.cx = (x0 + x1) / 2; view.cy = (y0 + y1) / 2;
+  const top = 120, bottom = 220;
+  view.s = clamp(Math.min((mapW - pad * 2) / Math.max(1, x1 - x0), (mapH - top - bottom) / Math.max(1, y1 - y0)), 0.004, 4);
+  view.cy += (bottom - top) / 2 / view.s;
+}
+const siteW = (f) => f.zone ? W(f.zone.lat, f.zone.lon) : null;
+function fitAll() { const pts = [...FIELD, ASSEMBLY].map(siteW).filter(Boolean); if (pts.length) fitTo(pts); drawMap(); }
+
+/* ---------- tiles */
+function drawTiles() {
+  const layer = $('map-tiles');
+  if (tiles.ok === false) { if (tiles.els.size) { layer.textContent = ''; tiles.els.clear(); } return; }
+  const z = clamp(Math.round(Z0 + Math.log2(view.s)), 10, 18);
+  const n = 2 ** z, k = 2 ** (Z0 - z), size = TS * k;   // one tile, in world units
+  const [wx0, wy0] = toWorld(0, 0), [wx1, wy1] = toWorld(mapW, mapH);
+  const tx0 = Math.floor(wx0 / size), tx1 = Math.floor(wx1 / size), ty0 = Math.floor(wy0 / size), ty1 = Math.floor(wy1 / size);
+  const want = new Set();
+  if ((tx1 - tx0 + 1) * (ty1 - ty0 + 1) <= 80) {
+    for (let ty = ty0; ty <= ty1; ty++) for (let tx = tx0; tx <= tx1; tx++) {
+      if (ty < 0 || ty >= n) continue;
+      const key = `${z}/${((tx % n) + n) % n}/${ty}`; want.add(key);
+      let im = tiles.els.get(key);
+      if (!im) {
+        im = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+        im.setAttribute('href', TILE_URL(z, ((tx % n) + n) % n, ty)); im.setAttribute('preserveAspectRatio', 'none');
+        im.addEventListener('load', () => { if (!tiles.ok) { tiles.ok = true; mapEl.classList.add('tiled'); requestDraw(); } tiles.loaded++; });
+        im.addEventListener('error', () => { if (!tiles.loaded) { tiles.ok = false; mapEl.classList.remove('tiled'); requestDraw(); } else im.remove(); });
+        im.dataset.tx = tx; im.dataset.ty = ty; im.dataset.z = z;
+        layer.appendChild(im); tiles.els.set(key, im);
+      }
+      const [sx, sy] = toScreen([tx * size, ty * size]);
+      im.setAttribute('x', sx.toFixed(1)); im.setAttribute('y', sy.toFixed(1));
+      im.setAttribute('width', (size * view.s + 0.6).toFixed(1)); im.setAttribute('height', (size * view.s + 0.6).toFixed(1));
+    }
+  }
+  for (const [key, im] of tiles.els) if (!want.has(key)) { im.remove(); tiles.els.delete(key); }
+}
+
+/* ---------- overlay: sketch, zones, sites, you */
+const pathOf = (pts) => pts.map((p, i) => { const [x, y] = toScreen(p); return `${i ? 'L' : 'M'}${x.toFixed(1)} ${y.toFixed(1)}`; }).join('');
+function shardMark(f) {   // a peridot shard floating over the pin; it glows and pulses when you are near or on site
+  const r = frec(f.id), near = r?.arrived || (fixFresh() && f.zone && distM([loc.fix.lat, loc.fix.lon], [f.zone.lat, f.zone.lon]) < Math.max(150, f.zone.r * 3));
+  return `<g class="mk-shard${near ? ' near' : ''}" transform="translate(0 -55)">${near ? '<circle class="halo" r="15"/>' : ''}<g class="b"><path d="M0 -13 C 7 -6 7 6 0 13 C -7 6 -7 -6 0 -13 Z"/><path class="cut" d="M0 -7 C 3.4 -3 3.4 3 0 7 C -3.4 3 -3.4 -3 0 -7 Z M0 -13 V-7 M0 7 V13 M-5.6 0 H-2.6 M2.6 0 H5.6"/><path class="hl" d="M-1.6 -8.2 C -0.9 -9.6 -0.4 -10.4 0 -11 C -0.3 -8.6 -0.9 -6.8 -1.9 -5.4 Z"/></g></g>`;
+}
+function siteState(f) {
+  if (f.id === 'A') return fieldSave().assembled ? 'done' : partsHome() === 3 ? 'open' : 'locked';
+  const r = frec(f.id);
+  return r?.done ? 'done' : r?.arrived ? 'here' : 'open';
+}
+const perf = { draws: 0, writes: 0, tileWrites: 0, ms: 0 };
+let drawQueued = false, lastOver = '', lastTileView = '';
+function requestDraw() { if (drawQueued) return; drawQueued = true; requestAnimationFrame(() => { drawQueued = false; drawMap(); }); }
+function drawMap() {
+  if (!mapW) return;
+  const t0 = performance.now(); perf.draws++;
+  const vkey = `${view.cx.toFixed(1)},${view.cy.toFixed(1)},${view.s.toFixed(5)},${mapW},${mapH},${tiles.ok}`;
+  if (vkey !== lastTileView) { lastTileView = vkey; drawTiles(); perf.tileWrites++; }
+  const out = [];
+  const sketch = tiles.ok !== true;
+  if (sketch) {
+    for (const r of SK.rivers) out.push(`<path class="sk-river" d="${pathOf(r.w)}"/>`);
+    for (const r of SK.roads) out.push(`<path class="sk-road-c" d="${pathOf(r)}"/><path class="sk-road" d="${pathOf(r)}"/>`);
+    for (const l of SK.labels) {
+      if (l.k === 'place' && view.s > 0.9) continue;
+      const [x, y] = toScreen(l.w); out.push(`<text class="sk-label ${l.k}" x="${x.toFixed(1)}" y="${y.toFixed(1)}">${esc(l.t)}</text>`);
+    }
+  }
+  const sites = [...FIELD, ASSEMBLY].filter((f) => f.zone && !(f.hidden && !frec(f.id)?.arrived && !(fixFresh() && distM([loc.fix.lat, loc.fix.lon], [f.zone.lat, f.zone.lon]) < 60) && !SURVEY));
+  // zones (true size)
+  for (const f of sites) {
+    const [x, y] = toScreen(siteW(f)), r = f.zone.r / MPP * view.s;
+    if (r < 6) continue;
+    const inside = dwellSince[f.id] ? 'inside' : '';
+    out.push(`<circle class="zone ${siteState(f)} ${inside}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(1)}"/>`);
+  }
+  const tgt = targetSite();
+  // site markers; town sites merge into one when zoomed far out
+  const merged = view.s < 0.12;
+  const townDone = FIELD.filter((f) => f.ch === 1 && fieldDone(f.id)).length;
+  if (merged) {
+    const t = W(42.5630, 19.8300), [x, y] = toScreen(t);
+    out.push(`<g class="mk cluster" data-act="zoomtown" transform="translate(${x.toFixed(1)} ${y.toFixed(1)})"><circle r="22"/><text y="6">${townDone}/8</text></g>`);
+    out.push(`<text class="mk-name" x="${x.toFixed(1)}" y="${(y + 40).toFixed(1)}">Gusinje town</text>`);
+  }
+  for (const f of sites) {
+    if (merged && f.ch === 1) continue;
+    const [x, y] = toScreen(siteW(f)), st = siteState(f), sel = f.id === selectedId || f.id === tgt?.id ? 'sel' : '';
+    const label = f.id === 'A' ? '★' : f.id;
+    const shard = f.id !== 'A' && !frec(f.id)?.look ? shardMark(f) : '';
+    out.push(`<g class="mk ${st} ${sel}" data-act="open:${f.id}" transform="translate(${x.toFixed(1)} ${y.toFixed(1)})" role="button" aria-label="${esc(f.title)}${shard ? ': a peridot shard is here' : ''}">${shard}<path d="M0 -40 C 14 -40 20 -30 20 -21 C 20 -9 0 0 0 0 C 0 0 -20 -9 -20 -21 C -20 -30 -14 -40 0 -40 Z"/><text y="-15">${st === 'done' ? '✓' : label}</text></g>`);
+    if (view.s > 0.5 || (!merged && f.ch !== 1)) out.push(`<text class="mk-name" x="${x.toFixed(1)}" y="${(y + 18).toFixed(1)}">${esc(f.title)}</text>`);
+  }
+  const html = out.join('');
+  if (html !== lastOver) { $('map-over').innerHTML = html; lastOver = html; perf.writes++; }
+  drawMe(tgt);
+  $('map-sketch-note').hidden = !sketch;
+  $('map-credit').hidden = !tiles.ok;
+  perf.ms += performance.now() - t0;
+}
+
+/* ---------- you: dot, accuracy, heading and the line to the target, updated in place (they change every fix) */
+const ME = {};
+for (const [k, tag, cls] of [['aim', 'line', 'aimline'], ['acc', 'circle', 'me-acc'], ['cone', 'path', 'me-cone'], ['dot', 'circle', 'me-dot']]) {
+  ME[k] = document.createElementNS('http://www.w3.org/2000/svg', tag); ME[k].setAttribute('class', cls); $('map-me').appendChild(ME[k]);
+}
+ME.cone.setAttribute('d', 'M0 0 L-16 -44 A 46 46 0 0 1 16 -44 Z'); ME.dot.setAttribute('r', '9');
+const meLast = {};
+function setA(el, key, attrs) {   // write only what changed
+  const prev = meLast[key] || {}; let n = 0;
+  for (const [a, v] of Object.entries(attrs)) if (prev[a] !== v) { el.setAttribute(a, v); prev[a] = v; n++; }
+  meLast[key] = prev; if (n) perf.writes++;
+}
+function show(el, key, on) { if (meLast[key + '#'] !== on) { el.style.display = on ? '' : 'none'; meLast[key + '#'] = on; } }
+function drawMe(tgt) {
+  const on = !!fixFresh();
+  show(ME.dot, 'dot', on); show(ME.acc, 'acc', on);
+  const live = on && orient.compass && performance.now() - orient.last < 3000;
+  show(ME.cone, 'cone', live);
+  show(ME.aim, 'aim', on && !!tgt?.zone);
+  if (!on) return;
+  const [x, y] = toScreen(W(loc.fix.lat, loc.fix.lon)), X = x.toFixed(1), Y = y.toFixed(1);
+  setA(ME.dot, 'dot', { cx: X, cy: Y });
+  setA(ME.acc, 'acc', { cx: X, cy: Y, r: Math.max(10, loc.fix.acc / MPP * view.s).toFixed(0) });
+  if (live) setA(ME.cone, 'cone', { transform: `translate(${X} ${Y}) rotate(${Math.round(orient.heading)})` });
+  if (tgt?.zone) { const b = toScreen(siteW(tgt)); setA(ME.aim, 'aim', { x1: X, y1: Y, x2: b[0].toFixed(1), y2: b[1].toFixed(1) }); }
+}
+
+/* ---------- pan, zoom, tap */
+const ptrs = new Map(); let gesture = null, moved = 0;
+mapEl.addEventListener('pointerdown', (e) => {
+  mapEl.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, [e.clientX, e.clientY]); moved = 0;
+  gesture = { cx: view.cx, cy: view.cy, s: view.s, pts: [...ptrs.values()].map((p) => [...p]) };
+});
+mapEl.addEventListener('pointermove', (e) => {
+  if (!ptrs.has(e.pointerId)) return;
+  ptrs.set(e.pointerId, [e.clientX, e.clientY]);
+  const P = [...ptrs.values()];
+  if (P.length !== gesture.pts.length) { gesture = { cx: view.cx, cy: view.cy, s: view.s, pts: P.map((p) => [...p]) }; return; }
+  if (P.length === 1) {
+    const dx = P[0][0] - gesture.pts[0][0], dy = P[0][1] - gesture.pts[0][1];
+    moved = Math.max(moved, Math.hypot(dx, dy));
+    if (moved < 6) return;
+    view.follow = false; view.cx = gesture.cx - dx / view.s; view.cy = gesture.cy - dy / view.s;
+  } else {
+    const d0 = Math.hypot(gesture.pts[0][0] - gesture.pts[1][0], gesture.pts[0][1] - gesture.pts[1][1]);
+    const d1 = Math.hypot(P[0][0] - P[1][0], P[0][1] - P[1][1]);
+    const m0 = [(gesture.pts[0][0] + gesture.pts[1][0]) / 2, (gesture.pts[0][1] + gesture.pts[1][1]) / 2];
+    const m1 = [(P[0][0] + P[1][0]) / 2, (P[0][1] + P[1][1]) / 2];
+    moved = 99; view.follow = false;
+    const s = clamp(gesture.s * d1 / Math.max(1, d0), 0.004, 4);
+    const r = mapEl.getBoundingClientRect();
+    const wx = (m0[0] - r.left - mapW / 2) / gesture.s + gesture.cx, wy = (m0[1] - r.top - mapH / 2) / gesture.s + gesture.cy;
+    view.s = s; view.cx = wx - (m1[0] - r.left - mapW / 2) / s; view.cy = wy - (m1[1] - r.top - mapH / 2) / s;
+  }
+  updateFollowBtn(); requestDraw();
+});
+const endPtr = (e) => {
+  if (!ptrs.has(e.pointerId)) return;
+  ptrs.delete(e.pointerId);
+  if (!ptrs.size && moved < 6) {
+    const hit = document.elementFromPoint(e.clientX, e.clientY)?.closest('[data-act]');
+    if (hit) { sound('tap'); mapTap(hit.dataset.act); }
+  }
+  gesture = { cx: view.cx, cy: view.cy, s: view.s, pts: [...ptrs.values()].map((p) => [...p]) };
+};
+mapEl.addEventListener('pointerup', endPtr); mapEl.addEventListener('pointercancel', endPtr);
+mapEl.addEventListener('wheel', (e) => { e.preventDefault(); const r = mapEl.getBoundingClientRect(); zoomAt(e.clientX - r.left, e.clientY - r.top, Math.exp(-e.deltaY * 0.0015)); }, { passive: false });
+function zoomAt(sx, sy, k) {
+  const [wx, wy] = toWorld(sx, sy);
+  view.s = clamp(view.s * k, 0.004, 4);
+  view.cx = wx - (sx - mapW / 2) / view.s; view.cy = wy - (sy - mapH / 2) / view.s;
+  view.follow = false; updateFollowBtn(); requestDraw();
+}
+function mapTap(act) {
+  if (act === 'zoomtown') { animateTo(W(42.5630, 19.8290), 0.9); return; }
+  if (act.startsWith('open:')) { const id = act.slice(5); selectedId = id; requestDraw(); fieldAction(`open:${id}`); }
+}
+let anim = 0;
+function animateTo([x, y], s, ms = reduceMotion ? 0 : 600) {
+  cancelAnimationFrame(anim);
+  const a = { cx: view.cx, cy: view.cy, s: view.s }, t0 = performance.now();
+  const step = (now) => {
+    const k = ms ? clamp((now - t0) / ms, 0, 1) : 1, e = 1 - (1 - k) ** 3;
+    const ls = Math.log(a.s) + (Math.log(s) - Math.log(a.s)) * e;
+    view.s = Math.exp(ls); view.cx = a.cx + (x - a.cx) * e; view.cy = a.cy + (y - a.cy) * e;
+    drawMap(); if (k < 1) anim = requestAnimationFrame(step);
+  };
+  anim = requestAnimationFrame(step);
+}
+function resizeMap() { const r = mapEl.getBoundingClientRect(); mapW = r.width; mapH = r.height; svg.setAttribute('viewBox', `0 0 ${mapW} ${mapH}`); drawMap(); }
+window.addEventListener('resize', resizeMap);
+
+/* ---------- following you */
+function updateFollowBtn() { $('btn-me').setAttribute('aria-pressed', String(view.follow)); }
+$('btn-me').addEventListener('click', () => {
+  sound('tap');
+  if (!fieldOn || loc.state === 'off' || loc.state === 'denied' || loc.state === 'unavailable') { startLocation(); }
+  view.follow = true; updateFollowBtn();
+  if (fixFresh()) animateTo(W(loc.fix.lat, loc.fix.lon), Math.max(view.s, 1.1)); else toast('Finding your position…');
+});
+$('btn-plus').addEventListener('click', () => zoomAt(mapW / 2, mapH / 2, 1.6));
+$('btn-minus').addEventListener('click', () => zoomAt(mapW / 2, mapH / 2, 1 / 1.6));
+
+/* the hooks the field logic calls */
+function refreshFieldMarkers() { updateTop(); requestDraw(); }
+function rebuildFieldMarkers() { requestDraw(); }
+let firstFix = true;
+function placePlayer() {
+  if (fixFresh() && (view.follow || firstFix)) {
+    const p = W(loc.fix.lat, loc.fix.lon);
+    if (firstFix) {   // first fix: show you and the nearest site together
+      firstFix = false; view.follow = false; updateFollowBtn();
+      const t = targetSite(), pts = [p, ...(t ? [siteW(t)] : [])];
+      const keep = { ...view }; fitTo(pts, 90); const goal = { cx: view.cx, cy: view.cy, s: Math.min(view.s, 1.6) }; Object.assign(view, keep);
+      animateTo([goal.cx, goal.cy], goal.s); return;
+    }
+    view.cx = p[0]; view.cy = p[1];
+  }
+  requestDraw();
+}
+function flyToField(id) {
+  const f = id === 'A' ? ASSEMBLY : FIELD_BY_ID[id]; if (!f?.zone) return;
+  selectedId = id; view.follow = false; updateFollowBtn();
+  animateTo(siteW(f), Math.max(view.s, f.ch === 1 ? 1.4 : 0.8));
+}
+
+/* ---------- the guide bar: where to go next */
+function targetSite() {
+  const pick = selectedId && (selectedId === 'A' ? ASSEMBLY : FIELD_BY_ID[selectedId]);
+  if (pick && pick.zone && !(pick.id === 'A' ? fieldSave().assembled : fieldDone(pick.id))) return pick;
+  if (!fixFresh()) return null;
+  const me = [loc.fix.lat, loc.fix.lon];
+  let best = null, bd = Infinity;
+  for (const f of [...FIELD, ...(partsHome() === 3 && !fieldSave().assembled ? [ASSEMBLY] : [])]) {
+    if (!f.zone || f.hidden || (f.id !== 'A' && fieldDone(f.id))) continue;
+    const d = distM(me, [f.zone.lat, f.zone.lon]); if (d < bd) { bd = d; best = f; }
+  }
+  return best;
+}
+const guideEl = $('guide');
+let arrowAngle = null;
+function updateFieldChip() {
+  const show = app === 'map' && !card && !arOpen;
+  $('dock').hidden = !show;
+  $('map-tools').hidden = !show;
+  if (!show) return;
+  const arrow = $('g-arrow'), ring = $('g-ring');
+  let kicker = '', title = '', line = '', act = 'f:list', rot = null, k = 0;
+  if (!fieldOn || loc.state === 'off') { kicker = 'Start'; title = 'Turn on location'; line = 'The game follows you from site to site.'; act = 'f:loc-on'; }
+  else if (loc.state === 'asking' || (loc.state === 'on' && !fixFresh())) { kicker = 'GPS'; title = 'Finding your position…'; line = 'Stand in the open for a moment.'; }
+  else if (loc.state === 'denied') { kicker = 'Location blocked'; title = 'Use the plaque codes'; line = 'Every site has a plaque with a 4-character code.'; act = 'f:code'; }
+  else if (loc.state === 'unavailable') { kicker = 'No GPS'; title = 'Use the plaque codes'; line = 'Every site has a plaque with a 4-character code.'; act = 'f:code'; }
+  else {
+    const here = [...FIELD, ASSEMBLY].find((f) => dwellSince[f.id]);
+    if (arrivedPrompt) {
+      const a = arrivedPrompt === 'A' ? ASSEMBLY : FIELD_BY_ID[arrivedPrompt];
+      kicker = 'You’re here'; title = a.title; line = 'Tap to start'; act = `f:open:${arrivedPrompt}`; k = 1;
+    } else if (here && !(here.id === 'A' ? fieldSave().arrivedA : frec(here.id)?.arrived)) {
+      const z = zoneOf(here), left = Math.max(0, Math.ceil(z.dwell - (Date.now() - dwellSince[here.id]) / 1000));
+      kicker = 'Arriving'; title = here.title; line = left ? `Stay here ${left} s` : 'Arrived'; act = `f:open:${here.id}`;
+      k = 1 - left / z.dwell;
+    } else {
+      const t = targetSite();
+      if (t) {
+        const me = [loc.fix.lat, loc.fix.lon], b = bearingDeg(me, [t.zone.lat, t.zone.lon]), d = distM(me, [t.zone.lat, t.zone.lon]);
+        const done = t.id === 'A' ? false : frec(t.id)?.arrived;
+        kicker = done ? 'Continue' : t.id === selectedId ? 'Your target' : 'Nearest site';
+        title = t.title; act = `f:open:${t.id}`;
+        line = d <= t.zone.r ? (loc.fix.acc > t.zone.acc ? `You’re close · waiting for better GPS (±${Math.round(loc.fix.acc)} m)` : 'You’re in the zone') : `${fmtDist(d)} ${dirWord(b)}${loc.fix.acc > 30 ? ` · GPS ±${Math.round(loc.fix.acc)} m` : ''}`;
+        const live = orient.compass && performance.now() - orient.last < 3000;
+        rot = live ? b - orient.heading : b;
+      } else if (FIELD.every((f) => f.hidden || !f.zone || fieldDone(f.id))) { kicker = 'Well done'; title = 'All mapped sites found'; line = 'Open the list for the rest.'; }
+      else { kicker = 'Sites'; title = 'Pick a site on the map'; line = 'Or open the list.'; }
+    }
+  }
+  if (loc.sim) kicker = `[test] ${kicker}`;
+  $('g-kicker').textContent = kicker; $('g-title').textContent = title; $('g-line').textContent = line;
+  guideEl.dataset.act = act;
+  arrow.toggleAttribute('hidden', rot == null);
+  if (rot != null) { arrowAngle = arrowAngle == null ? rot : arrowAngle + wrapDeg(rot - arrowAngle); arrow.style.transform = `rotate(${arrowAngle.toFixed(1)}deg)`; }
+  ring.hidden = !k; ring.style.setProperty('--k', k.toFixed(3));
+  $('g-icon').toggleAttribute('hidden', rot != null || !!k);
+}
+guideEl.addEventListener('click', () => { sound('tap'); fieldAction(guideEl.dataset.act.slice(2)); });
+
+/* the top bar: parts and points */
+function updateTop() {
+  const fs = fieldSave();
+  $('top-parts').innerHTML = FIELD_CHAPTERS.map((c) => `<li class="${fs.ch[c.n] ? 'got' : ''}" style="--pc:${c.color}" title="${esc(c.part)}">${PART_ICON[c.n]}</li>`).join('');
+  $('top-points').textContent = fmt(fieldTotal());
+  $('top-done').textContent = `${FIELD.filter((f) => fieldDone(f.id)).length}/${FIELD.length} sites`;
+}
+$('btn-sites').addEventListener('click', () => { sound('tap'); fieldCard(); });
+$('btn-code').addEventListener('click', () => { sound('tap'); codeCard(null); });
+$('top-pts-btn').addEventListener('click', () => { sound('tap'); fieldCard(); });
+
+/* ---------------------------------------------------------------- back to the start screen (index.html, next to this page) */
+$('btn-home').addEventListener('click', async (e) => {
+  e.preventDefault(); sound('tap');
+  let url = './';
+  try { const r = await fetch('./', { method: 'HEAD', cache: 'no-store' }); if (!r.ok) url = 'index.html'; } catch { url = 'index.html'; }
+  location.href = url;
+});
+
+/* ================================================================ TEST MODE: play anywhere
+   Turned on from the intro or the sites list (or field.html?test). It keeps its own progress record, so the real game and the
+   start page are not touched, and never uses the real GPS: you get a pretend position near a site and walk it with the
+   joystick on the map (or W A S D), or with the Walk button in the camera view, which walks the way the phone faces. The
+   camera and the compass are real, so on a phone you can try finding and catching shards in a room. Arriving takes 5 s. */
+const testWalk = { vx: 0, vy: 0, forward: 0 };   // m/s east and north; forward: 1 or −1 in the facing direction
+function testMove(dE, dN) {
+  if (!loc.sim || !loc.fix) return;
+  const lat = loc.fix.lat + dN / 110540, lon = loc.fix.lon + dE / (111320 * Math.cos(loc.fix.lat * DEG));
+  loc.fix = loc.last = { lat, lon, acc: 6, t: Date.now() }; loc.recent = [loc.fix];
+  store.set('peridot.field.testpos', JSON.stringify([lat, lon]));
+  placePlayer(); fieldTick(); requestDraw();
+}
+setInterval(() => {
+  if (!TEST || !loc.sim) return;
+  let vx = testWalk.vx, vy = testWalk.vy;
+  if (testWalk.forward) { const h = orient.heading * DEG; vx = Math.sin(h) * 1.4 * testWalk.forward; vy = Math.cos(h) * 1.4 * testWalk.forward; }
+  if (vx || vy) testMove(vx / 10, vy / 10);
+}, 100);
+function testCard() {
+  fieldAccent(null);
+  const sites = [...FIELD, ASSEMBLY].filter((f) => f.zone);
+  showCard({
+    field: 'test', kicker: 'Test mode', title: 'Play anywhere',
+    body: ['Try the field game at home: your real progress is kept apart and the start page doesn’t see it.',
+      'Pick a site: you start 40 m from it. Walk with the joystick on the map, or with the Walk button in the camera view (it walks the way your phone faces). Turn by turning your phone; on a computer, drag. Arriving takes 5 seconds here.'],
+    list: `<ul class="sheet-list field-list">${sites.map((f) => `<li><button data-id="f:near:${f.id}"><span class="fnum">${f.id === 'A' ? '★' : f.id}</span><span class="n">${esc(f.title)}<small>${esc(f.id === 'A' ? 'Visitor centre' : statusOf(f).text)}</small></span></button></li>`).join('')}</ul>`,
+    actions: [{ id: 'f:test-reset', label: 'Reset test progress' }, { id: 'f:test-exit', label: 'Leave test mode' }, ...(loc.sim ? [{ id: 'close', label: 'Close' }] : [])],
+  });
+}
+function updateTestUI() {
+  const on = TEST && loc.sim;
+  $('test-bar').hidden = !TEST; $('joy').hidden = !on; $('ar-walk').hidden = !on;
+}
+if (TEST) {
+  document.body.classList.add('test-mode');
+  $('test-bar').addEventListener('click', (e) => { const b = e.target.closest('[data-test]'); if (b) fieldAction(b.dataset.test); });
+  // joystick: drag the knob; up is north on the map
+  const joy = $('joy'), knob = $('joy-knob'); let jd = null;
+  const joyMove = (e) => {
+    const r = joy.getBoundingClientRect(), R = r.width / 2 - 14;
+    let dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2); const m = Math.hypot(dx, dy);
+    if (m > R) { dx *= R / m; dy *= R / m; }
+    knob.style.transform = `translate(${dx}px, ${dy}px)`;
+    const k = Math.hypot(dx, dy) / R, sp = k < 0.15 ? 0 : 3 * k;   // up to 3 m/s
+    testWalk.vx = sp * dx / (Math.hypot(dx, dy) || 1); testWalk.vy = -sp * dy / (Math.hypot(dx, dy) || 1);
+  };
+  joy.addEventListener('pointerdown', (e) => { jd = true; joy.setPointerCapture(e.pointerId); view.follow = true; updateFollowBtn(); joyMove(e); e.stopPropagation(); });
+  joy.addEventListener('pointermove', (e) => { if (jd) joyMove(e); });
+  const joyEnd = () => { jd = null; knob.style.transform = ''; testWalk.vx = testWalk.vy = 0; };
+  joy.addEventListener('pointerup', joyEnd); joy.addEventListener('pointercancel', joyEnd);
+  // walk button in the camera view: hold to walk the way the phone faces
+  const walk = $('ar-walk');
+  walk.addEventListener('pointerdown', (e) => { e.preventDefault(); walk.setPointerCapture(e.pointerId); testWalk.forward = 1; walk.classList.add('on'); });
+  ['pointerup', 'pointercancel', 'lostpointercapture'].forEach((ev) => walk.addEventListener(ev, () => { testWalk.forward = 0; walk.classList.remove('on'); }));
+  // keyboard: W A S D on the map (north west south east); W / S in the camera view (forward, back)
+  const keys = new Set();
+  const keyWalk = () => {
+    if (arOpen) { testWalk.forward = keys.has('w') ? 1 : keys.has('s') ? -1 : 0; testWalk.vx = testWalk.vy = 0; return; }
+    testWalk.forward = 0; testWalk.vx = (keys.has('d') ? 2 : 0) - (keys.has('a') ? 2 : 0); testWalk.vy = (keys.has('w') ? 2 : 0) - (keys.has('s') ? 2 : 0);
+    if (keys.size) { view.follow = true; updateFollowBtn(); }
+  };
+  window.addEventListener('keydown', (e) => { const k = e.key.toLowerCase(); if (!'wasd'.includes(k) || k.length !== 1 || e.target.closest('input, textarea')) return; keys.add(k); keyWalk(); });
+  window.addEventListener('keyup', (e) => { keys.delete(e.key.toLowerCase()); keyWalk(); });
+  try { const p = JSON.parse(store.get('peridot.field.testpos') || 'null'); if (Array.isArray(p) && p.length === 2) simulateAt(p[0], p[1]); } catch { /* */ }
+}
+
+/* ================================================================ CATCH THE SHARD (in the spirit of Pokémon GO)
+   The look step at a site ends with a peridot shard floating in the camera view, fixed to a compass bearing (it stays put
+   while you turn). Flick the crystal orb up at it; a throw that lands inside the shrinking gold ring earns a bonus (Nice,
+   Great, Excellent). The orb drops and wobbles: the shard is caught, or it breaks free (the third hit always holds).
+   It only happens on site: the look step opens after the GPS zone or the plaque code. three.js loads on demand from the
+   same CDN as the start page (the browser shares the cache); without it, or without WebGL, the shard is simply tapped.
+   With GPS (like the Trail AR, no WebXR needed, so iPhones too): the shard first waits at its real spot in the site (zone
+   centre or a spot set in survey mode) under a pillar of green light. Walk to it; within 10–20 m (more when GPS is poor) it
+   flies down and lands on the ground a few metres in front of you, and the catch begins. Without GPS the scan / look-around
+   step finds it, and it lands the same way. The ground is a virtual plane at phone height below the camera. */
+const THREE_URL = 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+let threeP = null;
+function loadThree() { if (!threeP) threeP = import(THREE_URL).catch((e) => { threeP = null; throw e; }); return threeP; }
+function prefetchThree() { if (!threeP && !document.hidden) loadThree().catch(() => { /* offline: the shard is tapped instead */ }); }
+const withTimeout = (p, ms) => Promise.race([p, new Promise((_, no) => setTimeout(() => no(new Error('timeout')), ms))]);
+const buzz = (p) => { if (navigator.vibrate) try { navigator.vibrate(p); } catch { /* */ } };
+
+const RUNE_RING = null;   // e.g. 'catch/ring.png': an engraved ring picture to replace the plain outer ring (not made yet)
+const GROUND = { eye: 1.45, ahead: 3.0, hover: 0.5 };   // phone height above the ground; where the shard lands; how high it floats
+const CATCH = { dist: 2.4, size: 0.72, hitR: 0.42, orbR: 0.1, ringMax: 0.6, ringMin: 0.15, period: 1.9, flick: 520, g: 9.8 };
+const THROWS = [{ name: 'Excellent', max: 0.42, bonus: 50, p: 0.45 }, { name: 'Great', max: 0.68, bonus: 25, p: 0.3 }, { name: 'Nice', max: 1.01, bonus: 10, p: 0.15 }];
+const MISS_LINES = ['Whoosh, just past it! Drag or flick straight at the shard.', 'Close! Try again.', 'Missed. Let go of the orb right on the shard.'];
+const ESCAPE_LINES = ['It broke free! Once more.', 'Almost had it! Again!', 'It wriggled out. Throw again!'];
+const cat = { on: false, T: null, gl: null, failed: false, state: 'off', f: null, b: 0, e: 0, d: 2.4, spot: null, sp: null, land: null, staleT: 0, sayT: 0, ox: 0, oy: 0, otx: 0, oty: 0, nextDodge: 0, ring: 1, ringT0: 0,
+  throws: 0, misses: 0, escapes: 0, fly: null, seq: null, w: 0, h: 0, prev: 0 };
+const orbEl = $('ar-orb'), popEl = $('ar-pop'), arrowEl = $('ar-arrow'), distEl = $('ar-dist');
+
+/* ---------- the scene: a faceted marquise peridot, its glow and sparkles, the ring, the thrown orb, a flash and a burst */
+function glowTexture(T) {
+  const cv = document.createElement('canvas'); cv.width = cv.height = 128;
+  const g = cv.getContext('2d'), gr = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+  gr.addColorStop(0, 'rgba(255,255,255,1)'); gr.addColorStop(0.25, 'rgba(255,255,255,0.55)'); gr.addColorStop(1, 'rgba(255,255,255,0)');
+  g.fillStyle = gr; g.fillRect(0, 0, 128, 128);
+  const t = new T.CanvasTexture(cv); t.colorSpace = T.SRGBColorSpace; return t;
+}
+function studioEnv(T, renderer) {   // soft white panels and a green bounce from below, for the facets to reflect
+  const env = new T.Scene();
+  env.add(new T.Mesh(new T.SphereGeometry(20, 24, 12), new T.MeshBasicMaterial({ color: 0x070b0b, side: T.BackSide })));
+  const panel = (w, h, hex, k, p) => {
+    const m = new T.Mesh(new T.PlaneGeometry(w, h), new T.MeshBasicMaterial({ color: new T.Color(hex).multiplyScalar(k), side: T.DoubleSide }));
+    m.position.set(...p); m.lookAt(0, 0, 0); env.add(m);
+  };
+  panel(8, 5, 0xffffff, 3.4, [-6, 7, 6]); panel(2, 10, 0xd8f0ff, 2.6, [8, 1, -3]); panel(5, 5, 0xfff4e0, 1.3, [4, 2, 8]);
+  panel(12, 3, 0x9cff3a, 0.9, [0, -9, 2]); panel(3, 3, 0xffffff, 2.2, [0, 6, -8]);
+  for (let i = 0; i < 16; i++) {   // small bright windows all round, so many facets catch a glint
+    const a = i * 2.39996, y = 1 - (i + 0.5) / 8, r = Math.sqrt(Math.max(0, 1 - y * y));
+    panel(1.1, 1.1, i % 3 ? 0xffffff : 0xeaffc0, 2.6, [Math.cos(a) * r * 9, y * 9, Math.sin(a) * r * 9]);
+  }
+  const pm = new T.PMREMGenerator(renderer), tex = pm.fromScene(env, 0.03).texture; pm.dispose();
+  return tex;
+}
+function gemGeometry(T) {   // a brilliant marquise: pointed-oval girdle (two arcs through the tips), star and kite facets on the crown, a table, a keel below
+  const n = 22, h = 0.5, w = 0.25, R = (h * h + w * w) / (2 * w), c = R - w;
+  const rim = (t) => {   // t in [0, 1): right arc from the top tip down, then the left arc back up
+    t = ((t % 1) + 1) % 1;
+    if (t < 0.5) { const y = h * (1 - 4 * t); return [Math.sqrt(Math.max(0, R * R - y * y)) - c, y]; }
+    const y = -h + 4 * h * (t - 0.5); return [c - Math.sqrt(Math.max(0, R * R - y * y)), y];
+  };
+  const ring = (k, sx, sy, z, half) => Array.from({ length: n }, (_, i) => { const [x, y] = rim((i + (half ? 0.5 : 0)) / n); return new T.Vector3(x * sx, y * sy, z); });
+  const G = ring(0, 1, 1, 0, false);                 // girdle
+  const M = ring(0, 0.78, 0.82, 0.12, true);          // crown: star points, half a step round
+  const Tb = ring(0, 0.46, 0.56, 0.19, false);        // table edge
+  const Q = ring(0, 0.62, 0.74, -0.17, true);          // pavilion: kite points
+  const K = ring(0, 0.08, 0.62, -0.32, false);         // keel
+  const C = new T.Vector3(0, 0, -0.03), top = new T.Vector3(0, 0, 0.2), pos = [];
+  const tri = (a, b, d) => {   // wind every facet outwards
+    const nrm = new T.Vector3().subVectors(b, a).cross(new T.Vector3().subVectors(d, a));
+    const ctr = new T.Vector3().add(a).add(b).add(d).multiplyScalar(1 / 3).sub(C);
+    if (nrm.dot(ctr) < 0) [b, d] = [d, b];
+    pos.push(a.x, a.y, a.z, b.x, b.y, b.z, d.x, d.y, d.z);
+  };
+  for (let i = 0; i < n; i++) {
+    const j = (i + 1) % n, p = (i + n - 1) % n;
+    tri(G[i], G[j], M[i]); tri(M[p], G[i], M[i]);        // crown, girdle facets
+    tri(M[p], M[i], Tb[i]); tri(Tb[i], M[i], Tb[j]);     // crown, star facets
+    tri(Tb[i], Tb[j], top);                              // table
+    tri(G[i], G[j], Q[i]); tri(Q[p], G[i], Q[i]);        // pavilion, girdle facets
+    tri(Q[p], Q[i], K[i]); tri(K[i], Q[i], K[j]);        // pavilion, main facets to the keel
+  }
+  const g = new T.BufferGeometry(); g.setAttribute('position', new T.Float32BufferAttribute(pos, 3)); g.computeVertexNormals();
+  return g;
+}
+function buildCatch(T) {
+  const renderer = new T.WebGLRenderer({ canvas: $('ar-gl'), alpha: true, antialias: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2)); renderer.setClearColor(0x000000, 0);
+  renderer.outputColorSpace = T.SRGBColorSpace; renderer.toneMapping = T.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.0;
+  const scene = new T.Scene(); scene.environment = studioEnv(T, renderer);
+  const cam = new T.PerspectiveCamera(50, 1, 0.03, 60); cam.rotation.order = 'YXZ'; scene.add(cam);
+  const key = new T.DirectionalLight(0xffffff, 1.5); key.position.set(-1.5, 2, 1); key.target.position.set(0, 0, -3); cam.add(key, key.target);   // lit from where you stand
+  scene.add(new T.HemisphereLight(0xe8f4ff, 0x2a3a20, 0.9));
+  const glowTex = glowTexture(T);
+  const add = (color, opacity, scale, parent) => {
+    const s = new T.Sprite(new T.SpriteMaterial({ map: glowTex, color, transparent: true, opacity, blending: T.AdditiveBlending, depthWrite: false }));
+    s.scale.setScalar(scale); parent.add(s); return s;
+  };
+  const root = new T.Group(), spin = new T.Group(); root.add(spin); scene.add(root);
+  const gemMat = new T.MeshPhysicalMaterial({ color: 0x5fae0e, emissive: 0x2a6e03, emissiveIntensity: 0.42, roughness: 0.02, metalness: 0.25, flatShading: true, clearcoat: 1, clearcoatRoughness: 0.02, iridescence: 0.2, iridescenceIOR: 1.5, envMapIntensity: 3.2 });
+  const gem = new T.Mesh(gemGeometry(T), gemMat); gem.scale.setScalar(CATCH.size); spin.add(gem);
+  const glow = add(0x7dff3a, 0.45, CATCH.size * 2.0, root);
+  const sparks = Array.from({ length: 8 }, (_, i) => {
+    const s = add(0xffffff, 0, 0.09, root), a = i / 8 * Math.PI * 2;
+    s.userData = { a, r: CATCH.size * (0.42 + 0.25 * Math.random()), y: (Math.random() - 0.5) * CATCH.size * 0.9, sp: 2 + Math.random() * 3, ph: Math.random() * 6 };
+    return s;
+  });
+  const ringG = new T.Group(); scene.add(ringG);
+  const ringMat = (color, opacity) => new T.MeshBasicMaterial({ color, transparent: true, opacity, depthWrite: false, depthTest: false, side: T.DoubleSide });
+  const ringOut = new T.Mesh(new T.RingGeometry(0.965, 1, 80), ringMat(0xffffff, 0.4)); ringOut.scale.setScalar(CATCH.ringMax);
+  const ringIn = new T.Mesh(new T.RingGeometry(0.9, 1, 80), ringMat(0xe5b971, 0.95));
+  const ringGlow = new T.Mesh(new T.RingGeometry(0.8, 1.1, 80), new T.MeshBasicMaterial({ color: 0xe5b971, transparent: true, opacity: 0.13, depthWrite: false, depthTest: false, blending: T.AdditiveBlending, side: T.DoubleSide }));
+  ringOut.renderOrder = ringIn.renderOrder = ringGlow.renderOrder = 5; ringG.add(ringOut, ringGlow, ringIn);
+  if (RUNE_RING) new T.TextureLoader().load(RUNE_RING, (tex) => {   // the engraved rune ring from the Higgsfield design replaces the plain outer ring
+    tex.colorSpace = T.SRGBColorSpace; tex.anisotropy = 4;
+    const m = new T.Mesh(new T.PlaneGeometry(2, 2), new T.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false, depthTest: false, side: T.DoubleSide }));
+    m.renderOrder = 4; m.scale.setScalar(CATCH.ringMax * 1.12); ringG.add(m); ringOut.visible = false; cat.gl.runes = m;
+  }, undefined, () => { /* no picture: the plain ring stays */ });
+  const orb = new T.Group(); orb.visible = false; scene.add(orb);
+  const orbBall = new T.Mesh(new T.SphereGeometry(CATCH.orbR, 32, 16), new T.MeshPhysicalMaterial({ color: 0xa8f2e4, emissive: 0x1d6f5c, emissiveIntensity: 0.5, roughness: 0.04, metalness: 0, transparent: true, opacity: 0.78, clearcoat: 1, envMapIntensity: 2.6 }));
+  orb.add(orbBall);
+  const orbGlow = add(0x9dfff0, 0.85, CATCH.orbR * 5, orb);
+  const flash = add(0xffffff, 0, 1.2, scene);
+  // a pillar of green light over the waiting shard, and light and shade on the ground under it
+  const pcv = document.createElement('canvas'); pcv.width = 64; pcv.height = 256;
+  { const g = pcv.getContext('2d'), img = g.createImageData(64, 256);
+    for (let y = 0; y < 256; y++) for (let x = 0; x < 64; x++) {
+      const a = Math.pow(1 - Math.abs(x - 31.5) / 32, 2) * Math.pow(y / 255, 1.6), i = (y * 64 + x) * 4;
+      img.data[i] = img.data[i + 1] = img.data[i + 2] = 255; img.data[i + 3] = Math.round(a * 255);
+    }
+    g.putImageData(img, 0, 0); }
+  const pillarTex = new T.CanvasTexture(pcv); pillarTex.colorSpace = T.SRGBColorSpace;
+  const pillar = new T.Mesh(new T.PlaneGeometry(1, 1), new T.MeshBasicMaterial({ map: pillarTex, color: 0x8dff4a, transparent: true, opacity: 0.75, blending: T.AdditiveBlending, depthWrite: false, side: T.DoubleSide }));
+  pillar.visible = false; scene.add(pillar);
+  const flat = (color, opacity, blending) => {
+    const m = new T.Mesh(new T.PlaneGeometry(1, 1), new T.MeshBasicMaterial({ map: glowTex, color, transparent: true, opacity, blending, depthWrite: false }));
+    m.rotation.x = -Math.PI / 2; scene.add(m); return m;
+  };
+  const shade = flat(0x000000, 0.35, T.NormalBlending), pool = flat(0x7dff3a, 0.5, T.AdditiveBlending);
+  const burst = Array.from({ length: 26 }, (_, i) => { const s = add(i % 3 ? 0xb6ff4a : 0xffd27a, 0, 0.08, scene); s.userData = { v: new T.Vector3() }; return s; });
+  cat.gl = { renderer, scene, cam, root, spin, gem, gemMat, glow, sparks, ringG, ringIn, ringOut, ringGlow, runes: null, orb, orbBall, orbGlow, flash, burst, pillar, shade, pool };
+}
+
+/* ---------- starting and stopping */
+async function readyCatch(f) {   // three.js and the scene, once
+  if (cat.failed) return false;
+  try {
+    cat.T ||= await withTimeout(loadThree(), 4000);
+    if (!cat.gl) buildCatch(cat.T);
+  } catch (err) { cat.failed = true; if (DEBUG) console.warn('catch', err); return false; }
+  return arOpen && arF === f;
+}
+function resetCatch(f) {
+  Object.assign(cat, { on: true, f, autoTilt: true, ox: 0, oy: 0, otx: 0, oty: 0, throws: 0, misses: 0, escapes: 0, fly: null, seq: null, land: null, spot: null, sp: null, staleT: 0, sayT: 0, prev: 0 });
+  const G = cat.gl;
+  G.root.scale.setScalar(1); G.gem.scale.setScalar(CATCH.size); G.root.visible = true; G.glow.material.opacity = 0.8; G.orb.visible = false; G.flash.material.opacity = 0;
+  G.pillar.visible = false; G.burst.forEach((s) => { s.material.opacity = 0; });
+}
+function groundSpot(b) {   // GROUND.ahead metres along bearing b, floating GROUND.hover above the ground
+  const y = -GROUND.eye + GROUND.hover;
+  return { b, e: Math.atan2(y, GROUND.ahead) / DEG, d: Math.hypot(y, GROUND.ahead) };
+}
+/* the shard drops onto the ground ahead (bearing b) and the catch begins */
+async function startCatch(f, b) {
+  if (!(await readyCatch(f))) return false;
+  resetCatch(f); orbEl.hidden = true;
+  const to = groundSpot(b), end = anchorPos(tmpV(), to.b, to.e, to.d, 0, 0);
+  landTo(to, end.clone().add(new cat.T.Vector3(0, 2.6, 0)), 1, 900);
+  return true;
+}
+/* with GPS: the shard waits at its real spot; walk to it */
+async function startApproach(f, spot) {
+  if (!(await readyCatch(f))) return false;
+  resetCatch(f); cat.state = 'approach'; cat.spot = spot;
+  arEl.classList.add('approaching'); orbEl.hidden = true; cat.gl.pillar.visible = true;
+  $('ar-title').textContent = 'Find the shard';
+  return true;
+}
+const landRange = () => clamp(8 + (loc.fix?.acc || 10) * 0.5, 10, 20);
+function landTo(to, from, fromScale, ms) {
+  cat.state = 'land'; cat.land = { t0: performance.now(), ms, from: from.clone(), s0: fromScale, to };
+  Object.assign(cat, { b: to.b, e: to.e, d: to.d });
+  arEl.classList.remove('approaching'); distEl.hidden = true; $('ar-act').hidden = true; arrowEl.hidden = true;
+  sound('shard'); buzz(20);
+}
+function landNow() {   // from the approach: the shard flies down to you
+  if (cat.state !== 'approach') return;
+  const G = cat.gl, b = cat.sp ? (Math.atan2(cat.sp.e, cat.sp.n) / DEG + 360) % 360 : orient.heading;
+  landTo(groundSpot(b), G.root.position, G.root.scale.x, 1300);
+  say(`${CUB}: “Here it comes!”`);
+}
+function beginAim() {
+  const now = performance.now();
+  Object.assign(cat, { state: 'aim', land: null, ringT0: now / 1000, nextDodge: now + 4500 });
+  const G = cat.gl; G.root.scale.setScalar(1); G.gem.scale.setScalar(CATCH.size); G.pillar.visible = false;
+  arEl.classList.remove('approaching'); arEl.classList.add('catching'); orbEl.hidden = false; orbEl.classList.remove('gone');
+  $('ar-title').textContent = 'Catch the shard';
+  say(`${CUB}: “It landed right in front of you! Drag the crystal orb up to it and let go, or flick it. Throw while the gold ring is small for a bonus.”`);
+}
+function stopCatch() {
+  cat.on = false; cat.state = 'off'; cat.fly = cat.seq = null; orbDrag = null;
+  arEl.classList.remove('catching', 'approaching'); orbEl.hidden = true; orbEl.style.transform = ''; arrowEl.hidden = true; distEl.hidden = true; popEl.className = 'ar-pop';
+  if (cat.gl) cat.gl.renderer.clear();
+}
+function pop(text, cls = '') { popEl.textContent = text; popEl.className = 'ar-pop'; void popEl.offsetWidth; popEl.className = `ar-pop show ${cls}`; }
+function say(text) { $('ar-say').textContent = text; }
+
+/* ---------- every frame (called from the camera view's loop) */
+const tmpV = () => new cat.T.Vector3();
+function anchorPos(out, b, e, d, ox, oy) {   // bearing b and elevation e (degrees) at distance d; ox to the right, oy up (metres)
+  const B = b * DEG, E = e * DEG;
+  return out.set(Math.sin(B) * Math.cos(E) * d + Math.cos(B) * ox, Math.sin(E) * d + oy, -Math.cos(B) * Math.cos(E) * d + Math.sin(B) * ox);
+}
+function catchFrame(now, w, h) {
+  if (!cat.on || !cat.gl) return;
+  const G = cat.gl, t = now / 1000, dt = Math.min(0.05, (now - (cat.prev || now)) / 1000); cat.prev = now;
+  if (w !== cat.w || h !== cat.h) { G.renderer.setSize(w, h, false); cat.w = w; cat.h = h; }
+  const cam = G.cam, vfov = 2 * Math.atan(Math.tan(HFOV / 2 * DEG) * h / w) / DEG;
+  cam.aspect = w / h; cam.fov = vfov; cam.setViewOffset(w, h, 0, h * 0.05, w, h); cam.updateProjectionMatrix();   // the horizon at 45 % of the height, like the compass items
+  cam.rotation.set(orient.elev * DEG, -orient.heading * DEG, 0); cam.updateMatrixWorld();
+  // the shard floats at its bearing, bobs, turns, and now and then hops aside
+  if (cat.state === 'aim' && now > cat.nextDodge) dodge(now);
+  const k = Math.min(1, dt * 3); cat.ox += (cat.otx - cat.ox) * k; cat.oy += (cat.oty - cat.oy) * k;
+  // no tilt sensor (a computer, the Claude app): look down at the landed shard by itself, until the player drags the view
+  if (!orient.tilt && cat.autoTilt && !arDrag && (cat.state === 'land' || cat.state === 'aim')) orient.elev += (cat.e - orient.elev) * Math.min(1, dt * 2.5);
+  if (cat.state === 'approach') approachFrame(now, dt, w, h);
+  else if (cat.state === 'land') landFrame(now);
+  else if (!cat.seq) anchorPos(G.root.position, cat.b, cat.e, cat.d, cat.ox, cat.oy + (reduceMotion ? 0 : 0.05 * Math.sin(t * 2.1)));
+  // light and shade on the ground under the shard
+  const gy = -GROUND.eye + 0.01, sc = G.root.scale.x, lift = Math.max(0, G.root.position.y - gy);
+  G.shade.position.set(G.root.position.x, gy, G.root.position.z); G.pool.position.set(G.root.position.x, gy + 0.005, G.root.position.z);
+  G.shade.scale.setScalar(1.0 * sc); G.pool.scale.setScalar((2.0 + 0.2 * Math.sin(t * 2)) * sc);
+  const seen = G.root.visible && cat.state !== 'caught';
+  G.shade.material.opacity = seen ? 0.35 * clamp(1.6 - lift / (2 * sc), 0, 1) : 0;
+  G.pool.material.opacity = seen ? 0.7 * clamp(1.8 - lift / (2 * sc), 0, 1) * (cat.state === 'land' ? 1.8 : 1) : 0;
+  G.root.lookAt(0, 0, 0);   // the shard's face turns to you, rocking a little
+  G.spin.rotation.set(0, reduceMotion ? 0 : 0.7 * Math.sin(t * 0.9), reduceMotion ? 0 : 0.08 * Math.sin(t * 0.7));
+  if (cat.state === 'aim' || cat.state === 'fly') G.glow.material.opacity = 0.36 + 0.1 * Math.sin(t * 3);
+  for (const s of G.sparks) {
+    const u = s.userData, a = u.a + t * 0.6;
+    s.position.set(Math.cos(a) * u.r, u.y, Math.sin(a) * u.r);
+    s.material.opacity = G.root.visible && !reduceMotion ? Math.pow(Math.max(0, Math.sin(t * u.sp + u.ph)), 10) * 0.9 : 0;
+  }
+  // the ring shrinks again and again; small = a better throw (it turns peridot green in the Excellent range)
+  cat.ring = 1 - (((t - cat.ringT0) % CATCH.period) / CATCH.period) * (1 - CATCH.ringMin / CATCH.ringMax);
+  const showRing = cat.state === 'aim' || cat.state === 'fly';
+  G.ringG.visible = showRing;
+  if (showRing) {
+    G.ringIn.scale.setScalar(CATCH.ringMax * cat.ring); G.ringGlow.scale.setScalar(CATCH.ringMax * cat.ring);
+    if (G.runes) G.runes.rotation.z = reduceMotion ? 0 : t * 0.25;
+    const rc = cat.ring <= THROWS[0].max ? 0xc4f03a : cat.ring <= THROWS[1].max ? 0xe9d36a : 0xf2cf86;
+    G.ringIn.material.color.setHex(rc); G.ringGlow.material.color.setHex(rc);
+    G.ringG.position.copy(G.root.position); G.ringG.quaternion.copy(cam.quaternion);
+  }
+  updateFly(dt, now); updateSeq(now, dt);
+  // an arrow at the edge when the shard is out of sight
+  const dYaw = wrapDeg(cat.b - orient.heading), dEl = cat.e - orient.elev;
+  const off = (cat.state === 'aim' || cat.state === 'approach') && (Math.abs(dYaw) > HFOV * 0.47 || Math.abs(dEl) > vfov * 0.42);
+  arrowEl.hidden = !off;
+  if (off) {
+    let dx = dYaw / HFOV, dy = -dEl / vfov; const m = Math.hypot(dx, dy) || 1; dx /= m; dy /= m;
+    const sx = (w / 2 - 40) / Math.max(0.001, Math.abs(dx)), sy = (h * 0.32) / Math.max(0.001, Math.abs(dy)), s = Math.min(sx, sy);
+    arrowEl.style.transform = `translate(${(w / 2 + dx * s).toFixed(0)}px, ${(h * 0.45 + dy * s).toFixed(0)}px) rotate(${(Math.atan2(dy, dx) / DEG + 90).toFixed(0)}deg)`;
+  }
+  G.renderer.render(G.scene, cam);
+}
+function approachFrame(now, dt, w, h) {
+  const G = cat.gl, T = cat.T, f = cat.f, live = fixFresh();
+  if (live) {   // the spot relative to you, in metres (east, north), smoothed against GPS jitter
+    const la = loc.fix.lat * DEG, tgt = { e: (cat.spot.lon - loc.fix.lon) * 111320 * Math.cos(la), n: (cat.spot.lat - loc.fix.lat) * 110540 };
+    if (!cat.sp) cat.sp = tgt; else { const k = Math.min(1, dt * 1.2); cat.sp.e += (tgt.e - cat.sp.e) * k; cat.sp.n += (tgt.n - cat.sp.n) * k; }
+    cat.staleT = 0;
+  } else cat.staleT += dt;
+  if (!cat.sp) return;
+  const dist = Math.hypot(cat.sp.e, cat.sp.n), s = Math.max(1, Math.tan(7 * DEG) * dist / CATCH.size);   // never smaller than about 7°
+  const hover = -GROUND.eye + (GROUND.hover + 0.3) * s + (reduceMotion ? 0 : 0.08 * s * Math.sin(now / 480));
+  G.root.position.set(cat.sp.e, hover, -cat.sp.n); G.root.scale.setScalar(s);
+  cat.b = (Math.atan2(cat.sp.e, cat.sp.n) / DEG + 360) % 360; cat.e = Math.atan2(hover, Math.max(0.1, dist)) / DEG; cat.d = Math.hypot(dist, hover);
+  const P = G.pillar, H = 26;   // the pillar turns to face you
+  P.visible = true; P.scale.set(1.5 * s, H, 1); P.position.set(cat.sp.e, -GROUND.eye + H / 2, -cat.sp.n); P.rotation.set(0, Math.atan2(-cat.sp.e, cat.sp.n), 0);
+  P.material.opacity = 0.8 + 0.2 * Math.sin(now / 600);
+  // the distance over the shard
+  const top = G.root.position.clone().add(new T.Vector3(0, CATCH.size * s * 0.75, 0)).project(G.cam);
+  distEl.hidden = !(top.z < 1 && Math.abs(top.x) < 1.1 && Math.abs(top.y) < 1.1);
+  if (!distEl.hidden) { distEl.textContent = fmtDist(dist); distEl.style.transform = `translate(${((top.x + 1) / 2 * w).toFixed(0)}px, ${((1 - top.y) / 2 * h).toFixed(0)}px) translate(-50%, -100%)`; }
+  const act = $('ar-act'), near = dist <= 40 || cat.staleT > 15;   // can't get closer (a wall, a fence, no GPS)? catch it from here
+  if (act.hidden === near) { act.hidden = !near; act.textContent = 'Catch it from here'; }
+  if (now > cat.sayT) {
+    cat.sayT = now + 1500;
+    const where = f.look.what ? `by ${f.look.what}` : `at ${f.title}`;
+    say(cat.staleT > 15 ? `${CUB}: “I lost your position. Tap ‘Catch it from here’ and it will fly to you.”` : `${CUB}: “The shard is waiting ${where}, ${fmtDist(dist)} away. Walk towards the green light!”`);
+  }
+  if (live && dist <= landRange()) landNow();
+}
+function landFrame(now) {
+  const L = cat.land, G = cat.gl, k = clamp((now - L.t0) / L.ms, 0, 1), e = smooth(k);
+  const end = anchorPos(tmpV(), L.to.b, L.to.e, L.to.d, 0, 0);
+  G.root.position.copy(L.from).lerp(end, e); G.root.position.y += Math.sin(Math.PI * k) * 0.8 * (L.s0 > 1.5 ? 1 : 0);
+  G.root.scale.setScalar(lerp(L.s0, 1, e));
+  G.pillar.material.opacity *= 0.9; if (k > 0.5) G.pillar.visible = false;
+  if (k >= 1) { G.flash.position.copy(end).y -= GROUND.hover * 0.9; G.flash.material.opacity = 0.8; G.flash.scale.setScalar(1.2); setTimeout(() => { if (cat.gl) cat.gl.flash.material.opacity = 0; }, 160); beginAim(); }
+}
+function dodge(now) {
+  const side = Math.random() < 0.5 ? -1 : 1;
+  cat.otx = Math.abs(cat.otx) > 0.1 && Math.random() < 0.6 ? 0 : side * (0.22 + Math.random() * 0.3);
+  cat.oty = (Math.random() - 0.4) * 0.25;
+  cat.nextDodge = now + (reduceMotion ? 6000 : 3200) + Math.random() * 3500;
+}
+
+/* ---------- throwing: flick the orb up; the swipe's direction aims, its speed sets how far it flies */
+let orbDrag = null;
+orbEl.addEventListener('pointerdown', (e) => {
+  if (cat.state !== 'aim') return;
+  e.preventDefault(); orbEl.setPointerCapture(e.pointerId);
+  orbDrag = { x0: e.clientX, y0: e.clientY, pts: [[e.clientX, e.clientY, performance.now()]], moved: 0 };
+  orbEl.classList.add('dragging');
+});
+orbEl.addEventListener('pointermove', (e) => {
+  if (!orbDrag) return;
+  const now = performance.now(); orbDrag.pts.push([e.clientX, e.clientY, now]); if (orbDrag.pts.length > 10) orbDrag.pts.shift();
+  const dx = e.clientX - orbDrag.x0, dy = e.clientY - orbDrag.y0; orbDrag.moved = Math.max(orbDrag.moved, Math.hypot(dx, dy));
+  orbEl.style.transform = `translate(${dx}px, ${dy}px)`;
+});
+const endOrbDrag = (e) => {
+  if (!orbDrag) return;
+  const d = orbDrag; orbDrag = null; orbEl.classList.remove('dragging'); orbEl.style.transform = '';
+  if (e.type === 'pointercancel') return;
+  const now = performance.now(), recent = d.pts.filter((p) => now - p[2] < 110), a = recent[0] || d.pts[0], z = d.pts[d.pts.length - 1];
+  const dt = Math.max(0.016, (z[2] - a[2]) / 1000), vx = (z[0] - a[0]) / dt, vy = (z[1] - a[1]) / dt;
+  const tx = z[0] - d.x0, ty = z[1] - d.y0, fast = -vy >= CATCH.flick;
+  if (!fast && -ty < 40) { if (d.moved > 14) say(`${CUB}: “Drag the orb up to the shard and let go, or flick it!”`); return; }
+  if (!arrowEl.hidden) { say(`${CUB}: “First find the shard: turn the way the green arrow points.”`); return; }
+  if (fast) throwOrb(d.x0, d.y0, vx, vy);   // a flick: the aim line starts where the orb rests, in the direction of the swipe
+  else throwOrb(d.x0, d.y0, tx, ty, false, z[1]);   // dragged up and let go: a lob along the drag, as far as it was dragged
+};
+orbEl.addEventListener('pointerup', endOrbDrag); orbEl.addEventListener('pointercancel', endOrbDrag);
+orbEl.addEventListener('click', (e) => {   // keyboard (Enter or Space): a straight throw at the shard
+  if (e.detail !== 0 || cat.state !== 'aim') return;
+  if (!arrowEl.hidden) { say(`${CUB}: “First find the shard: turn the way the green arrow points (arrow keys).”`); return; }
+  const r = orbEl.getBoundingClientRect(), a = arEl.getBoundingClientRect();
+  throwOrb(r.left + r.width / 2 - a.left, r.top - a.top, 0, -1500, true);
+});
+function throwOrb(sx, sy, vx, vy, straight = false, lobY = null) {
+  const G = cat.gl, T = cat.T, w = cat.w || arEl.clientWidth, h = cat.h || arEl.clientHeight, cam = G.cam;
+  const ar = arEl.getBoundingClientRect(); if (!straight) { sx -= ar.left; sy -= ar.top; }
+  cat.throws++; cat.state = 'fly'; orbEl.classList.add('gone'); sound('throw'); buzz(12);
+  const gp = G.root.position.clone().project(cam), gx = (gp.x + 1) / 2 * w, gy = (1 - gp.y) / 2 * h;
+  let up = Math.max(1, -vy); const ang = clamp(Math.atan2(vx, up), -0.9, 0.9);
+  const rowY = gp.z < 1 && gy < sy - 40 ? gy : sy - 220;   // aim along the swipe, measured at the shard's height on screen
+  if (lobY != null) up = CATCH.flick + 480 * clamp((sy - (lobY - ar.top)) / Math.max(40, sy - rowY), 0, 1.25);   // let go at the shard: it reaches the shard
+  const ax = straight ? gx : sx + Math.tan(ang) * (sy - rowY);
+  const dir = new T.Vector3(ax / w * 2 - 1, -(rowY / h) * 2 + 1, 0.5).unproject(cam).sub(cam.position).normalize();
+  const dist = G.root.position.length(), reach = clamp(0.45 + (up - CATCH.flick) / 1000, 0.5, 1.12);
+  const target = dir.multiplyScalar(dist * reach);
+  const near = target.distanceTo(G.root.position);   // a near-miss bends towards the shard: easy for first-timers, not automatic
+  if (near < 0.9 && reach > 0.8) target.lerp(G.root.position, 0.5);
+  const start = cam.localToWorld(new T.Vector3(0, -0.28, -0.42));
+  const speed = clamp(5 + (up - 1000) / 400, 4, 9), Tf = Math.max(0.12, start.distanceTo(target) / speed);
+  const vel = target.clone().sub(start).divideScalar(Tf); vel.y += 0.5 * CATCH.g * Tf;
+  cat.fly = { pos: start, vel, t: 0 };
+  G.orb.visible = true; G.orb.scale.setScalar(1); G.orb.position.copy(start); G.orbBall.material.opacity = 0.78; G.orbGlow.material.opacity = 0.85; G.orbGlow.material.color.setHex(0x9dfff0);
+}
+function updateFly(dt) {
+  const F = cat.fly; if (!F) return;
+  const G = cat.gl, c = G.root.position, steps = 3, prev = tmpV(), seg = tmpV(), rel = tmpV();
+  for (let i = 0; i < steps; i++) {
+    prev.copy(F.pos); F.vel.y -= CATCH.g * dt / steps; F.pos.addScaledVector(F.vel, dt / steps);
+    seg.subVectors(F.pos, prev); rel.subVectors(c, prev);
+    const u = clamp(rel.dot(seg) / Math.max(1e-6, seg.lengthSq()), 0, 1), d = rel.sub(seg.multiplyScalar(u)).length();
+    F.best = Math.min(F.best ?? 99, d);
+    if (d < CATCH.hitR + CATCH.orbR) { G.orb.position.copy(prev).addScaledVector(F.pos.clone().sub(prev), u); hit(d); return; }
+  }
+  F.t += dt; G.orb.position.copy(F.pos); G.orb.rotation.x += dt * 12;
+  if (F.pos.length() > c.length() + 1.2 || F.pos.y < c.y - 1.8 || F.t > 3) miss();
+}
+function miss() {
+  if (DEBUG) console.log('[catch] missed by', cat.fly?.best?.toFixed(2), 'm');
+  const G = cat.gl; cat.fly = null; G.orb.visible = false; cat.misses++; cat.state = 'aim'; orbEl.classList.remove('gone');
+  sound('miss'); say(`${CUB}: “${MISS_LINES[(cat.misses - 1) % MISS_LINES.length]}”`);
+  if (Math.random() < 0.35) dodge(performance.now());
+}
+function hit(d) {
+  cat.fly = null;
+  const inRing = d <= CATCH.ringMax * cat.ring + 0.04, q = inRing ? THROWS.find((x) => cat.ring <= x.max) : null;
+  cat.lastQ = q; sound('hit'); buzz([20, 30, 20]);
+  if (q) pop(`${q.name}!`, q === THROWS[0] ? 'green' : 'gold');
+  const now = performance.now(), G = cat.gl;
+  cat.state = 'absorb';
+  const p = 0.55 + (q ? q.p : 0) + 0.2 * cat.escapes, caught = cat.escapes >= 2 || Math.random() < p;
+  cat.seq = { t0: now, from: G.root.position.clone(), at: G.orb.position.clone(), caught, wobbles: caught ? 3 : 1 + Math.floor(Math.random() * 3), done: 0 };
+}
+/* the timeline after a hit: absorb 450 ms, drop 350 ms, wobbles of 600 ms (+250 ms rest), then caught or free */
+function updateSeq(now, dt) {
+  const S = cat.seq; if (!S) return;
+  const G = cat.gl, e = now - S.t0;
+  if (e < 450) {   // the shard is drawn into the orb
+    const k = smooth(e / 450);
+    G.root.position.copy(S.from).lerp(S.at, k); G.gem.scale.setScalar(CATCH.size * (1 - k)); G.glow.material.opacity = 0.8 * (1 - k);
+    G.flash.position.copy(S.at); G.flash.material.opacity = Math.max(0, 1 - Math.abs(e - 140) / 200) * 0.9; G.flash.scale.setScalar(0.4 + e / 450);
+    return;
+  }
+  G.root.visible = false; G.flash.material.opacity = 0;
+  const drop = Math.min(1, (e - 450) / 350), ground = S.at.y - 0.45;
+  G.orb.position.set(S.at.x, lerp(S.at.y, ground, drop * drop), S.at.z);
+  if (e < 800) return;
+  const wob = e - 800, n = Math.floor(wob / 850);
+  if (n < S.wobbles) {
+    const f = (wob % 850) / 600;
+    if (n >= S.done) { S.done = n + 1; sound('wobble'); buzz(15); }
+    G.orb.rotation.set(0, 0, f < 1 ? 0.45 * Math.sin(f * Math.PI) * (n % 2 ? -1 : 1) : 0);
+    G.orbGlow.material.opacity = 0.5 + 0.35 * Math.sin(Math.min(1, f) * Math.PI);
+    return;
+  }
+  const end = wob - S.wobbles * 850;
+  if (S.caught) {
+    if (cat.state !== 'caught') {
+      cat.state = 'caught'; sound('caught'); buzz([40, 30, 90]); pop('Caught!', 'green');
+      G.orbGlow.material.color.setHex(0xb6ff4a); G.orbGlow.material.opacity = 1;
+      G.burst.forEach((s) => { s.position.copy(G.orb.position); s.userData.v.set(Math.random() - 0.5, Math.random() * 0.9 + 0.2, Math.random() - 0.5).normalize().multiplyScalar(1.1 + Math.random() * 1.4); s.material.opacity = 1; });
+      say(`${CUB}: “${cat.f.story}”`);
+      setTimeout(finishCatch, 2300);
+    }
+    for (const s of G.burst) { s.userData.v.y -= 2.2 * dt; s.position.addScaledVector(s.userData.v, dt); s.material.opacity = Math.max(0, 1 - end / 1300); }
+    G.orb.scale.setScalar(1 + 0.08 * Math.sin(end / 120));
+    return;
+  }
+  // it breaks free: the orb bursts and the shard flies back to its place
+  if (cat.state !== 'escape') { cat.state = 'escape'; sound('escape'); buzz(25); pop('Broke free!'); G.root.visible = true; S.back = G.orb.position.clone(); }
+  const k = Math.min(1, end / 550);
+  G.orb.scale.setScalar(1 + k * 1.6); G.orbBall.material.opacity = 0.78 * (1 - k); G.orbGlow.material.opacity = 0.85 * (1 - k);
+  const home = anchorPos(tmpV(), cat.b, cat.e, cat.d, cat.ox, cat.oy);
+  G.root.position.copy(S.back).lerp(home, smooth(k)); G.gem.scale.setScalar(CATCH.size * smooth(k)); G.glow.material.opacity = 0.8 * k;
+  if (k >= 1) {
+    cat.seq = null; cat.escapes++; cat.state = 'aim'; G.orb.visible = false; G.orb.scale.setScalar(1); G.orb.rotation.set(0, 0, 0);
+    orbEl.classList.remove('gone'); say(`${CUB}: “${ESCAPE_LINES[(cat.escapes - 1) % ESCAPE_LINES.length]}”`);
+  }
+}
+function finishCatch() {
+  if (!cat.on || cat.state !== 'caught') return;
+  const f = cat.f, r = frec(f.id);
+  const pts = Math.max(60, FP.catch + (cat.lastQ ? cat.lastQ.bonus : 0) - 10 * cat.misses);
+  r.catch = pts; r.throwQ = cat.lastQ ? cat.lastQ.name : null; r.throws = cat.throws; r.look = Date.now(); persist();
+  refreshFieldMarkers(); toast(`+${pts} · Peridot shard caught`, 2600);
+  closeAR(() => taskIntro(f.id));
+}
+if (DEBUG) setTimeout(() => { if (window.game) Object.assign(window.game, { cat, startCatch, throwOrb, loadThree }); }, 0);
+
+/* ================================================================ BOOT */
+function fieldHash(h) {   // #field-T2 opens the site; #field-T2-6DYP (the plaque QR) also confirms the visit
+  const m = /^field-([A-Z]\d?)(?:-([0-9A-Za-z]{4}))?$/.exec(h || ''); if (!m) return false;
+  const f = m[1] === 'A' ? ASSEMBLY : FIELD_BY_ID[m[1]]; if (!f) return false;
+  fieldSave().seenIntro = true; persist();
+  setTimeout(() => { if (m[2] && normCode(m[2]) === f.code) checkCode(f.id, m[2]); else if (f.id === 'A') assemblyCard(); else fieldMissionCard(f.id); }, 300);
+  return true;
+}
+window.addEventListener('hashchange', () => fieldHash(location.hash.slice(1)));
+setInterval(() => { if (!arOpen && !document.hidden) requestDraw(); }, 1000);
+let lastHeading = null;
+setInterval(() => {   // compass: redraw only when the heading moved by 2° or more
+  if (!orient.compass || arOpen || card || document.hidden) return;
+  if (lastHeading != null && Math.abs(wrapDeg(orient.heading - lastHeading)) < 2) return;
+  lastHeading = orient.heading; updateFieldChip(); requestDraw();
+}, 200);
+window.addEventListener('online', () => { if (tiles.ok === false) { tiles.ok = null; tiles.loaded = 0; requestDraw(); } });
+mapEl.addEventListener('pointerdown', () => {   // after a reload, the compass needs one tap (iPhone permission) to come back
+  if (fieldOn && !keepCompass) { keepCompass = true; startOrientation(); }
+}, { once: true });
+resizeMap(); fitAll(); updateTop(); updateFieldChip();
+if (fieldOn) startLocation();
+updateTestUI();
+if (TEST && !loc.sim) setTimeout(testCard, 300);
+else if (!fieldHash(location.hash.slice(1)) && !fieldSave().seenIntro) setTimeout(fieldIntroCard, 300);
+if (DEBUG) window.game = { FIELD, ASSEMBLY, save, loc, orient, view, simulateAt, testWalk, testMove, TEST, arrive, fieldAction, fieldTotal, FIELD_MAX, drawMap, perf, get arOpen() { return arOpen; }, get card() { return card; } };
+
+
+</script>
+</body>
+</html>
