@@ -306,8 +306,8 @@ textarea.export { width: 100%; box-sizing: border-box; min-height: 180px; font: 
 
 /* the look-around view: camera (or a drawn horizon) with a compass ribbon */
 .ar { position: fixed; inset: 0; z-index: 11; overflow: hidden; touch-action: none; user-select: none; -webkit-user-select: none;
-  background: linear-gradient(180deg, rgba(6, 14, 16, 0.15), rgba(6, 14, 16, 0.35)), url("landing/night-tall.jpg") center / cover, linear-gradient(180deg, #1d3a48 0%, #6f949b 46%, #2c4337 47%, #121f19 100%); }
-@media (min-aspect-ratio: 1/1) { .ar { background: linear-gradient(180deg, rgba(6, 14, 16, 0.15), rgba(6, 14, 16, 0.35)), url("landing/night-wide.jpg") center / cover, #0b1618; } }   /* without a camera: the start screen's valley */
+  background: linear-gradient(180deg, rgba(6, 14, 16, 0.15), rgba(6, 14, 16, 0.35)), url("landing/night-tall.jpg?v=3") center / cover, linear-gradient(180deg, #1d3a48 0%, #6f949b 46%, #2c4337 47%, #121f19 100%); }
+@media (min-aspect-ratio: 1/1) { .ar { background: linear-gradient(180deg, rgba(6, 14, 16, 0.15), rgba(6, 14, 16, 0.35)), url("landing/night-wide.jpg?v=3") center / cover, #0b1618; } }   /* without a camera: the start screen's valley */
 .ar.cam { background: #000; }
 .ar video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: none; }
 .ar.cam video { display: block; }
@@ -815,13 +815,14 @@ const FIELD = [
     task: { type: 'number', prompt: 'How many floors does the tower have?', answer: null, hint: 'Count the rows of windows, from the ground up.' },
     fact: { title: 'Home and fortress', text: ['The stone tower houses (kule) were built by leading families in Ottoman times.', 'They were homes and defences at once: thick walls and narrow windows, in a turbulent border region.'] },
     q: { q: 'What were the kule built for?', options: ['A home and a defence at once', 'Prayer', 'A market hall', 'A water mill'], a: 0 } },
-  { id: 'T7', ch: 1, title: 'Grnčar footbridge', heritage: 'Natural heritage', zone: { lat: 42.56529, lon: 19.83191, ...ZONE.town }, twin: 'gusinje', code: '5NB8', zoneNote: 'Centre from the drone photo fit: check on site.',
-    story: 'Ari splashes in: the frame’s setting stone lay in the riverbed all along.',
-    look: { mode: 'scan', what: 'the river', say: 'Point at the water under the bridge and hold still.' },
-    task: { type: 'point', target: 'plav', tol: 30, prompt: 'Which way does the river run? Point downstream, towards Plav, then tap Here.',
-      hint: 'Watch which way the water carries a leaf.', after: 'The river flows east towards Plav, where it meets the Lim.' },
-    fact: { title: 'The town of geese', text: ['One theory says Gusinje’s name comes from guska, goose, for the wetlands along the Grnčar.', 'The Vruja, which rises at Ali Pasha’s Springs, joins the river east of the town.'] },
-    q: { q: 'One theory says the name Gusinje comes from…', options: ['geese', 'gold', 'the gusle', 'a sultan'], a: 0 } },
+  { id: 'T7', ch: 1, title: 'The clock tower', heritage: 'Cultural heritage', zone: { lat: 42.5659, lon: 19.8332, ...ZONE.town }, twin: 'gusinje', code: '5NB8',
+    zoneNote: 'Sahat-kula, at the north end of the bridge at the entrance to town; centre from the city map model (15 Nov 2026): check on site.',
+    story: 'The frame’s dial, the piece that counted the days, waited where the town keeps its time.',
+    look: { mode: 'scan', what: 'the clock face', say: 'Point at a clock face high on the tower and hold still.' },
+    task: { type: 'observe', prompt: 'Compare the tower clock with your phone. What do you see?', options: ['The same minute', 'A minute or two apart', 'Further apart'],
+      after: 'Before phones and watches, the clock tower kept the whole town’s time: for prayers, the market and the day’s work.' },
+    fact: { title: 'A gift from New York', text: ['Gusinje’s clock tower (Sahat-kula) stands at the entrance to the town. Its foundation stone was laid on 4 September 2024 and it opened on 24 July 2026; a museum is part of it.', 'It was built as a vakuf, a gift to the town, by people from Plav and Gusinje living in New York, the way benefactors raised clock towers in the old market towns.'] },
+    q: { q: 'Who paid for Gusinje’s clock tower?', options: ['People from Plav and Gusinje living in New York', 'The Ottoman sultan', 'The national park', 'A bank in Podgorica'], a: 0 } },
   { id: 'T8', ch: 1, title: 'St. Anthony, Dolja', heritage: 'Cultural heritage', zone: { lat: 42.5600, lon: 19.8211, ...ZONE.town }, twin: 'anthony', code: '2BXB', worship: true, last: true,
     story: 'At the gate Ari finds the last keystone. The patron of lost things kept it safe.',
     look: { mode: 'scan', what: 'the tower door', say: 'Hold the church tower door in the ring.' },
@@ -830,7 +831,8 @@ const FIELD = [
     q: { q: 'St. Anthony is the patron of…', options: ['lost things', 'travellers', 'mountains', 'springs'], a: 0 } },
 
   /* ---------------- chapter 2: springs and Vusanje, the water lens */
-  { id: 'V1', ch: 2, title: 'Ali Pasha’s Springs', heritage: 'Natural and cultural heritage', zone: { lat: 42.549, lon: 19.826, ...ZONE.valley }, twin: 'springs', code: 'H2PF',
+  { id: 'V1', ch: 2, title: 'Ali Pasha’s Springs', heritage: 'Natural and cultural heritage', zone: { lat: 42.5492, lon: 19.8267, ...ZONE.valley }, twin: 'springs', code: 'H2PF',
+    zoneNote: 'Moved about 60 m east, towards the gravel road and parking (15 Nov 2026, estimate): check on site.',
     story: 'The lens was hidden where the water comes back into the light.',
     look: { mode: 'scan', what: 'the rock where the water comes out', say: 'Point at the foot of the rock where the water comes out, and hold still.' },
     task: { type: 'number', prompt: 'From the marked spot, how many separate jets of water can you count coming out of the rock?', answer: null, hint: 'Count the white jets, not the ripples.' },
@@ -859,13 +861,14 @@ const FIELD = [
     q: { q: 'Which three countries does the Peaks of the Balkans trail cross?', options: ['Montenegro, Albania, Kosovo', 'Montenegro, Serbia, Croatia', 'Albania, Greece, North Macedonia', 'Montenegro, Bosnia, Serbia'], a: 0 } },
 
   /* ---------------- chapter 3: Grebaje, the sky needle */
-  { id: 'G1', ch: 3, title: 'Under the Karanfili', heritage: 'Natural heritage', zone: { lat: 42.5218, lon: 19.7863, ...ZONE.view }, twin: 'grebaje', code: 'AU3Z',
-    story: 'The needle waits under the highest walls.',
-    look: { mode: 'scan', what: 'the wall of peaks', say: 'Point at the high limestone walls and hold still.' },
-    task: { type: 'point', target: 'karanfili', tol: 35, prompt: 'Point at Veliki vrh, the highest of the three Karanfili peaks, then tap Here.',
-      hint: 'It is the peak in the middle of the crest.', after: 'Veliki vrh is 2,490 m; the North peak 2,460 m and the South peak 2,441 m.' },
-    fact: { title: 'The Karanfili', text: ['Grebaje lies about 15 minutes’ drive from Gusinje, under the limestone massif of the Karanfili.', 'Its peaks: Veliki vrh 2,490 m in the middle, the North peak 2,460 m and the South peak 2,441 m.'] },
-    q: { q: 'How high is Veliki vrh?', options: ['2,490 m', '1,879 m', '2,534 m', '2,694 m'], a: 0 } },
+  { id: 'G1', ch: 3, title: 'Suljova česma', heritage: 'Natural and cultural heritage', zone: { lat: 42.5159, lon: 19.7832, ...ZONE.valley }, twin: 'grebaje', code: 'AU3Z',
+    zoneNote: 'Suljo’s fountain by the road in Grebaje, where the climbs start; centre estimated at the trailhead (about 1,160 m): check on site.',
+    story: 'The needle waits by the last water in the valley, where every climb begins.',
+    look: { mode: 'scan', what: 'the fountain', say: 'Point at the fountain where the water runs out, and hold still.' },
+    task: { type: 'observe', prompt: 'Hold your hand under the water for five seconds. How does it feel?', options: ['Icy', 'Cold', 'Cool'],
+      after: 'Fill your bottle if you are going higher: there is no more water on the way up.' },
+    fact: { title: 'The last water', text: ['Suljova česma, Suljo’s fountain, stands by the road in a small patch of conifer forest in Grebaje.', 'It is the last drinking water in the valley. Climbers fill their bottles here before the routes up to the Karanfili, Veliki vrh 2,490 m in the middle.'] },
+    q: { q: 'Why do climbers stop at Suljova česma?', options: ['It is the last drinking water in the valley', 'To buy tickets', 'To see the Grlja waterfall', 'To catch the bus'], a: 0 } },
   { id: 'G2', ch: 3, title: 'Katun life', heritage: 'Cultural heritage', zone: null, twin: null, code: 'HWTK', zoneSize: 'valley', last: true,
     story: 'The herders kept the needle where the sun could always find it.',
     look: { mode: 'scan', what: 'the katun hut', say: 'Hold the hut in the ring.' },

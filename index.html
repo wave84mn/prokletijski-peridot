@@ -180,8 +180,8 @@ button { font: inherit; color: inherit; }
 /* boot (before three.js and the valley are ready): the same night valley as the start screen */
 .boot { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; text-align: center; color: var(--parchment);
   padding-inline: max(16px, env(safe-area-inset-left, 0px)) max(16px, env(safe-area-inset-right, 0px));
-  background: linear-gradient(180deg, rgba(4, 10, 12, 0.55), rgba(4, 10, 12, 0.78)), url("landing/night-wide.jpg") center / cover, #0b1618; transition: opacity 500ms; }
-@media (max-aspect-ratio: 1/1) { .boot { background: linear-gradient(180deg, rgba(4, 10, 12, 0.55), rgba(4, 10, 12, 0.78)), url("landing/night-tall.jpg") center / cover, #0b1618; } }
+  background: linear-gradient(180deg, rgba(4, 10, 12, 0.55), rgba(4, 10, 12, 0.78)), url("landing/night-wide.jpg?v=3") center / cover, #0b1618; transition: opacity 500ms; }
+@media (max-aspect-ratio: 1/1) { .boot { background: linear-gradient(180deg, rgba(4, 10, 12, 0.55), rgba(4, 10, 12, 0.78)), url("landing/night-tall.jpg?v=3") center / cover, #0b1618; } }
 .boot.gone { opacity: 0; pointer-events: none; }
 .boot img { width: 92px; height: auto; display: block; margin: 0 auto 14px; animation: breathe 2.4s ease-in-out infinite; filter: drop-shadow(0 0 18px rgba(125, 255, 74, 0.25)); }
 @keyframes breathe { 0%, 100% { transform: translateY(0); filter: drop-shadow(0 0 14px rgba(125, 255, 74, 0.2)) brightness(1); } 50% { transform: translateY(-4px); filter: drop-shadow(0 0 22px rgba(125, 255, 74, 0.34)) brightness(1.08); } }
@@ -5992,21 +5992,28 @@ for (const card of [$('go-virtual'), $('go-field')]) {
 }
 
 /* ---------------------------------------------------------------- the night valley behind the start screen
-   A painted plate made with Higgsfield: landing/night-wide.jpg on landscape screens, landing/night-tall.jpg on portrait ones, shown full
+   A painted plate (since 15 Nov 2026 the user's painting "Peridot Lights in a Mountain Valley", made into a wide and a tall plate
+   by tools/make_plates.py): landing/night-wide.jpg on landscape screens, landing/night-tall.jpg on portrait ones, shown full
    screen in WebGL (cover fit) so the 3D badge floats in it. Quietly alive: a slow parallax with the pointer, mist drifting through
    the valley, the stars twinkling, and the green shards in the valley breathing (brighter while a menu card charges the gem).
    Choosing the virtual missions fades it out over the 3D valley map. */
-const BACKDROP = { wide: 'landing/night-wide.jpg', tall: 'landing/night-tall.jpg' };
+const BACKDROP = { wide: 'landing/night-wide.jpg?v=3', tall: 'landing/night-tall.jpg?v=3' };
+// where the painting's three green lights are on each plate: u, v (up) and the core radius, in plate heights (make_plates.py)
+const PLATE_LIGHTS = {
+  wide: [[0.2591, 0.3372, 0.0048], [0.4078, 0.2777, 0.0086], [0.3186, 0.2182, 0.0153]],
+  tall: [[0.26, 0.6014, 0.0025], [0.5135, 0.5697, 0.0046], [0.3615, 0.5382, 0.0081]],
+};
 const ONE_COLUMN = matchMedia('(max-width: 899px), (max-aspect-ratio: 1/1)');
 const paper = { k: 1, scene: new THREE.Scene(), cam: new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1), mat: null, tex: {}, par: { x: 0, y: 0, tx: 0, ty: 0 }, last: 0 };
 paper.mat = new THREE.ShaderMaterial({
   uniforms: {
     uMap: { value: null }, uHas: { value: 0 }, uK: { value: 1 }, uTime: { value: 0 }, uImg: { value: 16 / 9 }, uScr: { value: 16 / 9 },
     uPar: { value: new THREE.Vector2() }, uCharge: { value: 0 }, uTall: { value: 0 }, uMotion: { value: reduceMotion ? 0 : 1 },
+    uL: { value: [new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()] },
   },
   vertexShader: 'varying vec2 vUv; void main() { vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }',
   fragmentShader: `
-    uniform sampler2D uMap; uniform float uHas, uK, uTime, uImg, uScr, uCharge, uTall, uMotion; uniform vec2 uPar; varying vec2 vUv;
+    uniform sampler2D uMap; uniform float uHas, uK, uTime, uImg, uScr, uCharge, uTall, uMotion; uniform vec2 uPar; uniform vec3 uL[3]; varying vec2 vUv;
     float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
     float noise(vec2 p) {
       vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f);
@@ -6026,12 +6033,17 @@ paper.mat = new THREE.ShaderMaterial({
         vec2 cell = floor(uv * vec2(uImg, 1.0) * 260.0);
         float tw = 0.35 + 0.65 * (0.5 + 0.5 * sin(uTime * (0.8 + 2.2 * hash(cell)) + 6.283 * hash(cell + 7.1)));
         c = mix(c, blur + (c - blur) * tw * 1.35, smoothstep(0.03, 0.14, d) * sky * uMotion);
-        // the green shards in the valley breathe, and flare while a menu card charges the gem
-        float gk = smoothstep(0.035, 0.16, c.g - max(c.r, c.b)) * smoothstep(0.1, 0.32, c.g);
-        float gb = smoothstep(0.02, 0.1, blur.g - max(blur.r, blur.b)) * smoothstep(0.08, 0.25, blur.g);
+        // the green lights in the valley breathe, and flare while a menu card charges the gem (found by position: the new
+        // painting has green grass everywhere, so picking them by colour would make the whole meadow pulse)
+        float core = 0.0, halo = 0.0;
+        for (int i = 0; i < 3; i++) {
+          vec2 dd = (uv - uL[i].xy) * vec2(uImg, 1.0); float q = dot(dd, dd), r2 = uL[i].z * uL[i].z;
+          core += exp(-q / (r2 * 1.4)); halo += exp(-q / (r2 * 18.0));
+        }
+        core = min(core, 1.0); halo = min(halo, 1.0);
         float breathe = 0.5 + 0.5 * sin(uTime * 1.05);
-        c += c * gk * (0.22 * breathe * uMotion + 0.75 * uCharge);
-        c += vec3(0.18, 0.75, 0.22) * gb * (0.05 + 0.05 * breathe * uMotion + 0.32 * uCharge);
+        c += c * core * (0.35 * breathe * uMotion + 0.9 * uCharge);
+        c += vec3(0.2, 0.75, 0.25) * halo * (0.04 + 0.06 * breathe * uMotion + 0.32 * uCharge);
         // mist drifting through the valley
         float band = uTall > 0.5 ? smoothstep(0.18, 0.36, uv.y) * smoothstep(0.62, 0.44, uv.y) : smoothstep(0.22, 0.4, uv.y) * smoothstep(0.66, 0.48, uv.y);
         vec2 mp = vec2(uv.x * uImg, uv.y);
@@ -6053,7 +6065,7 @@ function backdropTexture(which) {   // loads once; until then the plain night gr
   paper.tex[which] = null;
   new THREE.TextureLoader().load(BACKDROP[which], (t) => {
     t.generateMipmaps = true; t.minFilter = THREE.LinearMipmapLinearFilter; t.magFilter = THREE.LinearFilter;   // raw sRGB values: the shader writes them as they are
-    t.wrapS = t.wrapT = THREE.ClampToEdgeWrapping;
+    t.wrapS = t.wrapT = THREE.ClampToEdgeWrapping; t.userData.which = which;
     paper.tex[which] = t;
   }, undefined, () => { paper.tex[which] = null; });
   return null;
@@ -6068,7 +6080,10 @@ function renderPaper() {
   const now = performance.now(), dt = Math.min(0.1, (now - (paper.last || now)) / 1000); paper.last = now;
   const W = canvas.clientWidth, H = canvas.clientHeight, u = paper.mat.uniforms;
   const tex = backdropTexture(W / H < 1 ? 'tall' : 'wide') || paper.tex.wide || paper.tex.tall || null;
-  if (tex !== u.uMap.value) { u.uMap.value = tex; u.uHas.value = tex ? 1 : 0; if (tex) u.uImg.value = tex.image.width / tex.image.height; }
+  if (tex !== u.uMap.value) {
+    u.uMap.value = tex; u.uHas.value = tex ? 1 : 0;
+    if (tex) { u.uImg.value = tex.image.width / tex.image.height; (PLATE_LIGHTS[tex.userData.which] || []).forEach((l, i) => u.uL.value[i].set(...l)); }
+  }
   const p = paper.par; p.x += (p.tx - p.x) * Math.min(1, dt * 2.2); p.y += (p.ty - p.y) * Math.min(1, dt * 2.2);
   u.uPar.value.set(-p.x, -p.y);
   u.uScr.value = W / H; u.uTall.value = ONE_COLUMN.matches ? 1 : 0;
