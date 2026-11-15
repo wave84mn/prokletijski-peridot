@@ -7,7 +7,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Big+Shoulders+Display:wght@600;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Big+Shoulders+Display:wght@600;800&family=EB+Garamond:ital,wght@0,500;0,600;1,500&display=swap">
 <style>
 :root { box-sizing: border-box; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
 html { scroll-padding-top: env(safe-area-inset-top, 0px); }
@@ -179,43 +179,73 @@ button { font: inherit; color: inherit; }
 }
 
 /* ================================================================ THIS PAGE: the field game, played on site
-   Layout: a north-up map of the sites fills the screen (OpenStreetMap tiles, or a sketch when tiles cannot load). Header top left
-   (home badge, chapter parts), points top right, the guide bar and two buttons along the bottom, one card at a time over them.
-   The map itself stays light, like paper; everything floating over it uses the obsidian panels. */
-:root { --map-ink: #3e5a5c; --map-paper: #e7eadb; }
+   Layout: a north-up map of the sites fills the screen, drawn like the printed game map: a painted blue-hour relief, town plans
+   that fade in as you zoom in, gold quest trails, peridot pins with slate labels. Header top left (home badge, chapter parts),
+   points top right, the guide bar and two buttons along the bottom, one card at a time over them. */
+:root { --map-night: #0f2229; --map-gold: #c7a550; --map-gold-hi: #e7cf90; --map-ivory: #f3e6c9; --map-slate: #23262c;
+  --map-serif: "EB Garamond", "Palatino Linotype", Palatino, Georgia, serif; }
 body { background: var(--obsidian); }
-.map { position: fixed; inset: 0; touch-action: none; overflow: hidden; background: var(--map-paper); cursor: grab; }
-.map.tiled { background: #f2efe9; }
+.map { position: fixed; inset: 0; touch-action: none; overflow: hidden; background: var(--map-night); cursor: grab; }
 .map svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-.sk-river { fill: none; stroke: #8fd3db; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
-.sk-road-c { fill: none; stroke: #b9bfae; stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; }
-.sk-road { fill: none; stroke: #fffdf4; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
-.sk-label { font-family: var(--f-display); font-weight: 800; font-size: 15px; letter-spacing: 0.12em; text-transform: uppercase; fill: var(--map-ink); text-anchor: middle;
-  paint-order: stroke; stroke: var(--map-paper); stroke-width: 4px; stroke-linejoin: round; }
-.sk-label.town { font-size: 20px; letter-spacing: 0.2em; fill: var(--ink); }
-.sk-label.peak { font-size: 14px; fill: #6d6a5c; }
-.zone { fill: rgba(233, 195, 90, 0.18); stroke: #c9a13b; stroke-width: 2; stroke-dasharray: 6 5; }
-.zone.done { fill: rgba(182, 209, 46, 0.2); stroke: var(--peridot-ink); }
-.zone.here, .zone.inside { fill: rgba(43, 127, 255, 0.14); stroke: #2b7fff; stroke-dasharray: none; }
-.zone.locked { fill: rgba(16, 39, 42, 0.06); stroke: var(--map-ink); }
-.aimline { stroke: #2b7fff; stroke-width: 2.5; stroke-dasharray: 2 7; stroke-linecap: round; opacity: 0.8; }
+.map-plates { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+/* quest trails: gold dashes by road, ivory dots on foot */
+.tr-road-c { fill: none; stroke: #241d0e; stroke-width: 7.5; stroke-linecap: round; stroke-linejoin: round; opacity: 0.88; }
+.tr-road { fill: none; stroke: #ecd79c; stroke-width: 4.2; stroke-dasharray: 11 6; stroke-linejoin: round; }
+.tr-foot-c { fill: none; stroke: #1c201d; stroke-width: 9; stroke-linecap: round; stroke-linejoin: round; opacity: 0.9; }
+.tr-foot { fill: none; stroke: var(--map-ivory); stroke-width: 3.4; stroke-dasharray: 0.1 7.5; stroke-linecap: round; stroke-linejoin: round; }
+.tr-km { font: italic 600 14px var(--map-serif); fill: var(--map-ivory); text-anchor: middle; paint-order: stroke; stroke: rgba(9, 21, 25, 0.9); stroke-width: 3.5px; stroke-linejoin: round; pointer-events: none; }
+/* names: the town and the valleys in gold capitals, villages in italics, peaks with their heights */
+.pl { font-family: var(--map-serif); text-anchor: middle; paint-order: stroke; stroke: rgba(8, 20, 24, 0.82); stroke-width: 3.5px; stroke-linejoin: round; pointer-events: none; }
+.pl-town { font-size: 26px; font-weight: 600; letter-spacing: 0.32em; fill: var(--map-gold-hi); text-transform: uppercase; }
+.pl-village { font-size: 15.5px; font-style: italic; font-weight: 500; fill: #eef0ea; }
+.pl-hamlet, .pl-locality { font-size: 13px; font-style: italic; fill: rgba(232, 236, 230, 0.84); }
+.pl-valley, .pl-range { font-size: 19px; font-weight: 600; letter-spacing: 0.34em; fill: var(--map-gold-hi); text-transform: uppercase; }
+.pk { pointer-events: none; }
+.pk path { fill: #eef0ea; stroke: rgba(8, 20, 24, 0.8); stroke-width: 1.2; }
+.pk text { font: italic 500 12.5px var(--map-serif); fill: #eef0ea; paint-order: stroke; stroke: rgba(8, 20, 24, 0.8); stroke-width: 3px; stroke-linejoin: round; }
+.pk text.ele { font-style: normal; font-size: 10.5px; fill: rgba(232, 236, 230, 0.72); }
+/* zones, true size: a soft peridot disc with a dashed rim */
+.zone { fill: rgba(182, 222, 80, 0.22); stroke: #d8f08a; stroke-width: 1.6; stroke-dasharray: 7 5; }
+.zone.done { fill: rgba(182, 222, 80, 0.1); stroke: rgba(216, 240, 138, 0.5); }
+.zone.here, .zone.inside { fill: rgba(198, 239, 84, 0.32); stroke: #eaffa0; stroke-width: 2.4; stroke-dasharray: none; }
+.zone.locked { fill: rgba(160, 170, 160, 0.1); stroke: rgba(220, 220, 210, 0.5); }
+.aimline { stroke: #8ec0ff; stroke-width: 2.5; stroke-dasharray: 2 7; stroke-linecap: round; opacity: 0.85; }
+/* the pins: a marquise peridot standing on its tip, glowing */
 .mk { cursor: pointer; }
-.mk path { fill: #e9c35a; stroke: #1a1d1c; stroke-width: 2.5; }
-.mk text { font-family: var(--f-display); font-weight: 800; font-size: 15px; text-anchor: middle; fill: #1a1d1c; pointer-events: none; }
-.mk.done path { fill: var(--peridot); }
-.mk.here path { fill: #8fb9ff; }
-.mk.locked path { fill: #d5d9cc; stroke: var(--map-ink); }
-.mk.sel path { stroke-width: 4; filter: drop-shadow(0 0 6px rgba(16, 39, 42, 0.45)); }
-.mk.cluster circle { fill: #e9c35a; stroke: #1a1d1c; stroke-width: 2.5; }
-.mk-name { font-family: var(--f-body); font-weight: 700; font-size: 13px; text-anchor: middle; fill: var(--ink); pointer-events: none;
-  paint-order: stroke; stroke: rgba(255, 255, 255, 0.92); stroke-width: 4px; stroke-linejoin: round; }
-.me-acc { fill: rgba(43, 127, 255, 0.14); stroke: rgba(43, 127, 255, 0.45); stroke-width: 1; }
-.me-cone { fill: rgba(43, 127, 255, 0.28); }
-.me-dot { fill: #2b7fff; stroke: #fff; stroke-width: 3.5; filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.35)); }
-.map-note { position: fixed; z-index: 3; left: max(16px, env(safe-area-inset-left, 0px)); bottom: calc(max(12px, env(safe-area-inset-bottom, 0px)) + 176px);
-  font-size: 12px; color: var(--map-ink); background: rgba(242, 243, 237, 0.85); border-radius: 8px; padding: 3px 8px; pointer-events: none; }
+.gem-glow { fill: url(#gem-glow); pointer-events: none; animation: gem-breathe 2.6s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+.gem-glow.g-hot { animation-duration: 1.1s; }
+.gem-glow.g-dim { opacity: 0.35; animation: none; }
+.gem-body { fill: url(#gem-fill); stroke: #233a05; stroke-width: 1.3; stroke-linejoin: round; }
+.gem-cut { fill: none; stroke: rgba(30, 52, 6, 0.55); stroke-width: 0.9; stroke-linejoin: round; }
+.gem-hl { fill: rgba(255, 255, 255, 0.78); }
+.mk.done .gem-body { fill: url(#gem-fill-dim); }
+.mk.locked .gem-body { fill: #8d958c; stroke: #3a3f3a; }
+.mk.locked .gem-glow { display: none; }
+.mk.sel .gem-b { filter: drop-shadow(0 0 4px rgba(231, 207, 144, 0.95)); }
+.gem-b.near { animation: shard-bob 1.1s ease-in-out infinite; transform-box: fill-box; transform-origin: center bottom; }
+.gem-done circle { fill: var(--map-gold-hi); stroke: #3a2c10; stroke-width: 1.4; }
+.gem-done path { fill: none; stroke: #2a200a; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.gem-count circle { fill: var(--map-slate); stroke: var(--map-gold); stroke-width: 1.6; }
+.gem-count text { font: 800 13px var(--f-display); fill: var(--map-gold-hi); text-anchor: middle; }
+@keyframes gem-breathe { 0%, 100% { opacity: 0.7; transform: scale(0.94); } 50% { opacity: 1; transform: scale(1.06); } }
+/* slate labels with an inlaid gold line */
+.mk-plate { position: absolute; left: 0; top: 0; pointer-events: auto; display: flex; flex-direction: column; align-items: flex-start; max-width: 230px;
+  -webkit-appearance: none; appearance: none; margin: 0; padding: 4px 10px 5px; border: 1.5px solid var(--map-gold); border-radius: 3px; background: rgba(31, 34, 39, 0.95);
+  color: var(--map-ivory); text-align: left; cursor: pointer; font-family: var(--map-serif); white-space: nowrap;
+  box-shadow: inset 0 0 0 2px rgba(17, 19, 22, 0.95), inset 0 0 0 3px rgba(199, 165, 80, 0.32), 0 4px 12px rgba(0, 0, 0, 0.55); }
+.mk-plate b { font-weight: 600; font-size: 15px; line-height: 1.15; }
+.mk-plate i { font-size: 12.5px; line-height: 1.2; color: rgba(243, 230, 201, 0.76); }
+.mk-plate.sel { border-color: var(--map-gold-hi); box-shadow: inset 0 0 0 2px rgba(17, 19, 22, 0.95), inset 0 0 0 3px rgba(231, 207, 144, 0.5), 0 0 0 3px rgba(231, 207, 144, 0.22), 0 4px 12px rgba(0, 0, 0, 0.55); }
+.mk-plate.here i { color: var(--peridot-hi); }
+.mk-plate.done b::after { content: " ✓"; color: var(--peridot-hi); }
+.mk-plate:focus-visible { outline: 2px solid var(--peridot-hi); outline-offset: 2px; }
+.me-acc { fill: rgba(77, 155, 255, 0.16); stroke: rgba(142, 192, 255, 0.55); stroke-width: 1; }
+.me-cone { fill: rgba(77, 155, 255, 0.32); }
+.me-dot { fill: #4d9bff; stroke: #fff; stroke-width: 3.5; filter: drop-shadow(0 0 6px rgba(77, 155, 255, 0.8)); }
+.map-compass { position: fixed; z-index: 3; left: max(14px, env(safe-area-inset-left, 0px)); bottom: calc(max(12px, env(safe-area-inset-bottom, 0px)) + 170px);
+  width: 46px; height: 46px; pointer-events: none; filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6)); }
 .map-credit { position: fixed; z-index: 3; right: max(4px, env(safe-area-inset-right, 0px)); bottom: calc(max(4px, env(safe-area-inset-bottom, 0px)) + 0px);
-  font-size: 11px; color: #333; background: rgba(255, 255, 255, 0.8); padding: 1px 6px; border-radius: 4px 0 0 0; }
+  font-size: 10.5px; color: rgba(243, 230, 201, 0.7); background: rgba(9, 21, 25, 0.7); padding: 1px 6px; border-radius: 4px 0 0 0; }
 .map-credit a { color: inherit; }
 
 /* header: home badge, title with the device parts, points */
@@ -417,10 +447,18 @@ textarea.export { width: 100%; box-sizing: border-box; min-height: 180px; font: 
 </head>
 <body>
 <div class="map" id="map" aria-label="Map of the sites">
-  <svg id="map-svg" xmlns="http://www.w3.org/2000/svg"><g id="map-tiles"></g><g id="map-over"></g><g id="map-me"></g></svg>
+  <svg id="map-svg" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="gem-glow"><stop offset="0" stop-color="#e2ff7a" stop-opacity="0.8"/><stop offset="0.42" stop-color="#a6e03e" stop-opacity="0.34"/><stop offset="1" stop-color="#7fc22a" stop-opacity="0"/></radialGradient>
+      <linearGradient id="gem-fill" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f6ffb8"/><stop offset="0.34" stop-color="#cdee3e"/><stop offset="0.68" stop-color="#88b31a"/><stop offset="1" stop-color="#3f6408"/></linearGradient>
+      <linearGradient id="gem-fill-dim" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e2ebc0"/><stop offset="0.5" stop-color="#99ad5a"/><stop offset="1" stop-color="#4b5c24"/></linearGradient>
+    </defs>
+    <g id="map-base"></g><g id="map-over"></g><g id="map-me"></g>
+  </svg>
+  <div class="map-plates" id="map-plates"></div>
 </div>
-<p class="map-note" id="map-sketch-note" hidden>Sketch map · roads approximate</p>
-<p class="map-credit" id="map-credit" hidden>© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors</p>
+<svg class="map-compass" viewBox="-24 -24 48 48" aria-hidden="true"><circle r="15" fill="rgba(15,34,41,.75)" stroke="#c7a550" stroke-width="1.2"/><circle r="11.5" fill="none" stroke="rgba(199,165,80,.5)" stroke-width=".7"/><path d="M0 -21 L3 -3 L0 0 L-3 -3 Z" fill="#e7cf90"/><path d="M0 21 L3 3 L0 0 L-3 3 Z" fill="#8a7440"/><path d="M-17 0 L-3 -2.4 L0 0 L-3 2.4 Z M17 0 L3 -2.4 L0 0 L3 2.4 Z" fill="#b39a5a"/><text y="-17.5" x="0" text-anchor="middle" font-family="EB Garamond, Georgia, serif" font-weight="600" font-size="7.5" fill="#152126">N</text></svg>
+<p class="map-credit" id="map-credit">Map: © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors · Copernicus DEM © DLR, Airbus</p>
 
 <header class="top">
   <div class="top-left">
@@ -515,6 +553,9 @@ textarea.export { width: 100%; box-sizing: border-box; min-height: 180px; font: 
 <div class="toast glass" id="toast" role="status" hidden></div>
 <section class="card" id="card" hidden aria-live="polite"></section>
 <script type="module">
+/* generated by tools/fieldmap/routes.py: the field map's base pictures, quest trails and labels (world units: Web Mercator px at z17) */
+const FIELDMAP = {"pics":[{"id":"overview","src":"fieldmap/overview.jpg","kind":"overview","box":[18615439.63,12381631.25,18632494.63,12396811.25]},{"id":"gusinje","src":"fieldmap/gusinje.webp","kind":"detail","box":[18624107.86,12384061.65,18627136.61,12387389.15]},{"id":"vusanje","src":"fieldmap/vusanje.webp","kind":"detail","box":[18625179.74,12389350.24,18627509.74,12392258.99]},{"id":"grebaje","src":"fieldmap/grebaje.webp","kind":"detail","box":[18620239.78,12390109.07,18622057.28,12391879.07]}],"trails":[{"id":"town","kind":"foot","pts":[[18625785.6,12384985.5],[18625794.0,12384985.3],[18625856.2,12385157.8],[18625884.8,12385221.0],[18625916.5,12385330.3],[18626007.2,12385278.0],[18626017.1,12385269.8],[18625990.0,12385206.0],[18625982.1,12385178.2],[18625962.0,12385129.5],[18625914.0,12385066.2],[18625866.8,12384984.5],[18625842.8,12384937.0],[18625886.9,12384913.6],[18625880.7,12384910.8],[18625886.9,12384913.6],[18625860.0,12384926.7],[18625801.4,12384815.5],[18625796.0,12384796.3],[18625793.7,12384769.9],[18625797.9,12384680.2],[18625804.2,12384681.8],[18625797.9,12384680.2],[18625795.8,12384693.5],[18625795.2,12384791.0],[18625801.4,12384815.5],[18625823.9,12384859.9],[18625675.8,12384955.6],[18625669.5,12384964.3],[18625655.1,12384960.2],[18625669.5,12384964.3],[18625675.8,12384955.6],[18625640.6,12384911.9],[18625633.9,12384912.2],[18625590.6,12384931.7],[18625494.3,12384999.0],[18625404.3,12385076.4],[18625417.0,12385088.2],[18625429.7,12385107.0],[18625450.0,12385099.4],[18625429.7,12385107.0],[18625417.0,12385088.2],[18625404.3,12385076.4],[18625379.5,12385096.7],[18625340.4,12385135.3],[18625260.7,12385199.0],[18625175.4,12385255.5],[18624936.9,12385397.8],[18624907.0,12385428.0],[18624849.9,12385514.7],[18624837.0,12385529.2],[18624760.9,12385502.3],[18624711.9,12385480.9],[18624689.1,12385476.2],[18624652.4,12385473.6],[18624656.5,12385467.2],[18624673.4,12385453.3],[18624676.4,12385428.4]],"km":2.7},{"id":"T1-V1","kind":"road","pts":[[18625785.6,12384985.5],[18625794.0,12384985.3],[18625884.8,12385221.0],[18625916.5,12385330.3],[18625875.8,12385376.0],[18625973.9,12385461.2],[18625994.0,12385493.3],[18626002.4,12385540.3],[18625989.9,12385603.3],[18625947.9,12385715.6],[18625920.3,12385745.9],[18625855.1,12385789.5],[18625831.9,12385835.7],[18625834.2,12385864.6],[18625858.4,12385938.5],[18625856.7,12385982.5],[18625846.0,12386015.8],[18625829.8,12386033.6],[18625771.3,12386054.2],[18625754.8,12386068.4],[18625659.6,12386252.6],[18625604.0,12386332.7],[18625454.3,12386439.1],[18625343.0,12386498.8],[18625317.6,12386519.0],[18625213.6,12386659.3],[18625166.9,12386710.0],[18625198.4,12386794.9]],"km":2.0,"lab":[18625858.8,12385964.8],"ang":-83.3},{"id":"V1-V2","kind":"road","pts":[[18625198.4,12386794.9],[18625166.9,12386710.0],[18625213.6,12386659.3],[18625317.6,12386519.0],[18625343.0,12386498.8],[18625454.3,12386439.1],[18625604.0,12386332.7],[18625605.4,12386409.1],[18625563.2,12386503.4],[18625495.2,12386751.4],[18625597.1,12387177.2],[18625635.6,12387261.5],[18625638.8,12387318.7],[18625691.1,12387392.4],[18625736.5,12387515.6],[18625739.8,12387531.9],[18625728.1,12387605.7],[18625825.6,12387845.6],[18625848.4,12388011.0],[18625894.2,12388078.3],[18625919.2,12388133.0],[18625896.9,12388333.9],[18625900.3,12388356.1],[18625915.2,12388381.8],[18625971.5,12388423.6],[18625985.8,12388443.3],[18626006.1,12388484.0],[18626015.5,12388548.3],[18626064.6,12388653.0],[18626077.5,12388754.8],[18626117.5,12388799.4],[18626165.0,12388829.7],[18626199.7,12388871.4],[18626212.4,12388914.3],[18626246.9,12388985.9],[18626260.0,12389041.9],[18626293.1,12389089.3],[18626356.7,12389130.3],[18626395.6,12389173.4],[18626428.1,12389186.3],[18626513.0,12389198.0],[18626621.7,12389176.5],[18626654.1,12389178.1],[18626732.9,12389259.9],[18626776.3,12389254.4],[18626826.4,12389288.9],[18626877.4,12389304.4],[18626889.2,12389315.6],[18626902.8,12389453.2],[18626932.2,12389535.1],[18626935.6,12389666.9],[18626901.9,12389739.2],[18626718.6,12390047.5],[18626717.2,12390067.4],[18626745.6,12390109.2],[18626746.2,12390136.7],[18626732.9,12390150.8],[18626670.1,12390142.7],[18626630.9,12390161.9],[18626587.2,12390121.7]],"km":4.8,"lab":[18625903.7,12388271.3],"ang":-81.6},{"id":"V2-V3","kind":"road","pts":[[18626587.2,12390121.7],[18626630.9,12390161.9],[18626619.6,12390185.3],[18626633.8,12390216.2],[18626612.9,12390358.5],[18626584.4,12390409.4],[18626559.6,12390476.4],[18626494.7,12390564.5],[18626409.1,12390742.4],[18626380.7,12390828.6],[18626358.3,12390866.3],[18626332.2,12390891.0],[18626275.6,12390917.7],[18626265.6,12390930.6],[18626254.2,12391014.6],[18626228.8,12391062.1],[18626221.7,12391092.0],[18626227.4,12391230.6],[18626175.9,12391294.6],[18626154.6,12391348.4],[18626122.1,12391398.1],[18626115.6,12391447.6],[18626029.3,12391549.4],[18625988.3,12391572.6],[18625953.4,12391512.7]],"km":1.6,"lab":[18626324.9,12390895.4],"ang":-20.3},{"id":"T1-G1","kind":"road","pts":[[18625785.6,12384985.5],[18625794.0,12384985.3],[18625884.8,12385221.0],[18625916.5,12385330.3],[18625875.8,12385376.0],[18625881.2,12385384.4],[18625844.5,12385398.3],[18625767.1,12385399.0],[18625637.2,12385362.1],[18625480.4,12385244.9],[18625345.6,12385130.8],[18625268.1,12385193.8],[18625175.4,12385255.5],[18624934.1,12385400.0],[18624907.0,12385428.0],[18624837.0,12385529.2],[18624711.9,12385480.9],[18624627.2,12385468.3],[18624464.3,12385405.9],[18624348.9,12385398.2],[18624306.0,12385407.9],[18624190.8,12385457.4],[18624103.1,12385471.3],[18623867.0,12385589.1],[18623771.4,12385621.4],[18623694.8,12385629.4],[18623615.9,12385657.8],[18623450.0,12385641.8],[18623365.0,12385660.5],[18623232.3,12385725.6],[18623113.9,12385842.3],[18623070.7,12385865.3],[18623024.5,12385944.7],[18622966.9,12385996.6],[18622927.5,12386068.4],[18622846.7,12386146.6],[18622768.7,12386249.8],[18622749.5,12386299.1],[18622738.8,12386411.0],[18622711.0,12386565.8],[18622685.4,12386616.2],[18622632.1,12386759.8],[18622606.0,12386854.1],[18622582.2,12386996.4],[18622555.7,12387081.8],[18622446.9,12387241.8],[18622446.7,12387292.2],[18622463.4,12387424.8],[18622448.6,12387529.9],[18622460.0,12387684.3],[18622422.3,12387800.8],[18622432.1,12387871.7],[18622383.7,12387989.5],[18622387.9,12388054.1],[18622377.3,12388155.9],[18622292.9,12388276.6],[18622204.0,12388443.9],[18622184.6,12388498.7],[18622173.2,12388792.3],[18622152.7,12388930.0],[18622072.8,12389052.8],[18622040.9,12389088.0],[18621942.2,12389161.7],[18621857.9,12389258.6],[18621686.9,12389373.1],[18621641.7,12389432.7],[18621633.0,12389470.7],[18621591.9,12389531.7],[18621596.2,12389554.1],[18621626.9,12389555.0],[18621634.3,12389562.7],[18621637.0,12389609.6],[18621649.6,12389646.2],[18621650.7,12389718.5],[18621616.8,12389842.9],[18621562.0,12389924.2],[18621534.5,12389946.1],[18621537.3,12390001.4],[18621525.5,12390056.7],[18621537.7,12390140.4],[18621504.0,12390248.6],[18621491.9,12390265.9],[18621445.3,12390296.3],[18621435.0,12390315.8],[18621428.7,12390393.8],[18621439.4,12390485.3],[18621431.8,12390541.2],[18621398.2,12390588.6],[18621369.5,12390648.7],[18621340.9,12390685.2],[18621320.6,12390772.8],[18621282.5,12390806.7],[18621246.4,12390859.0],[18621216.3,12390887.4],[18621189.9,12390944.3],[18621143.9,12391006.9]],"km":8.3,"lab":[18622614.2,12386837.7],"ang":-65.4}],"peaks":[{"t":"Lagojvet","e":2540,"w":[18619173.6,12394765.1]},{"t":"Zla Kolata / Kollate e Keqe","e":2535,"w":[18631660.5,12394921.6]},{"t":"Dobra Kolata / Kollate e Mires","e":2525,"w":[18632016.5,12394419.6]},{"t":"Maja e Rosit / Rosni vrh","e":2522,"w":[18627416.9,12395611.4]},{"t":"Maja Shkurt","e":2499,"w":[18619033.8,12395522.3]},{"t":"Veliki vrh","e":2490,"w":[18621499.8,12393470.6]},{"t":"Sjeverni vrh","e":2460,"w":[18621743.5,12393188.7]},{"t":"L3","e":2455,"w":[18619585.4,12394886.4]},{"t":"Xhevahirit","e":2445,"w":[18620054.5,12394310.0]},{"t":"Maja Podi e Rosit","e":2444,"w":[18628101.8,12395067.8]},{"t":"Južni Vrh","e":2441,"w":[18621033.1,12393418.2]},{"t":"Vukoces","e":2431,"w":[18620002.9,12394929.9]},{"t":"Preht","e":2430,"w":[18619510.8,12394714.3]},{"t":"Maja Lugut Ujit","e":2428,"w":[18631755.5,12396129.6]},{"t":"Maja e Nagvacit","e":2412,"w":[18618160.5,12394222.5]},{"t":"Forca (Fortit)","e":2403,"w":[18620833.3,12394131.0]},{"t":"L6","e":2400,"w":[18619121.9,12395255.0]},{"t":"Maja Koprišit","e":2363,"w":[18618733.2,12395898.0]},{"t":"Maja Gosdines","e":2269,"w":[18618404.1,12393439.9]},{"t":"Maja Brinja e Lisit","e":2263,"w":[18617538.2,12394275.3]},{"t":"Karanfil Ljuljaševića","e":2224,"w":[18622914.9,12392424.0]},{"t":"Vojušit(Edhave)","e":2210,"w":[18619565.2,12392858.7]},{"t":"Veliki Trojan","e":2190,"w":[18618035.7,12386525.2]},{"t":"Očnjak","e":2185,"w":[18622089.1,12392026.8]},{"t":"Komljen","e":2151,"w":[18621780.0,12393785.6]},{"t":"Mali Karanfili","e":2119,"w":[18623419.2,12391444.7]},{"t":"Bora","e":2106,"w":[18631318.6,12389860.7]},{"t":"Talijanka/Maja e Vajushës","e":2057,"w":[18619000.4,12390987.7]},{"t":"Pukli krš","e":2052,"w":[18630043.6,12389310.8]},{"t":"Ćemena","e":2036,"w":[18629477.5,12388955.6]},{"t":"Brian i bunsit","e":2033,"w":[18625400.0,12394231.6]},{"t":"Popadija","e":2030,"w":[18618963.2,12390458.2]},{"t":"Podgojs","e":2021,"w":[18624075.6,12390491.9]},{"t":"Kulj Brešnjik","e":1995,"w":[18627621.1,12392295.6]},{"t":"Gvozdeni vrh","e":1988,"w":[18621348.1,12392360.5]},{"t":"Čokišta","e":1956,"w":[18622988.0,12395549.6]},{"t":"Karaula","e":1915,"w":[18620515.4,12388659.1]},{"t":"Volušnica","e":1879,"w":[18620444.8,12390813.9]},{"t":"Kukića bor","e":1812,"w":[18630931.4,12388819.5]},{"t":"Belić","e":1804,"w":[18628404.3,12392570.7]},{"t":"Vezirova brada","e":1781,"w":[18623780.2,12387963.9]},{"t":"Bor","e":1723,"w":[18628275.2,12388412.6]},{"t":"Ploče","e":1678,"w":[18622929.4,12390117.6]},{"t":"Maja Taljanit","e":1585,"w":[18616486.0,12384130.1]},{"t":"Čunova brada","e":1543,"w":[18624294.2,12388794.6]},{"t":"Somina","e":1422,"w":[18625565.3,12382898.5]},{"t":"Pajišta","e":1386,"w":[18625290.9,12390285.9]},{"t":"Fite","e":1342,"w":[18624266.0,12393953.6]},{"t":"Mala Jerina","e":1275,"w":[18627699.3,12383358.5]},{"t":"Mala glava","e":1233,"w":[18622974.2,12385245.5]},{"t":"Glavica","e":1068,"w":[18621407.1,12384028.6]}],"places":[{"t":"Gusinje","k":"town","w":[18625809.2,12384951.4]},{"t":"Perperan","k":"hamlet","w":[18620450.1,12395989.9]},{"t":"Katun Roman","k":"locality","w":[18627282.1,12392616.6]},{"t":"Stanovi","k":"hamlet","w":[18628329.1,12391923.6]},{"t":"Katun Zastan","k":"hamlet","w":[18624307.7,12394673.9]},{"t":"Lepushë","k":"village","w":[18616210.0,12389460.8]},{"t":"Desni Grnčar","k":"village","w":[18621270.8,12383374.4]},{"t":"Škala","k":"hamlet","w":[18621459.3,12389812.6]},{"t":"Katun Popadija","k":"hamlet","w":[18619596.3,12388491.6]},{"t":"Godilja","k":"hamlet","w":[18618406.7,12383538.4]},{"t":"Katun Balijica","k":"locality","w":[18619381.7,12385700.4]},{"t":"Budaç","k":"hamlet","w":[18616397.6,12385970.9]},{"t":"Žuta prla","k":"locality","w":[18617867.8,12388055.1]},{"t":"Livada velika","k":"locality","w":[18618753.9,12387867.2]},{"t":"Krlje","k":"locality","w":[18620761.1,12383182.0]},{"t":"Popadija","k":"locality","w":[18618985.2,12390014.9]},{"t":"Pila e Budaćit","k":"locality","w":[18616496.0,12387046.5]},{"t":"Koljenoviće","k":"village","w":[18626587.9,12386059.9]},{"t":"Ćosovići","k":"hamlet","w":[18625975.9,12387653.8]},{"t":"Vusanje","k":"village","w":[18626994.6,12389650.1]},{"t":"Kruševo","k":"village","w":[18628843.9,12385317.1]},{"t":"Dolja","k":"village","w":[18623541.2,12385678.6]},{"t":"Dosuđe","k":"village","w":[18626685.2,12383672.6]},{"t":"Derviševići","k":"hamlet","w":[18624073.9,12383189.8]},{"t":"Vrela","k":"hamlet","w":[18626005.6,12383596.9]},{"t":"Gerani","k":"hamlet","w":[18625395.1,12388748.2]},{"t":"Lazi","k":"hamlet","w":[18621918.7,12384082.1]},{"t":"Bucelj","k":"hamlet","w":[18622693.2,12383876.6]},{"t":"Dragija","k":"hamlet","w":[18625198.9,12386234.7]},{"t":"Katun Vezirova brada","k":"locality","w":[18623967.6,12389092.2]},{"t":"Gropa Vezirova","k":"locality","w":[18622974.7,12389264.1]},{"t":"Budžaci","k":"hamlet","w":[18622472.2,12386463.6]},{"t":"Ahmedmujovići","k":"hamlet","w":[18622265.2,12386130.6]},{"t":"Ciri Kače","k":"hamlet","w":[18628038.6,12384084.6]},{"t":"Bojovići","k":"hamlet","w":[18623047.3,12382978.6]},{"t":"Luke","k":"hamlet","w":[18622432.1,12387340.6]},{"t":"Dolja","k":"hamlet","w":[18622234.9,12388273.0]},{"t":"Zarunica","k":"hamlet","w":[18627502.2,12390292.8]},{"t":"Ali pašini izvori","k":"hamlet","w":[18625154.6,12386697.7]},{"t":"Katuni","k":"hamlet","w":[18628586.1,12388261.6]},{"t":"Huljeva livada","k":"hamlet","w":[18627312.1,12387327.7]},{"t":"Laništa","k":"hamlet","w":[18622139.5,12386998.5]},{"t":"Jagnjičar","k":"locality","w":[18622888.5,12391074.3]},{"t":"Ploče","k":"locality","w":[18623494.1,12390160.0]},{"t":"Višnjevo","k":"village","w":[18630804.8,12384786.9]},{"t":"Martinoviće","k":"village","w":[18630188.4,12383159.6]},{"t":"Koljenovića katun","k":"hamlet","w":[18630417.5,12390173.7]},{"t":"Kukića katun","k":"hamlet","w":[18631626.4,12388148.6]},{"t":"Gropa Memina","k":"hamlet","w":[18632078.5,12387185.7]}]};
+
 const DEG = Math.PI / 180;
 const DEBUG = new URLSearchParams(location.search).has('debug');
 const CUB = 'Ari';   // the bear cub's working name (game design document); change it here only
@@ -1940,43 +1981,44 @@ async function copyExport() {
 }
 
 
-/* ---------------------------------------------------------------- the field map (2D, north up)
-   World units: Web Mercator pixels at zoom 17 (≈ 0.88 m each here). OpenStreetMap tiles when the browser may load them,
-   otherwise a sketch of the roads and rivers between the sites. Markers keep their size on screen; zone circles are true size. */
-const TILE_URL = (z, x, y) => `https://tile.openstreetmap.org/${z}/${x}/${y}.png`;
-const Z0 = 17, TS = 256;
+/* ---------------------------------------------------------------- the field map (2D, north up), in the style of the printed game map
+   World units: Web Mercator pixels at zoom 17 (≈ 0.88 m each here). The base is painted (tools/fieldmap/render.py, from the
+   Copernicus DEM and OpenStreetMap): a blue-hour overview of the valleys, and town-plan pictures of Gusinje, Vusanje and Grebaje
+   that fade in as you zoom in. Drawn live over it: the gold quest trails with their lengths, place names and peaks, the zones,
+   the peridot pins and their slate labels. Markers keep their size on screen; zone circles are true size. */
+const Z0 = 17, TS = 256, SVGNS = 'http://www.w3.org/2000/svg';
 function W(lat, lon) {
   const s = TS * 2 ** Z0, x = (lon + 180) / 360 * s;
   const sl = Math.sin(lat * DEG), y = (0.5 - Math.log((1 + sl) / (1 - sl)) / (4 * Math.PI)) * s;
   return [x, y];
 }
 const MPP = 156543.03392 * Math.cos(42.54 * DEG) / 2 ** Z0;   // metres per world unit around Gusinje
+const S_MIN = 0.022, S_MAX = 2.6;                              // zoom limits (screen px per world unit)
 const mapEl = $('map'), svg = $('map-svg');
 const view = { cx: 0, cy: 0, s: 0.05, follow: false };
-const tiles = { ok: null, els: new Map(), loaded: 0 };
 let mapW = 0, mapH = 0, selectedId = null;
 
-/* sketch layer: approximate roads and rivers between known points (shown when there are no tiles) */
-const SKETCH = {
-  roads: [
-    [[42.5638, 19.8330], [42.5625, 19.8290], [42.5600, 19.8211], [42.5545, 19.8080], [42.5420, 19.7960], [42.5300, 19.7890], [42.5218, 19.7863]],
-    [[42.5638, 19.8330], [42.5580, 19.8335], [42.5520, 19.8300], [42.5490, 19.8262], [42.5420, 19.8300], [42.5330, 19.8370], [42.5229, 19.8416], [42.5170, 19.8390], [42.5119, 19.8348]],
-  ],
-  rivers: [
-    { name: 'Grnčar', pts: [[42.5250, 19.7900], [42.5420, 19.8000], [42.5560, 19.8150], [42.5640, 19.8270], [42.5655, 19.8319], [42.5690, 19.8450], [42.5760, 19.8600]] },
-    { name: 'Vruja', pts: [[42.5490, 19.8255], [42.5540, 19.8320], [42.5600, 19.8400], [42.5680, 19.8470]] },
-    { name: 'Skakavica', pts: [[42.5119, 19.8348], [42.5160, 19.8400], [42.5229, 19.8420]], dashed: false },
-  ],
-  labels: [
-    { t: 'Gusinje', at: [42.5660, 19.8345], k: 'town' },
-    { t: 'Dolja', at: [42.5590, 19.8190], k: 'place' },
-    { t: 'Vusanje', at: [42.5200, 19.8450], k: 'place' },
-    { t: 'Grebaje', at: [42.5190, 19.7900], k: 'place' },
-    { t: 'Karanfili', at: [42.4949, 19.7732], k: 'peak' },
-    { t: 'Ropojana ↓', at: [42.5040, 19.8300], k: 'place' },
-  ],
-};
-const SK = { roads: SKETCH.roads.map((r) => r.map((p) => W(...p))), rivers: SKETCH.rivers.map((r) => ({ ...r, w: r.pts.map((p) => W(...p)) })), labels: SKETCH.labels.map((l) => ({ ...l, w: W(...l.at) })) };
+/* the painted base: pictures placed in world units inside one group; only the group's transform changes as you pan */
+const ORIGIN = [FIELDMAP.pics[0].box[0], FIELDMAP.pics[0].box[1]];
+const BASE = FIELDMAP.pics.map((p) => {
+  const im = document.createElementNS(SVGNS, 'image');
+  if (p.kind === 'overview') im.setAttribute('href', p.src);   // the town plans load when you first zoom in
+  im.setAttribute('preserveAspectRatio', 'none');
+  im.setAttribute('x', (p.box[0] - ORIGIN[0]).toFixed(2)); im.setAttribute('y', (p.box[1] - ORIGIN[1]).toFixed(2));
+  im.setAttribute('width', (p.box[2] - p.box[0]).toFixed(2)); im.setAttribute('height', (p.box[3] - p.box[1]).toFixed(2));
+  im.setAttribute('class', `base-${p.kind}`);
+  $('map-base').appendChild(im);
+  return { ...p, el: im, op: -1 };
+});
+const TRAILS = FIELDMAP.trails;
+const MAP_NAMES = [
+  ...FIELDMAP.places.map((p) => ({ ...p, k: p.t === 'Gusinje' ? 'town' : p.k })),
+  { t: 'Grebaje', w: W(42.5262, 19.7922), k: 'valley', rot: -62 },
+  { t: 'Ropojana', w: W(42.4985, 19.8318), k: 'valley', rot: -78 },
+  { t: 'Karanfili', w: W(42.4936, 19.8010), k: 'range' },
+];
+const PEAKS = FIELDMAP.peaks;
+const TOWN_KM = TRAILS.find((t) => t.id === 'town')?.km;
 
 const toScreen = ([x, y]) => [(x - view.cx) * view.s + mapW / 2, (y - view.cy) * view.s + mapH / 2];
 const toWorld = (sx, sy) => [(sx - mapW / 2) / view.s + view.cx, (sy - mapH / 2) / view.s + view.cy];
@@ -1985,101 +2027,146 @@ function fitTo(points, pad = 60) {
   const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
   view.cx = (x0 + x1) / 2; view.cy = (y0 + y1) / 2;
   const top = 120, bottom = 220;
-  view.s = clamp(Math.min((mapW - pad * 2) / Math.max(1, x1 - x0), (mapH - top - bottom) / Math.max(1, y1 - y0)), 0.004, 4);
+  view.s = clamp(Math.min((mapW - pad * 2) / Math.max(1, x1 - x0), (mapH - top - bottom) / Math.max(1, y1 - y0)), S_MIN, S_MAX);
   view.cy += (bottom - top) / 2 / view.s;
 }
 const siteW = (f) => f.zone ? W(f.zone.lat, f.zone.lon) : null;
 function fitAll() { const pts = [...FIELD, ASSEMBLY].map(siteW).filter(Boolean); if (pts.length) fitTo(pts); drawMap(); }
 
-/* ---------- tiles */
-function drawTiles() {
-  const layer = $('map-tiles');
-  if (tiles.ok === false) { if (tiles.els.size) { layer.textContent = ''; tiles.els.clear(); } return; }
-  const z = clamp(Math.round(Z0 + Math.log2(view.s)), 10, 18);
-  const n = 2 ** z, k = 2 ** (Z0 - z), size = TS * k;   // one tile, in world units
-  const [wx0, wy0] = toWorld(0, 0), [wx1, wy1] = toWorld(mapW, mapH);
-  const tx0 = Math.floor(wx0 / size), tx1 = Math.floor(wx1 / size), ty0 = Math.floor(wy0 / size), ty1 = Math.floor(wy1 / size);
-  const want = new Set();
-  if ((tx1 - tx0 + 1) * (ty1 - ty0 + 1) <= 80) {
-    for (let ty = ty0; ty <= ty1; ty++) for (let tx = tx0; tx <= tx1; tx++) {
-      if (ty < 0 || ty >= n) continue;
-      const key = `${z}/${((tx % n) + n) % n}/${ty}`; want.add(key);
-      let im = tiles.els.get(key);
-      if (!im) {
-        im = document.createElementNS('http://www.w3.org/2000/svg', 'image');
-        im.setAttribute('href', TILE_URL(z, ((tx % n) + n) % n, ty)); im.setAttribute('preserveAspectRatio', 'none');
-        im.addEventListener('load', () => { if (!tiles.ok) { tiles.ok = true; mapEl.classList.add('tiled'); requestDraw(); } tiles.loaded++; });
-        im.addEventListener('error', () => { if (!tiles.loaded) { tiles.ok = false; mapEl.classList.remove('tiled'); requestDraw(); } else im.remove(); });
-        im.dataset.tx = tx; im.dataset.ty = ty; im.dataset.z = z;
-        layer.appendChild(im); tiles.els.set(key, im);
-      }
-      const [sx, sy] = toScreen([tx * size, ty * size]);
-      im.setAttribute('x', sx.toFixed(1)); im.setAttribute('y', sy.toFixed(1));
-      im.setAttribute('width', (size * view.s + 0.6).toFixed(1)); im.setAttribute('height', (size * view.s + 0.6).toFixed(1));
-    }
+function drawBase() {
+  const s = view.s, tx = mapW / 2 + (ORIGIN[0] - view.cx) * s, ty = mapH / 2 + (ORIGIN[1] - view.cy) * s;
+  $('map-base').setAttribute('transform', `matrix(${s.toFixed(6)} 0 0 ${s.toFixed(6)} ${tx.toFixed(2)} ${ty.toFixed(2)})`);
+  const detail = smooth((s - 0.17) / 0.2);   // town plans fade in between ~4 and ~2.5 m per screen pixel
+  for (const b of BASE) {
+    if (b.kind === 'overview') continue;
+    const [x0, y0] = toScreen([b.box[0], b.box[1]]), [x1, y1] = toScreen([b.box[2], b.box[3]]);
+    const op = detail > 0.01 && x1 > 0 && y1 > 0 && x0 < mapW && y0 < mapH ? +detail.toFixed(2) : 0;
+    if (op && !b.loaded) { b.loaded = true; b.el.setAttribute('href', b.src); }
+    if (op !== b.op) { b.op = op; b.el.style.display = op ? '' : 'none'; b.el.setAttribute('opacity', op); }
   }
-  for (const [key, im] of tiles.els) if (!want.has(key)) { im.remove(); tiles.els.delete(key); }
 }
 
-/* ---------- overlay: sketch, zones, sites, you */
+/* ---------- overlay: trails, names, zones, peridot pins and their labels */
 const pathOf = (pts) => pts.map((p, i) => { const [x, y] = toScreen(p); return `${i ? 'L' : 'M'}${x.toFixed(1)} ${y.toFixed(1)}`; }).join('');
-function shardMark(f) {   // a peridot shard floating over the pin; it glows and pulses when you are near or on site
-  const r = frec(f.id), near = r?.arrived || (fixFresh() && f.zone && distM([loc.fix.lat, loc.fix.lon], [f.zone.lat, f.zone.lon]) < Math.max(150, f.zone.r * 3));
-  return `<g class="mk-shard${near ? ' near' : ''}" transform="translate(0 -55)">${near ? '<circle class="halo" r="15"/>' : ''}<g class="b"><path d="M0 -13 C 7 -6 7 6 0 13 C -7 6 -7 -6 0 -13 Z"/><path class="cut" d="M0 -7 C 3.4 -3 3.4 3 0 7 C -3.4 3 -3.4 -3 0 -7 Z M0 -13 V-7 M0 7 V13 M-5.6 0 H-2.6 M2.6 0 H5.6"/><path class="hl" d="M-1.6 -8.2 C -0.9 -9.6 -0.4 -10.4 0 -11 C -0.3 -8.6 -0.9 -6.8 -1.9 -5.4 Z"/></g></g>`;
+const onScreen = ([x, y], m = 40) => x > -m && y > -m && x < mapW + m && y < mapH + m;
+// a marquise peridot standing on its lower tip (the tip marks the place), 22 x 40 px, with its cut drawn in
+const GEM_PATH = 'M0 0 C -9.5 -9 -11 -27 0 -40 C 11 -27 9.5 -9 0 0 Z';
+const GEM_CUT = 'M0 -40 L -3.6 -26 L 0 -20 L 3.6 -26 Z M -3.6 -26 L -8.6 -21 M 3.6 -26 L 8.6 -21 M 0 -20 L -3.4 -10 L 0 0 L 3.4 -10 Z M -3.4 -10 L -8.6 -19 M 3.4 -10 L 8.6 -19 M -8.6 -20 H 8.6';
+function gemMark(f, st, near) {
+  const glow = st === 'done' ? 'g-dim' : near || st === 'here' ? 'g-hot' : '';
+  return `<circle class="gem-glow ${glow}" cy="-20" r="${near || st === 'here' ? 30 : 24}"/>`
+    + `<g class="gem-b${near ? ' near' : ''}"><path class="gem-body" d="${GEM_PATH}"/><path class="gem-cut" d="${GEM_CUT}"/>`
+    + `<path class="gem-hl" d="M -2.4 -33 C -5.6 -28 -6.6 -22 -6 -16 C -4.2 -21 -3.4 -27 -2.4 -33 Z"/></g>`
+    + (st === 'done' ? '<g class="gem-done" transform="translate(9 -36)"><circle r="7.5"/><path d="M-3.4 0.2 L-1 2.6 L3.6 -2.4"/></g>' : '');
 }
 function siteState(f) {
   if (f.id === 'A') return fieldSave().assembled ? 'done' : partsHome() === 3 ? 'open' : 'locked';
   const r = frec(f.id);
   return r?.done ? 'done' : r?.arrived ? 'here' : 'open';
 }
-const perf = { draws: 0, writes: 0, tileWrites: 0, ms: 0 };
-let drawQueued = false, lastOver = '', lastTileView = '';
+function plateSub(f, st) {
+  if (st === 'done') return 'Done';
+  if (st === 'here') return 'You are here';
+  if (st === 'locked') return 'Opens with all three parts';
+  if (fixFresh() && f.zone) return `${fmtDist(distM([loc.fix.lat, loc.fix.lon], [f.zone.lat, f.zone.lon]))} away`;
+  return f.zone ? `Zone ${Math.round(f.zone.r)} m · stay ${f.zone.dwell || 20} s` : '';
+}
+const perf = { draws: 0, writes: 0, ms: 0 };
+let drawQueued = false, lastOver = '', lastPlates = '';
 function requestDraw() { if (drawQueued) return; drawQueued = true; requestAnimationFrame(() => { drawQueued = false; drawMap(); }); }
 function drawMap() {
   if (!mapW) return;
   const t0 = performance.now(); perf.draws++;
-  const vkey = `${view.cx.toFixed(1)},${view.cy.toFixed(1)},${view.s.toFixed(5)},${mapW},${mapH},${tiles.ok}`;
-  if (vkey !== lastTileView) { lastTileView = vkey; drawTiles(); perf.tileWrites++; }
-  const out = [];
-  const sketch = tiles.ok !== true;
-  if (sketch) {
-    for (const r of SK.rivers) out.push(`<path class="sk-river" d="${pathOf(r.w)}"/>`);
-    for (const r of SK.roads) out.push(`<path class="sk-road-c" d="${pathOf(r)}"/><path class="sk-road" d="${pathOf(r)}"/>`);
-    for (const l of SK.labels) {
-      if (l.k === 'place' && view.s > 0.9) continue;
-      const [x, y] = toScreen(l.w); out.push(`<text class="sk-label ${l.k}" x="${x.toFixed(1)}" y="${y.toFixed(1)}">${esc(l.t)}</text>`);
+  drawBase();
+  const s = view.s, trails = [], names = [], zones = [], pins = [], plates = [];
+  const merged = s < 0.12;                       // far out: the six town sites become one
+  // labels take turns for space: plates first, then names in order of importance; anything that would overlap is left out
+  const taken = [];
+  const fits = (x0, y0, x1, y1) => { if (taken.some((r) => x0 < r[2] && x1 > r[0] && y0 < r[3] && y1 > r[1])) return false; taken.push([x0, y0, x1, y1]); return true; };
+  const plateBox = (x, y, title, sub, must) => {   // a plate beside the pin: right, left, then a little lower; null if there is no room
+    const w = Math.max(title.length * 8.1, sub.length * 6.3) + 26, h = 40;
+    taken.push([x - 13, y - 44, x + 13, y + 2]);
+    const tries = [[x + 16, y - 38], [x - 16 - w, y - 38], [x + 16, y + 4], [x - 16 - w, y + 4], [x - w / 2, y - 92]];
+    for (const [px, py] of tries) {
+      if (px < 6 || px + w > mapW - 6) continue;
+      if (fits(px, py, px + w, py + h)) return [px, py];
     }
+    if (!must) return null;
+    const px = x + 16 + w > mapW - 8 ? x - 16 - w : x + 16;
+    taken.push([px, y - 38, px + w, y + 2]);
+    return [px, y - 38];
+  };
+  // quest trails: gold dashes on the roads, gold dots on foot through the town
+  for (const t of TRAILS) {
+    if (t.kind === 'foot' && merged) continue;
+    const d = pathOf(t.pts);
+    if (t.kind === 'foot') trails.push(`<path class="tr-foot-c" d="${d}"/><path class="tr-foot" d="${d}"/>`);
+    else trails.push(`<path class="tr-road-c" d="${d}"/><path class="tr-road" d="${d}"/>`);
   }
   const sites = [...FIELD, ASSEMBLY].filter((f) => f.zone && !(f.hidden && !frec(f.id)?.arrived && !(fixFresh() && distM([loc.fix.lat, loc.fix.lon], [f.zone.lat, f.zone.lon]) < 60) && !SURVEY));
-  // zones (true size)
-  for (const f of sites) {
-    const [x, y] = toScreen(siteW(f)), r = f.zone.r / MPP * view.s;
-    if (r < 6) continue;
-    const inside = dwellSince[f.id] ? 'inside' : '';
-    out.push(`<circle class="zone ${siteState(f)} ${inside}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(1)}"/>`);
-  }
-  const tgt = targetSite();
-  // site markers; town sites merge into one when zoomed far out
-  const merged = view.s < 0.12;
-  const townDone = FIELD.filter((f) => f.ch === 1 && fieldDone(f.id)).length;
-  if (merged) {
-    const t = W(42.5630, 19.8300), [x, y] = toScreen(t);
-    out.push(`<g class="mk cluster" data-act="zoomtown" transform="translate(${x.toFixed(1)} ${y.toFixed(1)})"><circle r="22"/><text y="6">${townDone}/8</text></g>`);
-    out.push(`<text class="mk-name" x="${x.toFixed(1)}" y="${(y + 40).toFixed(1)}">Gusinje town</text>`);
-  }
+  // zones (true size): a soft peridot disc with a dashed rim
   for (const f of sites) {
     if (merged && f.ch === 1) continue;
-    const [x, y] = toScreen(siteW(f)), st = siteState(f), sel = f.id === selectedId || f.id === tgt?.id ? 'sel' : '';
-    const label = f.id === 'A' ? '★' : f.id;
-    const shard = f.id !== 'A' && !frec(f.id)?.look ? shardMark(f) : '';
-    out.push(`<g class="mk ${st} ${sel}" data-act="open:${f.id}" transform="translate(${x.toFixed(1)} ${y.toFixed(1)})" role="button" aria-label="${esc(f.title)}${shard ? ': a peridot shard is here' : ''}">${shard}<path d="M0 -40 C 14 -40 20 -30 20 -21 C 20 -9 0 0 0 0 C 0 0 -20 -9 -20 -21 C -20 -30 -14 -40 0 -40 Z"/><text y="-15">${st === 'done' ? '✓' : label}</text></g>`);
-    if (view.s > 0.5 || (!merged && f.ch !== 1)) out.push(`<text class="mk-name" x="${x.toFixed(1)}" y="${(y + 18).toFixed(1)}">${esc(f.title)}</text>`);
+    const [x, y] = toScreen(siteW(f)), r = f.zone.r / MPP * s;
+    if (r < 5 || !onScreen([x, y], r + 10)) continue;
+    const inside = dwellSince[f.id] ? 'inside' : '';
+    zones.push(`<circle class="zone ${siteState(f)} ${inside}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(1)}"/>`);
   }
-  const html = out.join('');
+  const tgt = targetSite();
+  if (merged) {   // the town as one pin and one label
+    const townDone = FIELD.filter((f) => f.ch === 1 && f.zone && fieldDone(f.id)).length, townN = FIELD.filter((f) => f.ch === 1 && f.zone).length;
+    const [x, y] = toScreen(W(42.5634, 19.8312));
+    pins.push(`<g class="mk cluster" data-act="zoomtown" transform="translate(${x.toFixed(1)} ${y.toFixed(1)})" role="button" aria-label="Gusinje town: ${townDone} of ${townN} sites done"><circle class="gem-glow" cy="-20" r="28"/><g class="gem-b"><path class="gem-body" d="${GEM_PATH}"/><path class="gem-cut" d="${GEM_CUT}"/></g><g class="gem-count" transform="translate(11 -38)"><circle r="10"/><text y="4">${townN - townDone}</text></g></g>`);
+    const title = 'T1–T8 · Gusinje town', sub = `${townDone}/${townN} done${TOWN_KM ? ` · ${TOWN_KM} km trail on foot` : ''}`;
+    const [px, py] = plateBox(x, y, title, sub, true);
+    plates.push(`<button class="mk-plate" data-act="zoomtown" style="transform:translate(${px.toFixed(1)}px,${py.toFixed(1)}px)"><b>${title}</b><i>${sub}</i></button>`);
+  }
+  const isKey = (f) => f.id === selectedId || f.id === tgt?.id;
+  const showPlate = (f) => isKey(f) || (f.ch === 1 ? s > 0.6 : s > 0.026);
+  const order = [...sites].sort((a, b) => (b.id === selectedId || b.id === tgt?.id) - (a.id === selectedId || a.id === tgt?.id));
+  for (const f of order) {
+    if (merged && f.ch === 1) continue;
+    const [x, y] = toScreen(siteW(f)); if (!onScreen([x, y], 60)) continue;
+    const st = siteState(f), sel = f.id === selectedId || f.id === tgt?.id ? 'sel' : '';
+    const r = frec(f.id), near = f.id !== 'A' && !r?.look && st !== 'done' && (r?.arrived || (fixFresh() && distM([loc.fix.lat, loc.fix.lon], [f.zone.lat, f.zone.lon]) < Math.max(150, f.zone.r * 3)));
+    const shard = f.id !== 'A' && !r?.look && st !== 'done';
+    pins.push(`<g class="mk ${st} ${sel}" data-act="open:${f.id}" transform="translate(${x.toFixed(1)} ${y.toFixed(1)})" role="button" aria-label="${esc(f.title)}${shard ? ': a peridot shard is here' : ''}">${gemMark(f, st, near)}</g>`);
+    if (showPlate(f)) {
+      const title = `${f.id === 'A' ? '★' : f.id} · ${f.title}`, sub = plateSub(f, st);
+      const at = plateBox(x, y, title, sub, isKey(f));
+      if (at) plates.push(`<button class="mk-plate ${st} ${sel}" data-act="open:${f.id}" style="transform:translate(${at[0].toFixed(1)}px,${at[1].toFixed(1)}px)"><b>${esc(title)}</b><i>${esc(sub)}</i></button>`);
+    } else taken.push([x - 14, y - 44, x + 14, y + 2]);
+  }
+  // trail lengths along the lines
+  for (const t of TRAILS) {
+    if (!t.lab || s < 0.022) continue;
+    const [x, y] = toScreen(t.lab);
+    if (onScreen([x, y]) && fits(x - 24, y - 22, x + 24, y + 4)) names.push(`<text class="tr-km" transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${t.ang})" y="-9">${t.km} km</text>`);
+  }
+  // names: the town and the valleys in gold capitals, villages and hamlets in italics, peaks with their heights
+  const RANK = { town: 0, valley: 1, range: 1, village: 2, hamlet: 3, locality: 4 };
+  const named = MAP_NAMES.filter((p) => p.k in RANK).sort((a, b) => RANK[a.k] - RANK[b.k]);
+  for (const p of named) {
+    const k = p.k;
+    if ((k === 'hamlet' && s < 0.11) || (k === 'locality' && s < 0.22) || (k === 'village' && s < 0.035) || (k === 'town' && s > 0.55)) continue;
+    const [x, y0] = toScreen(p.w), y = k === 'town' ? y0 - 46 : y0;   // the town's name sits above its pin
+    if (!onScreen([x, y], 120)) continue;
+    const big = k === 'town' ? 26 : k === 'valley' || k === 'range' ? 19 : k === 'village' ? 15.5 : 13;
+    const tw = p.t.length * big * (k === 'town' || k === 'valley' || k === 'range' ? 0.95 : 0.5);
+    if (!p.rot && !fits(x - tw / 2, y - big, x + tw / 2, y + 4)) continue;
+    names.push(`<text class="pl pl-${k}" x="${x.toFixed(1)}" y="${y.toFixed(1)}"${p.rot ? ` transform="rotate(${p.rot} ${x.toFixed(1)} ${y.toFixed(1)})"` : ''}>${esc(p.t)}</text>`);
+  }
+  for (const p of PEAKS) {
+    const [x, y] = toScreen(p.w); if (!onScreen([x, y])) continue;
+    const name = p.t.split(' / ')[0].split('/')[0].trim();
+    if (!fits(x - 6, y - 12, x + 9 + name.length * 6.2, y + 13)) continue;
+    names.push(`<g class="pk" transform="translate(${x.toFixed(1)} ${y.toFixed(1)})"><path d="M0 -5 L4.6 3 L-4.6 3 Z"/><text x="7" y="0">${esc(name)}</text><text class="ele" x="7" y="11">${p.e}</text></g>`);
+  }
+  const html = trails.join('') + names.join('') + zones.join('') + pins.reverse().join('');
   if (html !== lastOver) { $('map-over').innerHTML = html; lastOver = html; perf.writes++; }
+  const ph = plates.join('');
+  if (ph !== lastPlates) { $('map-plates').innerHTML = ph; lastPlates = ph; perf.writes++; }
   drawMe(tgt);
-  $('map-sketch-note').hidden = !sketch;
-  $('map-credit').hidden = !tiles.ok;
   perf.ms += performance.now() - t0;
 }
 
@@ -2132,7 +2219,7 @@ mapEl.addEventListener('pointermove', (e) => {
     const m0 = [(gesture.pts[0][0] + gesture.pts[1][0]) / 2, (gesture.pts[0][1] + gesture.pts[1][1]) / 2];
     const m1 = [(P[0][0] + P[1][0]) / 2, (P[0][1] + P[1][1]) / 2];
     moved = 99; view.follow = false;
-    const s = clamp(gesture.s * d1 / Math.max(1, d0), 0.004, 4);
+    const s = clamp(gesture.s * d1 / Math.max(1, d0), S_MIN, S_MAX);
     const r = mapEl.getBoundingClientRect();
     const wx = (m0[0] - r.left - mapW / 2) / gesture.s + gesture.cx, wy = (m0[1] - r.top - mapH / 2) / gesture.s + gesture.cy;
     view.s = s; view.cx = wx - (m1[0] - r.left - mapW / 2) / s; view.cy = wy - (m1[1] - r.top - mapH / 2) / s;
@@ -2152,7 +2239,7 @@ mapEl.addEventListener('pointerup', endPtr); mapEl.addEventListener('pointercanc
 mapEl.addEventListener('wheel', (e) => { e.preventDefault(); const r = mapEl.getBoundingClientRect(); zoomAt(e.clientX - r.left, e.clientY - r.top, Math.exp(-e.deltaY * 0.0015)); }, { passive: false });
 function zoomAt(sx, sy, k) {
   const [wx, wy] = toWorld(sx, sy);
-  view.s = clamp(view.s * k, 0.004, 4);
+  view.s = clamp(view.s * k, S_MIN, S_MAX);
   view.cx = wx - (sx - mapW / 2) / view.s; view.cy = wy - (sy - mapH / 2) / view.s;
   view.follow = false; updateFollowBtn(); requestDraw();
 }
@@ -2183,6 +2270,7 @@ $('btn-me').addEventListener('click', () => {
   view.follow = true; updateFollowBtn();
   if (fixFresh()) animateTo(W(loc.fix.lat, loc.fix.lon), Math.max(view.s, 1.1)); else toast('Finding your position…');
 });
+$('map-plates').addEventListener('click', (e) => { if (e.detail !== 0) return; const b = e.target.closest('[data-act]'); if (b) { sound('tap'); mapTap(b.dataset.act); } });   // keyboard: Enter or Space on a label
 $('btn-plus').addEventListener('click', () => zoomAt(mapW / 2, mapH / 2, 1.6));
 $('btn-minus').addEventListener('click', () => zoomAt(mapW / 2, mapH / 2, 1 / 1.6));
 
@@ -2946,7 +3034,6 @@ setInterval(() => {   // compass: redraw only when the heading moved by 2° or m
   if (lastHeading != null && Math.abs(wrapDeg(orient.heading - lastHeading)) < 2) return;
   lastHeading = orient.heading; updateFieldChip(); requestDraw();
 }, 200);
-window.addEventListener('online', () => { if (tiles.ok === false) { tiles.ok = null; tiles.loaded = 0; requestDraw(); } });
 mapEl.addEventListener('pointerdown', () => {   // after a reload, the compass needs one tap (iPhone permission) to come back
   if (fieldOn && !keepCompass) { keepCompass = true; startOrientation(); }
 }, { once: true });

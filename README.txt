@@ -16,8 +16,12 @@ WHAT IS IN THIS FOLDER
                   so the shard neither shakes nor slides; the view uses the orientation from when the picture was taken.
                   The city map on the same site (wave84mn.github.io) and this game share their lens measurements.
   logo/           the 3D badge for the start screen (peridot-mesh.txt + textures) and its pictures (peridot-badge*.png)
-  landing/        the start screen's pictures, made with Higgsfield: night-wide.jpg (computers), night-tall.jpg (phones),
-                  phone.jpg and trail.jpg (the pictures on the two menu cards), frame.webp (the slate frame of the cards)
+  landing/        the start screen's pictures: night-wide.jpg (computers), night-tall.jpg (phones), phone.jpg and trail.jpg
+                  (the pictures on the two menu cards), frame.webp (the slate frame of the cards)
+  fieldmap/       the maps, painted like the printed game map (blue-hour relief, glowing rivers, warm town lights):
+                  overview.jpg (the valleys, field game), gusinje.webp, vusanje.webp, grebaje.webp (town plans that fade in
+                  when you zoom in on the field map), valley3d.jpg (the texture of the 3D valley map of the virtual missions).
+                  Made from the Copernicus DEM and OpenStreetMap by tools/fieldmap in the build folder.
   logo.png        Xplore Prokletije logo
   partners/       logos under the menu on the start screen: TO Gusinje, Xplore Prokletije, Ministry of Tourism
   catch/          ari.jpg: Ari's painted portrait in the field game's camera view (from the Higgsfield catch design)
@@ -81,5 +85,6 @@ TURNING ANOTHER MISSION INTO A 3D WALK (like St. Anthony)
      viewpoint "pos" [x east, z south] and "floor" in metres. Shards on those viewpoints are placed on the model automatically.
 
 360° photos: Turistička organizacija Gusinje (GoThru tour by Virtualno360, June 2025).
-The valley map is a stylised relief drawn in code; mission pins stand at their real coordinates.
-Field map: OpenStreetMap tiles (© OpenStreetMap contributors), or a sketch of the roads when tiles cannot load.
+The 3D valley map is the real relief with the painted map on it; mission pins stand at their real coordinates.
+Maps: © OpenStreetMap contributors (ODbL); heights: Copernicus DEM GLO-30 © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH
+2014-2018, provided under COPERNICUS by the European Union and ESA. The 3D valley map uses the same heights.
