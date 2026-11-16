@@ -152,11 +152,11 @@ button { font: inherit; color: inherit; }
 .route-head span { margin-left: auto; font-weight: 600; font-size: 13px; color: var(--parchment-2); letter-spacing: 0.08em; font-variant-numeric: tabular-nums; }
 
 /* the stamp: a light ticket, so the QR code scans */
-.stamp { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: center; background: var(--parchment); color: var(--ink); border-radius: 12px; padding: 12px;
-  box-shadow: inset 0 0 0 1px rgba(16, 39, 42, 0.12); }
-.stamp code { display: block; font-family: var(--f-display); font-weight: 800; font-size: 34px; letter-spacing: 0.08em; line-height: 1; user-select: all; }
-.stamp p { font-size: 14px; color: #45504d; margin-top: 4px; }
-.stamp canvas { width: 96px; height: 96px; image-rendering: pixelated; }
+.stamp { display: grid; gap: 4px; justify-items: start; background: var(--parchment); color: var(--ink); border-radius: 12px; padding: 12px 14px; box-shadow: inset 0 0 0 1px rgba(16, 39, 42, 0.12); }
+.stamp code { display: block; max-width: 100%; white-space: nowrap; font-family: var(--f-display); font-weight: 800; font-size: clamp(26px, 9vw, 38px); letter-spacing: 0.06em; line-height: 1; user-select: all; }
+.stamp p { font-size: 14px; color: #45504d; margin-top: 2px; }
+.stamp .test-mark { font-family: var(--f-display); font-weight: 800; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: #fff; background: #b4472f; border-radius: 6px; padding: 3px 8px; }
+.stamp.test code { color: #7a6f5c; }
 
 @media (max-width: 520px) {
   .bar-btn .label { display: none; }
@@ -6668,7 +6668,7 @@ function panelMine() {
     return `<li><span class="id">${p.id}</span><span>${esc(p.n[lang])}</span><span class="st ${st}">${esc(r?.done ? `✓ ${t('stDone')}` : r?.arrived ? t('stHere') : t('stNot'))}</span></li>`;
   }).join('');
   const stamp = f.stamp
-    ? `<h3>${esc(t('stampTitle'))}</h3><div class="ld-stamp"><canvas id="ld-stamp-qr" width="176" height="176" aria-label="QR ${esc(f.stamp)}"></canvas><div><code>${esc(f.stamp)}</code><p>${esc(t('stampText'))}</p></div></div>`
+    ? `<h3>${esc(t('stampTitle'))}</h3><div class="ld-stamp"><div><code>${esc(f.stamp)}</code><p>${esc(t('stampText'))}</p></div></div>`
     : `<h3>${esc(t('stampTitle'))}</h3><p class="muted">${esc(t('stampNone'))}</p>`;
   return `${head('mineKicker', 'mineTitle')}<p class="ld-rank">${esc(t('ranks')[f.rank])}</p>
     <div class="ld-stats"><div><b>${fmt(f.pts)}</b><span>${esc(t('points'))}</span></div><div><b>${f.done}/10</b><span>${esc(t('places'))}</span></div><div><b>${f.chapters}/3</b><span>${esc(t('chapters'))}</span></div></div>
@@ -6710,7 +6710,7 @@ function panelReady() {
 function renderPanel() {
   const k = panel.kind;
   panelBody.innerHTML = k === 'mine' ? panelMine() : k === 'legend' ? panelLegend() : panelReady();
-  const qr = $('ld-stamp-qr'); if (qr) { const f = fieldProgress(); if (f.stamp) drawQR(qr, stampUrl(f.stamp)); }
+  // (no QR on the stamp until a staff page can check it: fix plan step 3)
   if (k === 'ready' && CHECKS.batt.s === 'idle') checkBattery();
 }
 function openPanel(kind, opener) {
