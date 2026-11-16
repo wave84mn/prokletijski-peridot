@@ -191,10 +191,10 @@ body { background: var(--obsidian); }
 /* borders: the state border (rose, dash-dot over a dark casing), the national park's edge (green dashes, a soft band inside) */
 .bd-state-c { fill: none; stroke: rgba(40, 10, 14, 0.55); stroke-width: 6; stroke-linejoin: round; stroke-linecap: round; }
 .bd-state { fill: none; stroke: #e9a39a; stroke-width: 2.4; stroke-dasharray: 12 4 2.5 4; stroke-linejoin: round; }
-.bd-park-band { fill: none; stroke: rgba(170, 214, 64, 0.2); stroke-width: 16; stroke-linejoin: round; }
-.bd-park { fill: none; stroke: #bfe05a; stroke-width: 1.8; stroke-dasharray: 7 4; stroke-linejoin: round; opacity: 0.85; }
+.bd-park-band { fill: none; stroke: rgba(170, 214, 64, 0.07); stroke-width: 10; stroke-linejoin: round; }
+.bd-park { fill: none; stroke: #bfe05a; stroke-width: 1.1; stroke-dasharray: 5 5; stroke-linejoin: round; opacity: 0.4; }   /* quiet (16 Nov: "too conspicuous") */
 .bd-name { font: 600 12px var(--map-serif); letter-spacing: 0.42em; fill: #f1b9ae; text-anchor: middle; paint-order: stroke; stroke: rgba(8, 20, 24, 0.85); stroke-width: 3px; stroke-linejoin: round; pointer-events: none; }
-.bd-park-name { font: italic 600 13px var(--map-serif); letter-spacing: 0.04em; fill: #cfe979; text-anchor: middle; paint-order: stroke; stroke: rgba(8, 20, 24, 0.85); stroke-width: 3px; stroke-linejoin: round; pointer-events: none; }
+.bd-park-name { font: italic 500 12px var(--map-serif); letter-spacing: 0.04em; fill: rgba(207, 233, 121, 0.7); text-anchor: middle; paint-order: stroke; stroke: rgba(8, 20, 24, 0.85); stroke-width: 3px; stroke-linejoin: round; pointer-events: none; }
 /* the frame where the painted map ends: night outside, a slate band with an inlaid gold line, gold hairlines, a gold diamond at each corner */
 .fr-out { fill: var(--map-night); pointer-events: none; }
 .fr-shade { fill: none; stroke: rgba(4, 10, 12, 0.5); stroke-width: 14; filter: blur(5px); pointer-events: none; }
