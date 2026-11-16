@@ -8,11 +8,12 @@ WHAT IS IN THIS FOLDER
   index.html      the start screen: the 3D Peridot badge over the valley at night, the AR trail missions card, and three menu cards in the same style
                   (each makes the badge glow with the chime, like the game card): My Peridot (points, places, chapters,
                   rank, the field stamp with its QR), Legend & how to play, Before you go (checks location, camera, motion
-                  and compass, shows the battery; tips; then the visit: visitor centre, time and getting around, safety,
+                  and compass, shows the battery; tips; then the visit: Tourist Info Centre, time and getting around, safety,
                   national park, places of prayer).
                   EN · ME · SQ switches the start screen's language (remembered on the device). The game itself is
                   in English for now.
-  field.html      the game: real places in Gusinje, Vusanje and Grebaje and the last step at the visitor centre, played on site
+  field.html      the game: the story "Pieces of Peridot" with Meyra as the guide (since 16 Nov 2026): ten places in three
+                  chapters (town, water, mountain), then the finders' desk at the Tourist Info Centre and the Kissing Cats, played on site
                   (GPS zones on the phone, or the 4-character code on each site's plaque). At each site a peridot shard
                   floats in the camera view, fixed to a compass bearing: flick the crystal orb to catch it (like Pokémon GO).
                   The 3D shard uses three.js from jsDelivr, loaded when a site is near; without it the shard is tapped.
@@ -33,12 +34,12 @@ WHAT IS IN THIS FOLDER
                   you zoom in). Made from the Copernicus DEM and OpenStreetMap by tools/fieldmap in the build folder.
   logo.png        Xplore Prokletije logo
   partners/       logos under the menu on the start screen: TO Gusinje, Xplore Prokletije, Ministry of Tourism
-  catch/          ari.jpg: the guide's painted portrait in the game's camera view (from the Higgsfield catch design)
+  catch/          meyra.jpg and meyra-face.jpg: Meyra's painted face (camera view, speech bubbles); kissing-cats.webp: the finale
   field-redirect/index.html   forwarder for the address on the printed map (see below)
   three.js 0.160.0 loads from jsDelivr; the fonts load from Google Fonts.
 
   Updating an earlier copy: the m/ folder (the virtual missions' photos), landing/orb.jpg, landing/phone.jpg,
-  landing/menu-visit.jpg and fieldmap/valley3d.jpg are no longer used and can be deleted from the site. landing/trail.jpg is new: replace the old one.
+  landing/menu-visit.jpg, catch/ari.jpg and fieldmap/valley3d.jpg are no longer used and can be deleted from the site. landing/trail.jpg is new: replace the old one.
 
 HOSTING
   Upload the folder as it is to https://xplore-prokletije.com/p/ . Static files only: no database, no build step.
@@ -66,7 +67,7 @@ PROGRESS
   The start screen's My Peridot reads it. The language choice is stored under "peridot.lang".
 
 STAMP CODES
-  Field stamp: PRK-F + three characters + a check character, after the last step at the visitor centre.
+  Field stamp: PRK-F + three characters + a check character, after the finale at the Tourist Info Centre.
   Characters: 23456789ABCDEFGHJKMNPQRSTUVWXYZ (no 0, 1, I, L, O).
   Check: for the four characters after "PRK-", add (position 1..4) × (index of the character in the list above);
   the check character is the character at (sum mod 31). This catches one wrong character and two swapped neighbours.
@@ -81,7 +82,7 @@ THE BADGE ON THE START SCREEN
 
 CHANGING TEXT
   Start screen texts in the three languages: the TXT block (en, me, sq) in the script in index.html; the ten places
-  and their names: PLACES10 just above it. Visitor centre details (address, opening hours, phone) go in visCentre.
+  and their names: PLACES10 just above it. Tourist Info Centre details (address, opening hours, phone) go in visCentre.
   Game sites, tasks and questions: the FIELD block of the script in field.html.
 
 Maps: © OpenStreetMap contributors (ODbL); heights: Copernicus DEM GLO-30 © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH

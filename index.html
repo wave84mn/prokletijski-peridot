@@ -282,6 +282,7 @@ button { font: inherit; color: inherit; }
 .ld-sheet h3 { margin: 18px 0 6px; font-family: var(--f-display); font-weight: 800; font-size: 15px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); }
 .ld-sheet p { margin: 8px 0 0; font-size: 15.5px; line-height: 1.5; color: rgba(244, 236, 217, 0.88); }
 .ld-sheet .story { font-family: "EB Garamond", "Palatino Linotype", Palatino, Georgia, serif; font-size: 18.5px; line-height: 1.5; color: #f3e6c9; }
+.ld-sheet .story + .story::first-letter { float: none; font-size: inherit; line-height: inherit; margin: 0; color: inherit; font-weight: inherit; }
 .ld-sheet .story::first-letter { float: left; font-size: 54px; line-height: 0.82; margin: 4px 8px 0 0; color: #e7cf90; font-weight: 600; }
 .ld-sheet .muted { font-size: 13.5px; color: rgba(244, 236, 217, 0.62); }
 .ld-sheet .ld-part { margin: 16px 0 0; font-size: 25px; }   /* the second part of a panel (Before you go: the visit) */
@@ -6446,8 +6447,8 @@ let lang = (() => {
   return 'en';
 })();
 
-/* the ten places, as on the printed Game Trails Map. `key` is how the game stores them: today Ali Pasha's Springs is V1,
-   Grlja V2 and Oko Skakavice V3; in the printed map's numbering (coming to the game with the new story) A1, V1 and V2. */
+/* the ten places, as on the printed Game Trails Map. `key` is how the game stores them: before 16 Nov 2026 Ali Pasha's Springs
+   was V1, Grlja V2 and Oko Skakavice V3; since the new story (game save v2) the printed map's numbering A1, V1 and V2. */
 const PLACES10 = [
   { id: 'T1', ch: 0, key: ['T1', 'T1'], n: { en: 'Ali Pasha Square', me: 'Trg Ali-paše', sq: 'Sheshi i Ali Pashës' } },
   { id: 'T2', ch: 0, key: ['T2', 'T2'], n: { en: 'Vizier’s Mosque', me: 'Vezirova džamija', sq: 'Xhamia e Vezirit' } },
@@ -6458,9 +6459,9 @@ const PLACES10 = [
   { id: 'A1', ch: 1, key: ['V1', 'A1'], n: { en: 'Ali Pasha’s Springs', me: 'Alipašini izvori', sq: 'Burimet e Ali Pashës' } },
   { id: 'V1', ch: 1, key: ['V2', 'V1'], n: { en: 'Grlja waterfall', me: 'Vodopad Grlja', sq: 'Ujëvara Grlja' } },
   { id: 'V2', ch: 1, key: ['V3', 'V2'], n: { en: 'Oko Skakavice', me: 'Oko Skakavice', sq: 'Oko Skakavice' } },
-  { id: 'G1', ch: 2, key: ['G1', 'G1'], n: { en: 'Suljova česma', me: 'Suljova česma', sq: 'Suljova česma' } },
+  { id: 'G1', ch: 2, key: ['G1', 'G1'], n: { en: 'Grebaje valley', me: 'Dolina Grebaje', sq: 'Lugina e Grebajës' } },
 ];
-const CHAPTER_NAMES = { en: ['Gusinje town', 'Springs and Vusanje', 'Grebaje'], me: ['Grad Gusinje', 'Izvori i Vusanje', 'Grebaje'], sq: ['Qyteti i Gucisë', 'Burimet dhe Vuthaj', 'Grebaja'] };
+const CHAPTER_NAMES = { en: ['The town pieces', 'The water pieces', 'The mountain piece'], me: ['Djelovi iz grada', 'Djelovi iz vode', 'Djelić iz planine'], sq: ['Copat e qytetit', 'Copat e ujit', 'Copa e malit'] };
 
 const TXT = {
   en: {
@@ -6474,27 +6475,30 @@ const TXT = {
     menuMine: 'My Peridot', menuLegend: 'Legend & how to play', menuVisit: 'Visit info', menuReady: 'Before you go', more: 'More', lang: 'Language', close: 'Close',
     descMine: 'Your points and rank, the places you have found, and your field stamp when you finish.',
     descLegend: 'How the green gem of Prokletije broke, and how to find its pieces in five steps. Try it at home first.',
-    descReady: 'Check your phone and plan the day: the visitor centre, timing, getting around, safety and the national park.',
+    descReady: 'Check your phone and plan the day: the Tourist Info Centre, timing, getting around, safety and the national park.',
     ctaOpen: 'Open', ctaRead: 'Read', ctaCheck: 'Check',
     // My Peridot
     mineKicker: 'Your progress', mineTitle: 'My Peridot', points: 'Points', places: 'Places', chapters: 'Chapters',
     ranks: ['Not on the trail yet', 'On the trail', 'Field Scout', 'Field Keeper', 'Guardian of the Peridot in the Field'],
-    stDone: 'Done', stHere: 'Visited', stNot: 'Not yet', stampTitle: 'Your field stamp', stampText: 'Show it at the visitor centre.',
-    stampNone: 'Your field stamp appears here after the last step at the visitor centre.', open: 'Open the game', resume: 'Continue the game',
+    stDone: 'Done', stHere: 'Visited', stNot: 'Not yet', stampTitle: 'Your field stamp', stampText: 'Show it at the Tourist Info Centre in Gusinje.',
+    stampNone: 'Your field stamp appears here after the finale at the Tourist Info Centre.', open: 'Open the game', resume: 'Continue the game',
     mineNote: 'Saved in this browser on this phone. Clearing the browser’s data clears it too.',
     // Legend
     legKicker: 'The legend', legTitle: 'Pieces of Peridot',
-    story: 'Long ago a meteorite struck Prokletije and left a great peridot in the rock. A strong earthquake shattered it, and over the generations its pieces were scattered through the valleys of Gusinje. The old ones say that at sunrise the whole stone lit the way to a hidden cave that keeps ancient secrets.',
+    story: ['Long ago, a burning stone fell out of the night sky and struck Prokletije. The mountains still carry the scar. But the meteorite left something else behind: a great peridot, green as meltwater in spring, caught in a hollow under the Kissing Cats.',
+      'For centuries the people of the valley lived by its light. When the sunrise came through the stone, the herders knew it was time to take the flocks up to the katuns, and the farmers knew the snowmelt was coming. And the old ones say that when the sun stood behind the whole stone, its green light lit the mouth of a hidden cave. No one has found it since, and it still keeps its ancient secrets.',
+      'Then the earth woke. An earthquake shook the Cats and shattered the crystal, and its pieces rolled down into the valleys of Gusinje. People found them, kept them and passed them from hand to hand.',
+      'The pieces are still out there. Find them, and the light may shine again.'],
     story2: 'Find the pieces again, place by place.', howTitle: 'How to play',
     steps: ['Open the AR trail missions and allow location. On an iPhone, also allow motion and orientation.',
       'Head for a place: the bar at the bottom shows the nearest one, how far it is and which way. Gold trails on the map link them.',
       'Arrive: stay in the green circle for about 20 seconds, or type the 4-character code from the plaque.',
       'Find the peridot shard in the camera view and collect it. Then do the place’s task and answer its question for points.',
-      'Complete Gusinje town, the springs and Vusanje, and Grebaje. Then bring your pieces to the visitor centre for the last step and your field stamp.'],
+      'Complete the town, the water and the mountain chapters. Then show 10/10 at the Tourist Info Centre in Gusinje: every finder gets a gift, and the peridot goes home to the Kissing Cats.'],
     anyOrder: 'Play the places in any order.', tryHome: 'Try at home', tryHomeText: 'Test mode: walk to the places with a joystick, without GPS. Its progress is kept apart.',
     // Visit
     visKicker: 'Plan your visit', visTitle: 'Visit info',
-    visCentreH: 'Visitor centre', visCentre: 'Turistička organizacija Gusinje, Gusinje. The last step of the game happens here: show your field stamp at the desk. Ask here for the printed Game Trails Map.',
+    visCentreH: 'Tourist Info Centre', visCentre: 'Turistička organizacija Gusinje, Gusinje. With every piece found, show 10/10 at the desk: every finder gets a gift, and the finale starts here. Ask here for the printed Game Trails Map.',
     visTimeH: 'Time and getting around', visTime: ['Gusinje town: six places on foot, about 2 hours.', 'Ali Pasha’s Springs, Grlja and Oko Skakavice: by car or bike, half a day (2 km to the springs, about 7 km to Oko Skakavice).', 'Grebaje: about 8 km by road to Suljova česma.'],
     visSafeH: 'Safety', visSafe: ['Stay behind the edge at Grlja.', 'Don’t swim at Oko Skakavice: the water is about 5 °C.', 'Mountain weather changes fast: bring a warm layer and water.', 'Emergency: 112.'],
     visParkH: 'National park', visPark: 'Grebaje is in Prokletije National Park: there is a small entry fee.',
@@ -6528,20 +6532,23 @@ const TXT = {
     ctaOpen: 'Otvori', ctaRead: 'Čitaj', ctaCheck: 'Provjeri',
     mineKicker: 'Tvoj napredak', mineTitle: 'Moj Peridot', points: 'Poeni', places: 'Mjesta', chapters: 'Poglavlja',
     ranks: ['Još nijesi na stazi', 'Na stazi', 'Terenski izviđač', 'Terenski čuvar', 'Zaštitnik Peridota na terenu'],
-    stDone: 'Završeno', stHere: 'Posjećeno', stNot: 'Još ne', stampTitle: 'Tvoj terenski pečat', stampText: 'Pokaži ga u info centru.',
-    stampNone: 'Terenski pečat se pojavljuje ovdje nakon posljednjeg koraka u info centru.', open: 'Otvori igru', resume: 'Nastavi igru',
+    stDone: 'Završeno', stHere: 'Posjećeno', stNot: 'Još ne', stampTitle: 'Tvoj terenski pečat', stampText: 'Pokaži ga u Turističkom info centru u Gusinju.',
+    stampNone: 'Terenski pečat se pojavljuje ovdje nakon finala u Turističkom info centru.', open: 'Otvori igru', resume: 'Nastavi igru',
     mineNote: 'Sačuvano u ovom pregledaču na ovom telefonu. Brisanje podataka pregledača briše i napredak.',
     legKicker: 'Legenda', legTitle: 'Djelovi Peridota',
-    story: 'Davno je meteorit pao na Prokletije i ostavio u stijeni veliki peridot. Snažan zemljotres ga je razbio, a vjekovima su njegovi djelovi raznošeni po dolinama Gusinja. Stari kažu da je u zoru cijeli kamen obasjavao put do skrivene pećine koja čuva drevne tajne.',
+    story: ['Davno je s noćnog neba pao užareni kamen i udario u Prokletije. Planine i danas nose taj ožiljak. Ali meteorit je za sobom ostavio još nešto: veliki peridot, zelen kao proljećna voda od otopljenog snijega, uglavljen u udubljenje ispod Mačijeg poljupca.',
+      'Vjekovima su ljudi u dolini živjeli po njegovoj svjetlosti. Kad bi izlazeće sunce zasjalo kroz kamen, čobani su znali da je vrijeme da izvedu stada na katune, a zemljoradnici da stiže otapanje snijega. Stari kažu da je, kad bi sunce stalo iza cijelog kamena, njegova zelena svjetlost obasjavala ulaz u skrivenu pećinu. Od tada je niko nije pronašao, a ona i dalje čuva svoje drevne tajne.',
+      'Onda se zemlja probudila. Zemljotres je zatresao Mačiji poljubac i razbio kristal, a njegovi djelovi su se otkotrljali u doline Gusinja. Ljudi su ih nalazili, čuvali i prenosili iz ruke u ruku.',
+      'Djelovi su još uvijek negdje tamo. Pronađi ih, i svjetlost bi mogla ponovo da zasija.'],
     story2: 'Pronađi djelove ponovo, mjesto po mjesto.', howTitle: 'Kako se igra',
     steps: ['Otvori AR misije na stazama i dozvoli lokaciju. Na iPhoneu dozvoli i pokret i orijentaciju.',
       'Kreni ka nekom mjestu: traka na dnu pokazuje najbliže, koliko je daleko i u kom pravcu. Zlatne staze na mapi ih povezuju.',
       'Kad stigneš, ostani oko 20 sekundi u zelenom krugu ili ukucaj kod od 4 znaka sa table.',
       'Pronađi djelić peridota u prikazu kamere i sakupi ga. Zatim uradi zadatak tog mjesta i odgovori na pitanje za poene.',
-      'Završi grad Gusinje, izvore i Vusanje, i Grebaje. Onda donesi djelove u info centar na posljednji korak i po terenski pečat.'],
+      'Završi poglavlja grada, vode i planine. Onda pokaži 10/10 u Turističkom info centru u Gusinju: svaki pronalazač dobija poklon, a peridot se vraća kući, pod Mačiji poljubac.'],
     anyOrder: 'Mjesta možeš obići bilo kojim redom.', tryHome: 'Probaj kod kuće', tryHomeText: 'Probni način: hodaj do mjesta pomoću džojstika, bez GPS-a. Taj napredak se čuva odvojeno.',
     visKicker: 'Planiraj posjetu', visTitle: 'Info za posjetu',
-    visCentreH: 'Info centar', visCentre: 'Turistička organizacija Gusinje, Gusinje. Ovdje je posljednji korak igre: pokaži terenski pečat na pultu. Ovdje pitaj i za štampanu mapu igre.',
+    visCentreH: 'Turistički info centar', visCentre: 'Turistička organizacija Gusinje, Gusinje. Kad pronađeš sve djelove, pokaži 10/10 na pultu: svaki pronalazač dobija poklon, a ovdje počinje i finale. Ovdje pitaj i za štampanu mapu igre.',
     visTimeH: 'Vrijeme i prevoz', visTime: ['Grad Gusinje: šest mjesta pješice, oko 2 sata.', 'Alipašini izvori, Grlja i Oko Skakavice: autom ili biciklom, pola dana (do izvora 2 km, do Oka Skakavice oko 7 km).', 'Grebaje: oko 8 km putem do Suljove česme.'],
     visSafeH: 'Bezbjednost', visSafe: ['Kod Grlje ostani iza ivice.', 'Ne kupaj se u Oku Skakavice: voda ima oko 5 °C.', 'Vrijeme u planini se brzo mijenja: ponesi toplu jaknu i vodu.', 'Hitni slučajevi: 112.'],
     visParkH: 'Nacionalni park', visPark: 'Grebaje su u Nacionalnom parku Prokletije: ulaz se naplaćuje (mala taksa).',
@@ -6570,24 +6577,27 @@ const TXT = {
     menuMine: 'Peridoti im', menuLegend: 'Legjenda dhe rregullat', menuVisit: 'Për vizitën', menuReady: 'Para nisjes', more: 'Më shumë', lang: 'Gjuha', close: 'Mbyll',
     descMine: 'Pikët dhe rangu yt, vendet e gjetura dhe vula jote e terrenit kur të mbarosh.',
     descLegend: 'Si u copëtua guri i gjelbër i Bjeshkëve të Nemuna dhe si t’i gjesh copat e tij në pesë hapa. Provoje fillimisht nga shtëpia.',
-    descReady: 'Kontrollo telefonin dhe planifiko ditën: qendra për vizitorë, kohëzgjatja, lëvizja, siguria dhe parku kombëtar.',
+    descReady: 'Kontrollo telefonin dhe planifiko ditën: qendra e informacionit turistik, kohëzgjatja, lëvizja, siguria dhe parku kombëtar.',
     ctaOpen: 'Hap', ctaRead: 'Lexo', ctaCheck: 'Kontrollo',
     mineKicker: 'Përparimi yt', mineTitle: 'Peridoti im', points: 'Pikë', places: 'Vende', chapters: 'Kapituj',
     ranks: ['Ende jo në shteg', 'Në shteg', 'Zbulues në terren', 'Rojtar në terren', 'Mbrojtës i Peridotit në terren'],
-    stDone: 'Kryer', stHere: 'Vizituar', stNot: 'Ende jo', stampTitle: 'Vula jote e terrenit', stampText: 'Tregoje në qendrën për vizitorë.',
-    stampNone: 'Vula e terrenit shfaqet këtu pas hapit të fundit në qendrën për vizitorë.', open: 'Hap lojën', resume: 'Vazhdo lojën',
+    stDone: 'Kryer', stHere: 'Vizituar', stNot: 'Ende jo', stampTitle: 'Vula jote e terrenit', stampText: 'Tregoje në Qendrën e Informacionit Turistik në Guci.',
+    stampNone: 'Vula e terrenit shfaqet këtu pas finales në Qendrën e Informacionit Turistik.', open: 'Hap lojën', resume: 'Vazhdo lojën',
     mineNote: 'Ruhet në këtë shfletues, në këtë telefon. Fshirja e të dhënave të shfletuesit e fshin edhe përparimin.',
     legKicker: 'Legjenda', legTitle: 'Copat e Peridotit',
-    story: 'Moti, një meteorit ra në Bjeshkët e Nemuna dhe la në shkëmb një peridot të madh. Një tërmet i fortë e copëtoi, dhe brez pas brezi copat e tij u shpërndanë nëpër luginat e Gucisë. Pleqtë thonë se në agim i gjithë guri ndriçonte rrugën drejt një shpelle të fshehur që ruan sekrete të lashta.',
+    story: ['Moti, një gur i zjarrtë ra nga qielli i natës dhe goditi Bjeshkët e Nemuna. Malet e mbajnë ende plagën. Por meteoriti la pas edhe diçka tjetër: një peridot të madh, të gjelbër si uji i borës që shkrin në pranverë, të zënë në një zgavër nën Macet që Puthen.',
+      'Për shekuj me radhë njerëzit e luginës jetuan sipas dritës së tij. Kur agimi kalonte nëpër gur, barinjtë e dinin se ishte koha t’i nxirrnin kopetë në bjeshkë, dhe bujqit e dinin se po vinte shkrirja e borës. Pleqtë thonë se kur dielli qëndronte pas gjithë gurit, drita e tij e gjelbër ndriçonte hyrjen e një shpelle të fshehur. Askush nuk e ka gjetur që atëherë, dhe ajo ende ruan sekretet e saj të lashta.',
+      'Pastaj toka u zgjua. Një tërmet i tronditi Macet dhe e copëtoi kristalin, dhe copat e tij u rrokullisën poshtë në luginat e Gucisë. Njerëzit i gjetën, i ruajtën dhe i kaluan dorë më dorë.',
+      'Copat janë ende diku atje. Gjeji, dhe drita mund të ndriçojë sërish.'],
     story2: 'Gjej sërish copat, vend pas vendi.', howTitle: 'Si luhet',
     steps: ['Hap Misionet AR në shtigje dhe lejo vendndodhjen. Në iPhone lejo edhe lëvizjen dhe orientimin.',
       'Nisu drejt një vendi: shiriti poshtë tregon më të afërtin, sa larg është dhe në cilin drejtim. Shtigjet e arta në hartë i lidhin.',
       'Kur arrin, qëndro rreth 20 sekonda në rrethin e gjelbër, ose shkruaj kodin me 4 shenja nga tabela.',
       'Gjej copën e peridotit në pamjen e kamerës dhe mblidhe. Pastaj kryej detyrën e vendit dhe përgjigju pyetjes për pikë.',
-      'Përfundo qytetin e Gucisë, burimet dhe Vuthajn, dhe Grebajën. Pastaj sill copat në qendrën për vizitorë për hapin e fundit dhe vulën e terrenit.'],
+      'Përfundo kapitujt e qytetit, të ujit dhe të malit. Pastaj trego 10/10 në Qendrën e Informacionit Turistik në Guci: çdo gjetës merr një dhuratë, dhe peridoti kthehet në shtëpi, te Macet që Puthen.'],
     anyOrder: 'Vendet mund t’i vizitosh me çfarëdo radhe.', tryHome: 'Provo në shtëpi', tryHomeText: 'Mënyra provë: ec drejt vendeve me levë, pa GPS. Ky përparim ruhet veçmas.',
     visKicker: 'Planifiko vizitën', visTitle: 'Për vizitën',
-    visCentreH: 'Qendra për vizitorë', visCentre: 'Organizata Turistike e Gucisë (Turistička organizacija Gusinje), Guci. Këtu bëhet hapi i fundit i lojës: trego vulën e terrenit në sportel. Këtu pyet edhe për hartën e shtypur të lojës.',
+    visCentreH: 'Qendra e Informacionit Turistik', visCentre: 'Organizata Turistike e Gucisë (Turistička organizacija Gusinje), Guci. Kur t’i gjesh të gjitha copat, trego 10/10 në sportel: çdo gjetës merr një dhuratë, dhe finalja fillon këtu. Këtu pyet edhe për hartën e shtypur të lojës.',
     visTimeH: 'Koha dhe lëvizja', visTime: ['Qyteti i Gucisë: gjashtë vende në këmbë, rreth 2 orë.', 'Burimet e Ali Pashës, Grlja dhe Oko Skakavice: me makinë ose biçikletë, gjysmë dite (2 km deri te burimet, rreth 7 km deri te Oko Skakavice).', 'Grebaja: rreth 8 km me rrugë deri te Suljova česma.'],
     visSafeH: 'Siguria', visSafe: ['Te Grlja qëndro pas buzës.', 'Mos noto në Oko Skakavice: uji ka rreth 5 °C.', 'Moti në mal ndryshon shpejt: merr një xhaketë të ngrohtë dhe ujë.', 'Emergjenca: 112.'],
     visParkH: 'Parku kombëtar', visPark: 'Grebaja është në Parkun Kombëtar Prokletije: hyrja paguhet (taksë e vogël).',
@@ -6619,7 +6629,7 @@ function fieldProgress() {
   const chapters = Math.min(3, Object.values(ch).filter(Boolean).length);
   const pts = Object.values(m).reduce((a, r) => a + (r?.arrived ? 100 : 0) + (r?.catch || 0) + (r?.task || 0) + (r?.q || 0), 0) + chapters * 500 + (f.assembled ? 1000 : 0);
   const started = Object.values(m).some((r) => r?.arrived);
-  const rank = f.assembled && done >= 10 ? 4 : f.assembled ? 3 : chapters ? 2 : started ? 1 : 0;
+  const rank = f.assembled && done >= 10 && pts >= 6300 ? 4 : f.assembled ? 3 : chapters ? 2 : started ? 1 : 0;   // Guardian: everything, and 90 % of 7,000
   return { rec, done, chapters, pts, started, rank, assembled: !!f.assembled, stamp: typeof f.stamp === 'string' ? f.stamp : null };
 }
 function refreshLanding() {   // the game card's pips and button, and the points and rank on the My Peridot card
@@ -6668,7 +6678,7 @@ function panelMine() {
     <p class="muted">${esc(t('mineNote'))}</p>`;
 }
 function panelLegend() {
-  return `${head('legKicker', 'legTitle')}<p class="story">${esc(t('story'))}</p><p>${esc(t('story2'))}</p>
+  return `${head('legKicker', 'legTitle')}${[].concat(t('story')).map((x) => `<p class="story">${esc(x)}</p>`).join('')}<p>${esc(t('story2'))}</p>
     <hr class="ld-rule"><h3>${esc(t('howTitle'))}</h3><ol class="ld-steps">${t('steps').map((x) => `<li>${esc(x)}</li>`).join('')}</ol>
     <p class="muted">${esc(t('anyOrder'))}</p>
     <div class="ld-actions"><button type="button" class="ld-btn" data-go="field">${esc(t('start'))}</button><button type="button" class="ld-btn ghost" data-go="test">${esc(t('tryHome'))}</button></div>
