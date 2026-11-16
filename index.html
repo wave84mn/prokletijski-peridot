@@ -284,6 +284,7 @@ button { font: inherit; color: inherit; }
 .ld-sheet .story { font-family: "EB Garamond", "Palatino Linotype", Palatino, Georgia, serif; font-size: 18.5px; line-height: 1.5; color: #f3e6c9; }
 .ld-sheet .story::first-letter { float: left; font-size: 54px; line-height: 0.82; margin: 4px 8px 0 0; color: #e7cf90; font-weight: 600; }
 .ld-sheet .muted { font-size: 13.5px; color: rgba(244, 236, 217, 0.62); }
+.ld-sheet .ld-part { margin: 16px 0 0; font-size: 25px; }   /* the second part of a panel (Before you go: the visit) */
 .ld-rule { height: 1px; margin: 18px 0 2px; background: linear-gradient(90deg, rgba(229, 185, 113, 0), rgba(229, 185, 113, 0.6), rgba(229, 185, 113, 0)); border: 0; }
 .ld-steps { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px; counter-reset: st; }
 .ld-steps li { position: relative; padding-left: 40px; font-size: 15.5px; line-height: 1.45; color: rgba(244, 236, 217, 0.9); counter-increment: st; }
@@ -540,15 +541,6 @@ button { font: inherit; color: inherit; }
             <span class="mode-title" data-i18n="menuLegend">Legend & how to play</span>
             <span class="mode-desc" id="desc-legend" data-i18n="descLegend">How the green gem of Prokletije broke, and how to find its pieces in five steps. Try it at home first.</span>
             <span class="mode-foot"><span class="mode-prog"></span><span class="mode-cta" data-i18n="ctaRead">Read</span></span>
-          </span>
-        </button>
-        <button type="button" class="mode framed menu" data-panel="visit" data-i18n-label="menuVisit" aria-describedby="desc-visit">
-          <span class="mode-art" aria-hidden="true"><img src="landing/menu-visit.jpg?v=2" alt="" width="240" height="240" decoding="async" loading="lazy"></span>
-          <span class="mode-body">
-            <span class="mode-kicker" data-i18n="visKicker">Plan your visit</span>
-            <span class="mode-title" data-i18n="menuVisit">Visit info</span>
-            <span class="mode-desc" id="desc-visit" data-i18n="descVisit">The visitor centre, how long each part takes, getting around, safety and the national park.</span>
-            <span class="mode-foot"><span class="mode-prog"></span><span class="mode-cta" data-i18n="ctaOpen">Open</span></span>
           </span>
         </button>
         <button type="button" class="mode framed menu" data-panel="ready" data-i18n-label="menuReady" aria-describedby="desc-ready">
@@ -6196,9 +6188,10 @@ ld.el.addEventListener('pointermove', (e) => {
   badge.tilt.ty = nx * 0.22; badge.tilt.tx = ny * 0.1;
 });
 ld.el.addEventListener('pointerleave', () => { badge.tilt.tx = badge.tilt.ty = 0; });
-/* the menu cards charge the gem: hover or keyboard focus on a computer, a touch on a phone */
-for (const card of [$('go-field')]) {
-  const chime = card.id === 'go-field' ? 'glow-field' : 'glow';   // each card has its own chord
+/* every card on the start screen charges the gem like the game card (since 16 Nov 2026 the menu cards too): the badge glows
+   with rays, the valley's lights flare and the crystal chime sounds; hover or keyboard focus on a computer, a touch on a phone */
+for (const card of [$('go-field'), ...document.querySelectorAll('.ld-menu [data-panel]')]) {
+  const chime = 'glow-field';   // B major, the same chime on every card
   const on = () => {
     const ch = badge.charge, now = performance.now();
     if ((ch.target < 1 || ch.k < 0.4) && now - ch.sounded > 400) { sound(chime); ch.sounded = now; }
@@ -6481,8 +6474,7 @@ const TXT = {
     menuMine: 'My Peridot', menuLegend: 'Legend & how to play', menuVisit: 'Visit info', menuReady: 'Before you go', more: 'More', lang: 'Language', close: 'Close',
     descMine: 'Your points and rank, the places you have found, and your field stamp when you finish.',
     descLegend: 'How the green gem of Prokletije broke, and how to find its pieces in five steps. Try it at home first.',
-    descVisit: 'The visitor centre, how long each part takes, getting around, safety and the national park.',
-    descReady: 'Check location, camera and compass on your phone before you set off, plus tips for the day.',
+    descReady: 'Check your phone and plan the day: the visitor centre, timing, getting around, safety and the national park.',
     ctaOpen: 'Open', ctaRead: 'Read', ctaCheck: 'Check',
     // My Peridot
     mineKicker: 'Your progress', mineTitle: 'My Peridot', points: 'Points', places: 'Places', chapters: 'Chapters',
@@ -6532,8 +6524,7 @@ const TXT = {
     menuMine: 'Moj Peridot', menuLegend: 'Legenda i pravila', menuVisit: 'Info za posjetu', menuReady: 'Prije polaska', more: 'Više', lang: 'Jezik', close: 'Zatvori',
     descMine: 'Tvoji poeni i rang, pronađena mjesta i tvoj terenski pečat kad završiš.',
     descLegend: 'Kako se razbio zeleni dragulj Prokletija i kako da pronađeš njegove djelove u pet koraka. Prvo probaj od kuće.',
-    descVisit: 'Info centar, koliko traje svaki dio, kako se kretati, bezbjednost i nacionalni park.',
-    descReady: 'Provjeri lokaciju, kameru i kompas na telefonu prije polaska, i savjete za taj dan.',
+    descReady: 'Provjeri telefon i isplaniraj dan: info centar, trajanje, kretanje, bezbjednost i nacionalni park.',
     ctaOpen: 'Otvori', ctaRead: 'Čitaj', ctaCheck: 'Provjeri',
     mineKicker: 'Tvoj napredak', mineTitle: 'Moj Peridot', points: 'Poeni', places: 'Mjesta', chapters: 'Poglavlja',
     ranks: ['Još nijesi na stazi', 'Na stazi', 'Terenski izviđač', 'Terenski čuvar', 'Zaštitnik Peridota na terenu'],
@@ -6579,8 +6570,7 @@ const TXT = {
     menuMine: 'Peridoti im', menuLegend: 'Legjenda dhe rregullat', menuVisit: 'Për vizitën', menuReady: 'Para nisjes', more: 'Më shumë', lang: 'Gjuha', close: 'Mbyll',
     descMine: 'Pikët dhe rangu yt, vendet e gjetura dhe vula jote e terrenit kur të mbarosh.',
     descLegend: 'Si u copëtua guri i gjelbër i Bjeshkëve të Nemuna dhe si t’i gjesh copat e tij në pesë hapa. Provoje fillimisht nga shtëpia.',
-    descVisit: 'Qendra për vizitorë, sa zgjat secila pjesë, si të lëvizësh, siguria dhe parku kombëtar.',
-    descReady: 'Kontrollo vendndodhjen, kamerën dhe busullën në telefon para se të nisesh, dhe këshilla për ditën.',
+    descReady: 'Kontrollo telefonin dhe planifiko ditën: qendra për vizitorë, kohëzgjatja, lëvizja, siguria dhe parku kombëtar.',
     ctaOpen: 'Hap', ctaRead: 'Lexo', ctaCheck: 'Kontrollo',
     mineKicker: 'Përparimi yt', mineTitle: 'Peridoti im', points: 'Pikë', places: 'Vende', chapters: 'Kapituj',
     ranks: ['Ende jo në shteg', 'Në shteg', 'Zbulues në terren', 'Rojtar në terren', 'Mbrojtës i Peridotit në terren'],
@@ -6684,9 +6674,9 @@ function panelLegend() {
     <div class="ld-actions"><button type="button" class="ld-btn" data-go="field">${esc(t('start'))}</button><button type="button" class="ld-btn ghost" data-go="test">${esc(t('tryHome'))}</button></div>
     <p class="muted">${esc(t('tryHomeText'))}</p>`;
 }
-function panelVisit() {
+function visitPart() {   // since 16 Nov 2026 part of Before you go (the Visit info card was removed)
   const list = (a) => `<ul class="ld-tips">${a.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>`;
-  return `${head('visKicker', 'visTitle')}
+  return `<hr class="ld-rule"><h2 class="ld-part">${esc(t('visKicker'))}</h2>
     <h3>${esc(t('visCentreH'))}</h3><p>${esc(t('visCentre'))}</p>
     <h3>${esc(t('visTimeH'))}</h3>${list(t('visTime'))}
     <h3>${esc(t('visSafeH'))}</h3>${list(t('visSafe'))}
@@ -6704,16 +6694,18 @@ function panelReady() {
   return `${head('rdyKicker', 'rdyTitle')}<p>${esc(t('rdyIntro'))}</p>
     ${framed ? `<p class="ld-framed">${t('framedNote')}</p>` : ''}
     <ul class="ld-checks">${checkLine('loc', 'chkLoc')}${checkLine('cam', 'chkCam')}${checkLine('motion', 'chkMotion')}${checkLine('batt', 'chkBatt')}</ul>
-    <h3>${esc(t('tipsTitle'))}</h3><ul class="ld-tips">${t('tips').map((x) => `<li>${esc(x)}</li>`).join('')}</ul>`;
+    <h3>${esc(t('tipsTitle'))}</h3><ul class="ld-tips">${t('tips').map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
+    ${visitPart()}`;
 }
 function renderPanel() {
   const k = panel.kind;
-  panelBody.innerHTML = k === 'mine' ? panelMine() : k === 'legend' ? panelLegend() : k === 'visit' ? panelVisit() : panelReady();
+  panelBody.innerHTML = k === 'mine' ? panelMine() : k === 'legend' ? panelLegend() : panelReady();
   const qr = $('ld-stamp-qr'); if (qr) { const f = fieldProgress(); if (f.stamp) drawQR(qr, stampUrl(f.stamp)); }
   if (k === 'ready' && CHECKS.batt.s === 'idle') checkBattery();
 }
 function openPanel(kind, opener) {
   panel.kind = kind; panel.opener = opener || document.activeElement;
+  badge.charge.target = 0;
   renderPanel();
   panelEl.hidden = false; ld.el.setAttribute('aria-hidden', 'true');
   sheetEl.focus({ preventScroll: true }); panelEl.scrollTop = 0;

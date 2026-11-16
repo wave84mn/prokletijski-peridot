@@ -5,10 +5,11 @@ Since 15 Nov 2026 this folder is the AR trail missions only. The virtual trail m
 3D walk, the 3D valley map) are becoming a game of their own and are no longer here.
 
 WHAT IS IN THIS FOLDER
-  index.html      the start screen: the 3D Peridot badge over the valley at night, the AR trail missions card, and four menu cards in the same style:
-                  My Peridot (points, places, chapters, rank, the field stamp with its QR), Legend & how to play,
-                  Visit info (visitor centre, time and getting around, safety, national park, places of prayer),
-                  Before you go (checks location, camera, motion and compass, shows the battery; tips).
+  index.html      the start screen: the 3D Peridot badge over the valley at night, the AR trail missions card, and three menu cards in the same style
+                  (each makes the badge glow with the chime, like the game card): My Peridot (points, places, chapters,
+                  rank, the field stamp with its QR), Legend & how to play, Before you go (checks location, camera, motion
+                  and compass, shows the battery; tips; then the visit: visitor centre, time and getting around, safety,
+                  national park, places of prayer).
                   EN · ME · SQ switches the start screen's language (remembered on the device). The game itself is
                   in English for now.
   field.html      the game: real places in Gusinje, Vusanje and Grebaje and the last step at the visitor centre, played on site
@@ -25,7 +26,7 @@ WHAT IS IN THIS FOLDER
   logo/           the 3D badge for the start screen (peridot-mesh.txt + textures) and its pictures (peridot-badge*.png)
   landing/        the start screen's pictures: night-wide.jpg (computers), night-tall.jpg (phones), trail.jpg (the picture on
                   the game card: the trail crossroad with the signpost), menu-mine.jpg,
-                  menu-legend.jpg, menu-visit.jpg, menu-ready.jpg (the pictures on the four menu cards), frame.webp (the
+                  menu-legend.jpg, menu-ready.jpg (the pictures on the three menu cards), frame.webp (the
                   slate frame of the cards)
   fieldmap/       the game's map, painted like the printed Game Trails Map (blue-hour relief, glowing rivers, warm town
                   lights): overview.jpg (the valleys), gusinje.webp, vusanje.webp, grebaje.webp (town plans that fade in when
@@ -36,8 +37,8 @@ WHAT IS IN THIS FOLDER
   field-redirect/index.html   forwarder for the address on the printed map (see below)
   three.js 0.160.0 loads from jsDelivr; the fonts load from Google Fonts.
 
-  Updating an earlier copy: the m/ folder (the virtual missions' photos), landing/orb.jpg, landing/phone.jpg and
-  fieldmap/valley3d.jpg are no longer used and can be deleted from the site. landing/trail.jpg is new: replace the old one.
+  Updating an earlier copy: the m/ folder (the virtual missions' photos), landing/orb.jpg, landing/phone.jpg,
+  landing/menu-visit.jpg and fieldmap/valley3d.jpg are no longer used and can be deleted from the site. landing/trail.jpg is new: replace the old one.
 
 HOSTING
   Upload the folder as it is to https://xplore-prokletije.com/p/ . Static files only: no database, no build step.
