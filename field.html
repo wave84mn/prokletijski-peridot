@@ -520,19 +520,19 @@ textarea.export { width: 100%; box-sizing: border-box; min-height: 180px; font: 
   <div class="map-plates" id="map-plates"></div>
 </div>
 <svg class="map-compass" viewBox="-24 -24 48 48" aria-hidden="true"><circle r="15" fill="rgba(15,34,41,.75)" stroke="#c7a550" stroke-width="1.2"/><circle r="11.5" fill="none" stroke="rgba(199,165,80,.5)" stroke-width=".7"/><path d="M0 -21 L3 -3 L0 0 L-3 -3 Z" fill="#e7cf90"/><path d="M0 21 L3 3 L0 0 L-3 3 Z" fill="#8a7440"/><path d="M-17 0 L-3 -2.4 L0 0 L-3 2.4 Z M17 0 L3 -2.4 L0 0 L3 2.4 Z" fill="#b39a5a"/><text y="-17.5" x="0" text-anchor="middle" font-family="EB Garamond, Georgia, serif" font-weight="600" font-size="7.5" fill="#152126">N</text></svg>
-<p class="map-credit" id="map-credit">Map: © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors · Copernicus DEM © DLR, Airbus</p>
+<p class="map-credit" id="map-credit"><span data-t>Map:</span> © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors · Copernicus DEM © DLR, Airbus</p>
 
 <header class="top">
   <div class="top-left">
     <a class="home-btn glass" id="btn-home" href="./" aria-label="Prokletijski Peridot start screen"><img src="logo/peridot-badge-sm.png" alt="" width="100" height="122"></a>
     <div class="place glass">
       <p class="kicker">Prokletijski Peridot</p>
-      <h1>AR trail missions</h1>
+      <h1 data-t>AR trail missions</h1>
       <ul class="parts-mini" id="top-parts" aria-label="Chapters complete"></ul>
     </div>
   </div>
   <div class="top-right">
-    <button class="score glass" id="top-pts-btn" aria-label="Points and sites"><b id="top-points">0</b><span id="top-done">0/10 places</span></button>
+    <button class="score glass" id="top-pts-btn" aria-label="Points and sites"><b id="top-points">0</b><span id="top-done" data-t>0/10 places</span></button>
     <button class="icon-btn glass btn-sound" aria-pressed="true" aria-label="Sound">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path class="on" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/><path class="off" d="M17 9l5 6M22 9l-5 6"/></svg>
     </button>
@@ -540,11 +540,11 @@ textarea.export { width: 100%; box-sizing: border-box; min-height: 180px; font: 
 </header>
 
 <div class="test-bar" id="test-bar" hidden role="region" aria-label="Test mode">
-  <span><b>Test mode</b> · progress kept apart</span>
-  <button data-test="f:test" type="button">Start near…</button>
-  <button data-test="f:test-exit" type="button">Leave</button>
+  <span><b data-t>Test mode</b> · <span data-t>progress kept apart</span></span>
+  <button data-test="f:test" type="button" data-t>Start near…</button>
+  <button data-test="f:test-exit" type="button" data-t>Leave</button>
 </div>
-<div class="joy" id="joy" hidden role="application" aria-label="Walk (test mode): drag the knob, or use W A S D"><span class="joy-knob" id="joy-knob"></span><span class="joy-label">Walk</span></div>
+<div class="joy" id="joy" hidden role="application" aria-label="Walk (test mode): drag the knob, or use W A S D"><span class="joy-knob" id="joy-knob"></span><span class="joy-label" data-t>Walk</span></div>
 
 <div class="map-tools" id="map-tools">
   <button class="icon-btn glass" id="btn-me" aria-pressed="false" aria-label="Show my position">
@@ -564,8 +564,8 @@ textarea.export { width: 100%; box-sizing: border-box; min-height: 180px; font: 
     <span class="txt"><span class="kicker" id="g-kicker"></span><b id="g-title"></b><span id="g-line"></span></span>
   </button>
   <div class="dock-row">
-    <button class="bar-btn glass" id="btn-sites"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg><span class="label">Places</span></button>
-    <button class="bar-btn glass" id="btn-code"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 10v4M11 10v4M15 10v4M18 10v4"/></svg><span class="label">Code</span></button>
+    <button class="bar-btn glass" id="btn-sites"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg><span class="label" data-t>Places</span></button>
+    <button class="bar-btn glass" id="btn-code"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 10v4M11 10v4M15 10v4M18 10v4"/></svg><span class="label" data-t>Code</span></button>
   </div>
 </div>
 <section class="ar" id="ar" hidden aria-label="Look around through your camera">
@@ -583,8 +583,8 @@ textarea.export { width: 100%; box-sizing: border-box; min-height: 180px; font: 
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
     </button>
     <div class="place glass">
-      <p class="kicker" id="ar-kicker">Look</p>
-      <h1 id="ar-title">Look around</h1>
+      <p class="kicker" id="ar-kicker" data-t>Look</p>
+      <h1 id="ar-title" data-t>Look around</h1>
       <p class="where" id="ar-where" aria-live="polite"></p>
     </div>
     <button class="icon-btn glass ar-lens" id="ar-lens" type="button" hidden aria-label="Switch to the next back camera">
@@ -592,28 +592,28 @@ textarea.export { width: 100%; box-sizing: border-box; min-height: 180px; font: 
     </button>
   </header>
   <div class="ar-fast glass" id="ar-fast" role="alertdialog" aria-labelledby="ar-fast-title" aria-describedby="ar-fast-text" hidden>
-    <b id="ar-fast-title">Moving fast?</b>
-    <p id="ar-fast-text">The camera view pauses above about 15 km/h, so nobody plays while driving. If you are a passenger, go on.</p>
-    <div class="ar-fast-btns"><button type="button" class="btn primary" id="ar-fast-yes">I’m a passenger</button><button type="button" class="btn" id="ar-fast-no">Close the camera</button></div>
+    <b id="ar-fast-title" data-t>Moving fast?</b>
+    <p id="ar-fast-text" data-t>The camera view pauses above about 15 km/h, so nobody plays while driving. If you are a passenger, go on.</p>
+    <div class="ar-fast-btns"><button type="button" class="btn primary" id="ar-fast-yes" data-t>I’m a passenger</button><button type="button" class="btn" id="ar-fast-no" data-t>Close the camera</button></div>
   </div>
   <div class="ar-camnote glass" id="ar-camnote" role="status" hidden>
     <p id="ar-camnote-text"></p>
     <a id="ar-camnote-link" href="#" target="_blank" rel="noopener" hidden></a>
     <div class="ar-camnote-btns">
-      <button type="button" id="ar-camnote-copy" hidden>Copy link</button>
-      <button type="button" id="ar-camnote-close">OK, play here</button>
+      <button type="button" id="ar-camnote-copy" hidden data-t>Copy link</button>
+      <button type="button" id="ar-camnote-close" data-t>OK, play here</button>
     </div>
   </div>
   <footer class="ar-bottom">
-    <button class="ar-walk" id="ar-walk" type="button" hidden aria-label="Hold to walk the way your phone faces (test mode; or hold W)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3.5c1.2 0 2 1.6 2 3.6S10.2 10 9 10 7 8.9 7 7.1 7.8 3.5 9 3.5zM8 11.5h2.2l.4 3H7.6zM15 7.5c1.2 0 2 1.6 2 3.6S16.2 14 15 14s-2-1.1-2-2.9.8-3.6 2-3.6zM14 15.5h2.2l.4 3h-3z"/></svg><span>Hold to walk</span></button>
+    <button class="ar-walk" id="ar-walk" type="button" hidden aria-label="Hold to walk the way your phone faces (test mode; or hold W)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3.5c1.2 0 2 1.6 2 3.6S10.2 10 9 10 7 8.9 7 7.1 7.8 3.5 9 3.5zM8 11.5h2.2l.4 3H7.6zM15 7.5c1.2 0 2 1.6 2 3.6S16.2 14 15 14s-2-1.1-2-2.9.8-3.6 2-3.6zM14 15.5h2.2l.4 3h-3z"/></svg><span data-t>Hold to walk</span></button>
     <button class="ar-orb" id="ar-orb" type="button" hidden aria-label="Crystal orb: drag it up to the shard and let go, or flick it; or press Enter to throw"><span></span></button>
     <div class="ar-say glass" id="ar-saybox">
       <img class="ari" src="catch/meyra.jpg" alt="" width="120" height="120">
       <p id="ar-say" aria-live="polite"></p>
     </div>
     <div class="ar-buttons">
-      <button class="btn" id="ar-hint" hidden>Hint −25</button>
-      <button class="btn primary" id="ar-act">Here</button>
+      <button class="btn" id="ar-hint" hidden data-t>Hint −25</button>
+      <button class="btn primary" id="ar-act" data-t>Here</button>
     </div>
   </footer>
 </section>
@@ -621,6 +621,7 @@ textarea.export { width: 100%; box-sizing: border-box; min-height: 180px; font: 
 <section class="card" id="card" role="dialog" aria-modal="false" hidden></section>
 <p class="sr" id="sr-status" role="status" aria-live="polite"></p>
 <script type="module">
+const STRINGS = {"me":{"s":{"ch1.name":"Djelovi iz grada","ch1.short":"Grad","ch1.how":"Pješice, oko 2 sata","ch1.intro.0":"Šest djelova završilo je ovdje, u gradu.","ch1.intro.1":"Ljudi su ih čuvali kao što Gusinje čuva sve: u porodicama, u radnjama, kraj vrata svojih bogomolja.","ch1.intro.2":"Idemo pješice. Oko dva sata, ako ne staneš na burek.","ch1.intro.3":"Kreni odakle hoćeš. Ja ću ti pokazati put.","ch1.end.0":"Šest djelova. Cijeli gradski dio.","ch1.end.1":"Dva su čuvana pedeset metara jedan od drugog. Zapamti to, neko će te pitati.","ch1.next.lines.0":"Sljedeća je voda. Tri djelića otkotrljala su se sve do izvora i rijeke.","ch1.next.lines.1":"Uzmi auto ili bicikl. I ponesi nešto toplo.","ch2.name":"Djelovi iz vode","ch2.short":"Voda","ch2.how":"Autom ili biciklom, pola dana","ch2.intro.0":"Kad se kamen razbio, neki djelovi se nijesu zaustavili dok nijesu stigli do vode.","ch2.intro.1":"Tri su pratila rijeku: do izvora, u kanjon i dolje, na dno Oka.","ch2.intro.2":"Ostani iza ivica i čuvaj obuću suvom. Idemo.","ch2.end.0":"Tri djelića iz vode. Meni su ruke hladne samo dok te gledam.","ch2.next.lines.0":"Ostao je još jedan, i to onaj koji je pao najbliže kući.","ch2.next.lines.1":"Grebaje, ispod Mačijeg poljupca. Idemo po njega.","ch3.name":"Djelić iz planine","ch3.short":"Vrhovi","ch3.how":"Oko 8 km putem, taksa za nacionalni park","ch3.intro.0":"Grebaje. Pogledaj gore: ti zidovi su Karanfili.","ch3.intro.1":"Negdje gore je Mačiji poljubac, gdje je kamen stajao vjekovima.","ch3.intro.2":"Kad ga je zemljotres razbio, jedan djelić se otkotrljao samo do posljednje vode u dolini.","ch3.intro.3":"Sad smo u nacionalnom parku, pa se plaća mala taksa. Vrijedi svakog centa.","ch3.end.0":"Djelić iz planine je naš.","T1.title":"Trg Ali-paše","T1.heritage":"Kulturno nasljeđe","T1.scene.0":"Ovdje su se sretali putevi. Karavani su ovuda prolazili na putu od mora do Peći.","T1.scene.1":"Jedan djelić je godinama putovao s njima, umotan u trgovčevo platno.","T1.scene.2":"Onda je neko odlučio da mu je mjesto ovdje, gdje počinju svi putevi.","T1.scene.3":"Pogledaj gore i oko sebe. Negdje je iznad trga.","T1.got":"Jedan za karavane. Svaka čast.","T1.close":"To je prvi. Ostatak grada je blizu.","T1.look.say":"Okreći se polako: stari karavanski putevi i dalje pokazuju pravac.","T1.look.labels.0.name":"Prema Peći","T1.look.labels.1.name":"Vusanje","T1.task.prompt":"Karavani su s ovog trga polazili za Skadar i more. Usmjeri telefon kuda su išli, pa dodirni Ovdje.","T1.task.hint":"Skadar je na jugozapadu, iza planina.","T1.task.after":"Skadar je oko 60 km jugozapadno vazdušnom linijom; karavani su išli preko planinskih prevoja.","T1.fact.title":"Karavanska stanica","T1.fact.text.0":"U 14. vijeku Gusinje je bilo karavanska stanica na putu od Raguze (Dubrovnika) i Katara (Kotora), preko Skadra, do Peći.","T1.fact.text.1":"Trg nosi ime Ali-paše Gusinjskog (1828–1888), jednog od zapovjednika Prizrenske lige.","T1.q.q":"Na kom karavanskom putu je Gusinje bilo stanica?","T1.q.options.0":"Dubrovnik – Kotor – Skadar – Peć","T1.q.options.1":"Venecija – Beč","T1.q.options.2":"Atina – Beograd","T1.q.options.3":"Sarajevo – Split","T2.title":"Vezirova džamija","T2.heritage":"Kulturno nasljeđe","T2.scene.0":"Vezirova džamija. Pogledaj taj drveni trijem: ljudi se pod njim odmaraju vjekovima.","T2.scene.1":"Poslije zemljotresa neko je ovdje ostavio jedan djelić, tamo gdje je znao da će biti siguran.","T2.scene.2":"Porodice koje su se ovdje molile čuvale su ga generacijama i nikad nijesu pitale čiji je.","T2.scene.3":"Zadatak radimo spolja. Tiho, molim te.","T2.got":"Polako. Neko je ovaj čuvao jako pažljivo.","T2.close":"Zapamti ovu džamiju. I njen komšija je čuvao jedan djelić.","T2.look.what":"drveni trijem i minaret","T2.look.say":"Usmjeri telefon prema trijemu i minaretu i drži ga mirno.","T2.task.prompt":"Prebroj drvene stubove koji drže trijem.","T2.task.hint":"Broji samo stubove koji dodiruju zemlju.","T2.fact.title":"Kamen, drvo i pokloni izdaleka","T2.fact.text.0":"Kamena molitvena dvorana s drvenim trijemom i minaretom, najupečatljivija od vjerskih građevina u Gusinju.","T2.fact.text.1":"Temeljno je obnovljena 1992. godine, poklonima Gusinjana koji žive u Sjedinjenim Američkim Državama. Izvori se ne slažu oko toga kad je prvi put sagrađena.","T2.q.q":"Ko je platio obnovu 1992. godine?","T2.q.options.0":"Gusinjani koji žive u SAD-u","T2.q.options.1":"Osmanska država","T2.q.options.2":"Nacionalni park","T2.q.options.3":"Jedna hotelska firma","T3.title":"Crkva Svetog Đorđa","T3.heritage":"Kulturno nasljeđe","T3.scene.0":"Crkva Svetog Đorđa je samo pedesetak metara od Vezirove džamije.","T3.scene.1":"Dva djelića su čuvana u ovoj jednoj ulici, kod komšija koji su se različito molili i vjerovali jedni drugima.","T3.scene.2":"To je baš Gusinje, ako mene pitaš.","T3.scene.3":"Djelić je blizu zvonika. Možeš li ga naći?","T3.got":"Dvoje komšija, dva djelića. Zapamti to za kasnije.","T3.close":"Dobro. Idemo na sljedeći.","T3.look.what":"zvonik","T3.look.say":"Pronađi zvonik i drži ga u krugu.","T3.task.prompt":"Pogledaj po porti. Gdje je zvonik?","T3.task.options.0":"Odvojen od crkve, na sjeveroistoku","T3.task.options.1":"Na krovu crkve","T3.task.options.2":"Iznad kapije","T3.task.options.3":"Nema zvonika","T3.task.hint":"Pogledaj preko dvorišta, ne gore u krov.","T3.fact.title":"Jedna ulica, više vjera","T3.fact.text.0":"Srpska pravoslavna crkva Svetog Đorđa sagrađena je 1926. godine, u vrijeme kralja Aleksandra.","T3.fact.text.1":"Stoji oko 50 m od Vezirove džamije: malo je gradova u kojima su džamija i crkve ovako blizu.","T3.q.q":"Kad je sagrađena crkva Svetog Đorđa?","T4.title":"Nova džamija (Radončića)","T4.heritage":"Kulturno nasljeđe","T4.scene.0":"Nova džamija. U Gusinju „nova“ znači 1899.","T4.scene.1":"Svaka porodica ovdje je ostavila trag u gradu. Ova džamija je trag jedne porodice na trgu.","T4.scene.2":"Porodice oko trga čuvale su svoj djelić kao stari ključ od kuće: s koljena na koljeno, i nikad izgubljen.","T4.scene.3":"Pogledaj gore, u kupolu i minaret.","T4.got":"Još jedan je kod kuće. Ide ti sve bolje.","T4.close":"Drži oči otvorene. Ovaj grad dobro krije stvari.","T4.look.what":"kupola i minaret","T4.look.say":"Drži kupolu i minaret u krugu.","T4.task.prompt":"Prebroj prozore na strani džamije koja gleda na trg.","T4.task.hint":"Broji sve prozore koje vidiš na tom zidu, i gore i dolje.","T4.fact.title":"Porodična džamija","T4.fact.text.0":"Sagradila ju je porodica Radončić 1899. godine.","T4.fact.text.1":"Džamije u Gusinju odražavaju bratstva i porodice koje su ih gradile.","T4.q.q":"Koja porodica je sagradila ovu džamiju?","T4.q.options.0":"Radončić","T4.q.options.1":"Bušatlija","T4.q.options.2":"Čekaj","T4.q.options.3":"Neković","T7.title":"Sahat-kula","T7.heritage":"Kulturno nasljeđe","T7.scene.0":"Sahat-kula je najnovija građevina u gradu, a čuva djelić najstarijeg sata.","T7.scene.1":"Prije satova, peridot je bio sat doline. Izlazak sunca kroz kamen govorio je čobanima kad da krenu gore.","T7.scene.2":"Ovaj djelić je prešao okean. Jedna porodica ga je odnijela u Njujork i vratila ga kući, za kulu.","T7.scene.3":"Pogledaj gore, u brojčanik.","T7.got":"Kući iz Njujorka. Dobro došao nazad.","T7.close":"Najstariji sat i najnoviji. To mi se sviđa.","T7.look.what":"brojčanik","T7.look.say":"Usmjeri telefon na brojčanik visoko na kuli i drži mirno.","T7.task.prompt":"Uporedi sat na kuli sa svojim telefonom. Šta vidiš?","T7.task.options.0":"Isti minut","T7.task.options.1":"Razlika minut-dva","T7.task.options.2":"Veća razlika","T7.task.after":"Prije telefona i ručnih satova, sahat-kula je mjerila vrijeme cijelom gradu: za molitve, pijacu i dnevni posao.","T7.fact.title":"Poklon iz Njujorka","T7.fact.text.0":"Sahat-kula u Gusinju stoji na ulazu u grad. Kamen temeljac postavljen je 4. septembra 2024, a otvorena je 24. jula 2026; u njoj je i muzej.","T7.fact.text.1":"Sagrađena je kao vakuf, poklon gradu, od ljudi iz Plava i Gusinja koji žive u Njujorku.","T7.q.q":"Ko je platio sahat-kulu u Gusinju?","T7.q.options.0":"Ljudi iz Plava i Gusinja koji žive u Njujorku","T7.q.options.1":"Osmanski sultan","T7.q.options.2":"Nacionalni park","T7.q.options.3":"Jedna banka iz Podgorice","T8.title":"Crkva Svetog Antona, Dolja","T8.heritage":"Kulturno nasljeđe","T8.scene.0":"Crkva Svetog Antona u Dolji. Pročitaj kapiju: pozdravlja te na tri jezika.","T8.scene.1":"Sveti Anton je svetac kojeg ljudi mole za pomoć kad nešto izgube.","T8.scene.2":"Pa gdje bi se drugo pojavio izgubljeni djelić peridota?","T8.scene.3":"Blizu je vrata zvonika. Pogledaj.","T8.got":"Izgubljeno, pa nađeno. Hvala ti, Antone.","T8.close":"Taj put vodi dalje, do Grebaja. Vratićemo se po njega.","T8.look.what":"vrata zvonika","T8.look.say":"Drži vrata crkvenog zvonika u krugu.","T8.task.prompt":"Pročitaj tablu kraj kapije. Na koliko jezika te pozdravlja?","T8.task.hint":"Crnogorski, albanski i…","T8.fact.title":"Zaštitnik izgubljenih stvari","T8.fact.text.0":"Katolička crkva u Dolji sagrađena je 1933–1936, a obnovljena 2011. poklonima iseljenika.","T8.fact.text.1":"Svetog Antona, na albanskom Shna Ndou, ljudi mole kad treba pronaći izgubljene stvari.","T8.q.q":"Sveti Anton je zaštitnik…","T8.q.options.0":"izgubljenih stvari","T8.q.options.1":"putnika","T8.q.options.2":"planina","T8.q.options.3":"izvora","A1.title":"Alipašini izvori","A1.heritage":"Prirodno i kulturno nasljeđe","A1.scene.0":"Alipašini izvori. Voda ovdje izbija pravo iz stijene, u desetinama malih izvora.","A1.scene.1":"Ovaj djelić se otkotrljao u vodu i ostao u njoj jako dugo.","A1.scene.2":"Svake godine na Ilindan, drugog avgusta, cijela dolina dolazi ovdje. Jednog ljetnjeg jutra neko ga je vidio kako sija.","A1.scene.3":"Pogledaj podnožje stijene, gdje voda izlazi.","A1.got":"Hladno! Ali naše je.","A1.close":"Zapamti Ilindan. Važniji je nego što misliš.","A1.look.what":"stijena iz koje izlazi voda","A1.look.say":"Usmjeri telefon na podnožje stijene iz koje izlazi voda i drži mirno.","A1.task.prompt":"S označenog mjesta: koliko odvojenih mlazova vode vidiš kako izlaze iz stijene?","A1.task.hint":"Broji bijele mlazove, ne talasiće.","A1.fact.title":"Voda iz stijene","A1.fact.text.0":"Oko 2 km južno od Gusinja ovdje izvire Vruja, u mnogo malih izvora pravo iz stijene.","A1.fact.text.1":"Svake godine na Ilindan, 2. avgusta, ljudi se okupljaju kod izvora, mnogi od njih iseljenici koji su došli kući za ljeto.","A1.q.q":"Kad je tradicionalno okupljanje kod izvora?","A1.q.options.0":"2. avgusta (Ilindan)","A1.q.options.1":"1. maja","A1.q.options.2":"13. juna","A1.q.options.3":"31. decembra","V1.title":"Vodopad Grlja","V1.heritage":"Prirodno nasljeđe","V1.scene.0":"Slušaj ovo. Rijeka ovdje pada petnaest metara u kamen.","V1.scene.1":"Jedan djelić je upao u kanjon, i voda ga je godinama glačala.","V1.scene.2":"Kad bi u proljeće izlazeće sunce zasjalo kroz kamen, stari su znali da će rijeka uskoro ovako da huči.","V1.scene.3":"Ostani iza ograde. Kanjon ne vraća ono što uzme.","V1.got":"Uglačan do sjaja. Rijeka je dobro odradila posao.","V1.close":"Sljedeća stanica: mjesto gdje ova voda počinje.","V1.look.what":"kanjon","V1.look.say":"S vidikovca usmjeri telefon u kanjon i drži mirno. Ostani iza ivice.","V1.task.prompt":"Zatvori oči na deset sekundi i slušaj. Koliko je vodopad glasan danas?","V1.task.options.0":"Huči","V1.task.options.1":"Jak","V1.task.options.2":"Tih","V1.task.after":"Vodopad je najglasniji u kasno proljeće, kad se otapa snijeg u visokim planinama. Ljudi u dolini su taj trenutak čitali u izlasku sunca kroz peridot.","V1.fact.title":"U kanjon","V1.fact.text.0":"Grlja pada u dubok, uzak kanjon tik uz put.","V1.fact.text.1":"Skakavica, koja izvire u Oku Skakavice, uliva se u Grlju oko 2,5 km niže od izvora.","V1.q.q":"Gdje izvire Skakavica?","V1.q.options.0":"U Oku Skakavice","V1.q.options.1":"Kod Alipašinih izvora","V1.q.options.2":"U Plavskom jezeru","V1.q.options.3":"U Grebajama","V2.title":"Oko Skakavice","V2.heritage":"Prirodno nasljeđe","V2.scene.0":"Oko Skakavice. Oko. Osam metara duboko, a vidiš svaki kamen na dnu.","V2.scene.1":"Ovaj djelić je potonuo skroz do dna i čekao najbistrije jutro.","V2.scene.2":"Voda ima oko pet stepeni. Nema kupanja. Vjeruj mi, ne želiš.","V2.scene.3":"Usmjeri telefon na sredinu jezerceta. Hajde da ga izvučemo.","V2.got":"Pravo s dna Oka. Vidi kako je bistar.","V2.close":"Osam metara. Zapamti taj broj.","V2.look.what":"plava voda","V2.look.say":"Usmjeri telefon na sredinu jezerceta i drži mirno.","V2.task.prompt":"Koje je boje voda sada?","V2.task.options.0":"Tirkizna","V2.task.options.1":"Azurno plava","V2.task.options.2":"Plavozelena","V2.task.options.3":"Tamnoplava","V2.task.options.4":"Sivozelena","V2.task.after":"Boja se mijenja od tirkizne do azurne, s dobom dana i svjetlošću. Vrati se u neko drugo doba i vidi.","V2.fact.title":"Oko Skakavice","V2.fact.text.0":"Kraško vrelo veličine oko 30 × 25 m i duboko 8 m, jedno od najjačih u Prokletijama.","V2.fact.text.1":"Voda je cijele godine oko 4,5–5 °C. Nema kupanja: voda je jako hladna.","V2.q.q":"Koliko je hladna voda?","V2.q.options.0":"Oko 5 °C","V2.q.options.1":"Oko 12 °C","V2.q.options.2":"Oko 18 °C","V2.q.options.3":"Zaleđena je","G1.title":"Dolina Grebaje","G1.heritage":"Prirodno i kulturno nasljeđe · Suljova česma","G1.scene.0":"Suljova česma. Posljednja pitka voda prije uspona.","G1.scene.1":"Čobani su se ovdje uvijek zaustavljali da se napiju, na putu gore, do katuna.","G1.scene.2":"Jedan od njih je našao ovaj djelić u potoku, i njegova porodica ga čuva od tada.","G1.scene.3":"Pogledaj česmu, tamo gdje teče voda.","G1.got":"Djelić iz planine. Onaj koji nikad nije otišao daleko.","G1.close":"Posljednja voda. Zapamti je.","G1.look.what":"česma","G1.look.say":"Usmjeri telefon na česmu, tamo gdje teče voda, i drži mirno.","G1.task.prompt":"Drži ruku pod vodom pet sekundi. Kakva je?","G1.task.options.0":"Ledena","G1.task.options.1":"Hladna","G1.task.options.2":"Svježa","G1.task.after":"Napuni flašu ako ideš više: gore usput nema više vode.","G1.fact.title":"Posljednja voda","G1.fact.text.0":"Suljova česma stoji kraj puta, u maloj četinarskoj šumi u Grebajama.","G1.fact.text.1":"To je posljednja pitka voda u dolini. Planinari ovdje pune flaše prije uspona na Karanfile, sa Velikim vrhom (2.490 m) u sredini.","G1.q.q":"Zašto se planinari zaustavljaju kod Suljove česme?","G1.q.options.0":"To je posljednja pitka voda u dolini","G1.q.options.1":"Da kupe karte","G1.q.options.2":"Da vide vodopad Grlja","G1.q.options.3":"Da stignu na autobus","A.title":"Pult pronalazača","A.desk.0":"Svi djelovi su ovdje. Većina ljudi ne nađe nijedan.","A.desk.1":"Kamen se može ponovo složiti samo ako se sjetimo gdje je bio svaki djelić.","A.desk.2":"Tri pitanja. Ne žuri: svaki pogrešan odgovor malo košta.","A.desk.3":"Onda ga nosimo kući.","A.riddle.0.q":"Djelovi iz grada: dva su čuvana oko 50 m jedan od drugog. Gdje?","A.riddle.0.options.0":"Vezirova džamija i crkva Svetog Đorđa","A.riddle.0.options.1":"Grlja i Oko Skakavice","A.riddle.0.options.2":"Trg i Suljova česma","A.riddle.0.options.3":"Dva izvora u Grebajama","A.riddle.1.q":"Djelovi iz vode: koliko je duboko Oko Skakavice?","A.riddle.1.options.0":"Oko 8 m","A.riddle.1.options.1":"Oko 1 m","A.riddle.1.options.2":"Oko 30 m","A.riddle.1.options.3":"Niko ne zna","A.riddle.2.q":"Djelić iz planine: zašto se planinari zaustavljaju kod Suljove česme?","A.riddle.2.options.0":"To je posljednja pitka voda u dolini","A.riddle.2.options.1":"Da kupe karte","A.riddle.2.options.2":"Da vide vodopad Grlja","A.riddle.2.options.3":"Da stignu na autobus","A.cats.0":"Eno ih. Mačiji poljubac. Kamen je stajao baš tu, ispod poljupca, vjekovima.","A.cats.1":"Pogledaj ovo. Zeleno kao voda od otopljenog snijega.","A.cats.2":"Moj pradjed je kao dječak našao mali zeleni kamen ispod Mačijeg poljupca. Ista zelena.","A.cats.3":"Stari kažu da njegova svjetlost u zoru pokazuje put do skrivene pećine.","A.cats.4":"Sad nam treba još samo izlazak sunca.","opening.0":"Ja sam Meyra. Odrasla sam baš ovdje, ispod ovih planina.","opening.1":"Deset mjesta u dolini čuvalo je po jedan djelić kamena. Ja znam gdje su.","opening.2":"Fotografije ih ne mogu pokazati. Moramo tamo, pješice.","opening.3":"Pronađi svih deset, pa vraćamo peridot kući, pod Mačiji poljubac. Krećemo?","legend.0":"Davno je s noćnog neba pao užareni kamen i udario u Prokletije. Planine i danas nose taj ožiljak. Ali meteorit je za sobom ostavio još nešto: veliki peridot, zelen kao proljećna voda od otopljenog snijega, uglavljen u udubljenje ispod Mačijeg poljupca.","legend.1":"Vjekovima su ljudi u dolini živjeli po njegovoj svjetlosti. Kad bi izlazeće sunce zasjalo kroz kamen, čobani su znali da je vrijeme da izvedu stada na katune, a zemljoradnici da stiže otapanje snijega. Stari kažu da je, kad bi sunce stalo iza cijelog kamena, njegova zelena svjetlost obasjavala ulaz u skrivenu pećinu. Od tada je niko nije pronašao, a ona i dalje čuva svoje drevne tajne.","legend.2":"Onda se zemlja probudila. Zemljotres je zatresao Mačiji poljubac i razbio kristal, a njegovi djelovi su se otkotrljali u doline Gusinja. Ljudi su ih nalazili, čuvali i prenosili iz ruke u ruku.","legend.3":"Djelovi su još uvijek negdje tamo. Pronađi ih, i svjetlost bi mogla ponovo da zasija.","allPieces.0":"To je svih deset. Šest iz grada, tri iz vode, jedan iz planine.","allPieces.1":"Dođi u Turistički info centar u Gusinju i pokaži 10/10 na pultu. Čeka te poklon.","allPieces.2":"Onda nosimo peridot kući, pod Mačiji poljubac.","stillOut":"Na tvom spisku piše šta još nedostaje."},"u":{"points":"poena","Answers":"Odgovori","Guardian of the Peridot in the Field":"Zaštitnik Peridota na terenu","Field Keeper":"Terenski čuvar","Field Scout":"Terenski izviđač","On the trail":"Na stazi","Not in the field yet":"Još nijesi na terenu","north":"sjever","north-east":"sjeveroistok","east":"istok","south-east":"jugoistok","south":"jug","south-west":"jugozapad","west":"zapad","north-west":"sjeverozapad","The Tourist Info Centre! Let’s make the peridot whole.":"Turistički info centar! Hajde da peridot ponovo bude cijeli.","You’re at {place}":"Stigli smo: {place}","Test position":"Probna pozicija","Location on · ±{n} m":"Lokacija uključena · ±{n} m","Finding your position…":"Tražim tvoju poziciju…","Location does not work inside this preview. On the game’s website it does; here, use the 4-character plaque codes.":"Lokacija ne radi u ovom pregledu. Na sajtu igre radi; ovdje koristi kodove od 4 znaka sa tabli.","Location is blocked for this page. Every site also has a plaque with a 4-character code.":"Lokacija je blokirana za ovu stranicu. Svako mjesto ima i tablu s kodom od 4 znaka.","Location is not available here. Every site also has a plaque with a 4-character code.":"Lokacija ovdje nije dostupna. Svako mjesto ima i tablu s kodom od 4 znaka.","Location is off.":"Lokacija je isključena.","On site":"Na mjestu","Code":"Kod","New":"Novo","bonus":"bonus","Finale · Tourist Info Centre, Gusinje":"Finale · Turistički info centar, Gusinje","Bring every piece, then home to the Kissing Cats":"Donesi sve djelove, pa kući, pod Mačiji poljubac","AR trail missions":"AR misije na stazama","Turn on location":"Uključi lokaciju","Enter a plaque code":"Unesi kod sa table","How it works":"Kako se igra","Save code":"Kod za čuvanje","Start over":"Počni ispočetka","Turn off location":"Isključi lokaciju","Test mode: start near a site":"Probni način: kreni blizu mjesta","Test mode (play anywhere)":"Probni način (igraj bilo gdje)","Close":"Zatvori","Chapters complete: {n} of 3":"Završena poglavlja: {n} od 3","AR trail missions · the legend":"AR misije na stazama · legenda","Pieces of Peridot":"Djelovi Peridota","At each place: arrive (your phone notices after 20 seconds, or type the code from the plaque), find the piece through your camera and collect it, do one small task, and read the field note. Your location stays on this phone. At places of worship, everything is done from outside.":"Na svakom mjestu: stigni (telefon to prepozna nakon 20 sekundi, ili ukucaj kod sa table), pronađi djelić kroz kameru i sakupi ga, uradi jedan mali zadatak i pročitaj terensku bilješku. Tvoja lokacija ostaje na ovom telefonu. Kod mjesta molitve sve se radi spolja.","Turn on location and start":"Uključi lokaciju i kreni","I have a plaque code":"Imam kod sa table","Try it at home (test mode)":"Probaj kod kuće (probni način)","Chapter {n}":"Poglavlje {n}","On to {place}":"Dalje: {place}","All places":"Sva mjesta","Find it from the clues; its pin appears within 60 m":"Pronađi ga po tragovima; oznaka se pojavljuje na 60 m","Plaque code (zone not set yet)":"Kod sa table (zona još nije postavljena)","{dist} away · zone {r} m":"{dist} odavde · zona {r} m","Zone {r} m · stay {s} s":"Zona {r} m · ostani {s} s","Volušnica has no signal: type the code from the summit plaque. It is checked on your phone, offline.":"Na Volušnici nema signala: ukucaj kod sa table na vrhu. Provjerava se na tvom telefonu, bez interneta.","Go to the site: the mission starts after {s} seconds inside the zone. Or type the code from the site’s Peridot plaque.":"Idi do mjesta: misija počinje nakon {s} sekundi u zoni. Ili ukucaj kod sa Peridot table na mjestu.","Find the site and type the code from its Peridot plaque.":"Pronađi mjesto i ukucaj kod sa njegove Peridot table.","You’re here, and so is a piece of the peridot. Find it through your camera and catch it: drag the crystal orb up to it and let go, or flick it.":"Ovdje si, a ovdje je i djelić peridota. Pronađi ga kroz kameru i uhvati ga: povuci kristalnu kuglu do njega i pusti je, ili je baci brzim potezom.","Now one small task that needs your eyes on the place.":"Sad jedan mali zadatak za koji moraš dobro da pogledaš mjesto.","Last step: the field note and one question.":"Posljednji korak: terenska bilješka i jedno pitanje.","Done: {pts} of {max} points.":"Završeno: {pts} od {max} poena.","Find the piece":"Pronađi djelić","Do the task":"Uradi zadatak","Field note":"Terenska bilješka","A working place of worship: everything is done from outside. Dress modestly if you go in, and stay outside at the Friday noon prayer.":"Aktivno mjesto molitve: sve se radi spolja. Ako ulaziš, obuci se pristojno, a petkom u podne, tokom džume, ostani napolju.","From November to April snow may close the road here. Ask at the Tourist Info Centre before you drive.":"Od novembra do aprila snijeg može zatvoriti put dovde. Prije polaska autom pitaj u Turističkom info centru.","Status":"Status","Done ✓":"Završeno ✓","On site ✓ (GPS)":"Na mjestu ✓ (GPS)","On site ✓ (code)":"Na mjestu ✓ (kod)","Not visited":"Nije posjećeno","Points":"Poeni","Where":"Gdje","Enter plaque code":"Unesi kod sa table","Show on map":"Prikaži na mapi","Test: start 40 m away":"Proba: kreni sa 40 m","Test: step back 40 m":"Proba: vrati se 40 m","Test: pretend I’m here":"Proba: kao da sam ovdje","Plaque code":"Kod sa table","Enter a code":"Unesi kod","Each site has a small Peridot plaque with a 4-character code (or scan its QR code with the camera).":"Svako mjesto ima malu Peridot tablu s kodom od 4 znaka (ili skeniraj njen QR kod kamerom).","e.g. 7K2P":"npr. 7K2P","Hmm.":"Hm.","Confirm":"Potvrdi","Back":"Nazad","A plaque code has 4 characters.":"Kod sa table ima 4 znaka.","That code belongs to no site in this game.":"Taj kod ne pripada nijednom mjestu u ovoj igri.","One character looks wrong. Check the plaque again (0 and O, 1 and I are not used).":"Jedan znak izgleda pogrešno. Provjeri tablu ponovo (0 i O, 1 i I se ne koriste).","That is the code of {place}, not this site.":"To je kod za {place}, ne za ovo mjesto.","task":"zadatak","Count it":"Prebroj","Look and listen":"Gledaj i slušaj","Look closely":"Pogledaj pažljivo","One less":"Jedan manje","Your count":"Tvoj broj","One more":"Jedan više","Check":"Provjeri","Hint (−{n})":"Pomoć (−{n})","Hint":"Pomoć","Try {n}. Right on the first try: {a} points, then {b}, then {c}.":"Pokušaj {n}. Tačno iz prvog pokušaja: {a} poena, zatim {b}, pa {c}.","Not this time":"Ovaj put ne","Well spotted.":"Dobro uočeno.","Never mind.":"Nema veze.","field note":"terenska bilješka","Continue":"Nastavi","{place} done":"{place}: završeno","Next in this chapter: {list}.":"Sljedeće u ovom poglavlju: {list}.","Chapter {n} complete":"Poglavlje {n} završeno","Every piece found":"Svi djelovi su pronađeni","To the Tourist Info Centre":"Do Turističkog info centra","Bring every piece here: the finders’ gift and the last riddle wait at the desk, then the peridot goes home to the Kissing Cats. Pieces still out there: {n}.":"Donesi ovdje sve djelove: na pultu čekaju poklon za pronalazače i posljednja zagonetka, a onda peridot ide kući, pod Mačiji poljubac. Djelova još nedostaje: {n}.","Tourist Info Centre, {address} · open {hours}.":"Turistički info centar, {address} · radno vrijeme {hours}.","Show 10/10 at the desk of the Tourist Info Centre, {address} (open {hours}): every finder gets a surprise gift. The staff give you the desk code for the last riddle.":"Pokaži 10/10 na pultu Turističkog info centra, {address} (radno vrijeme {hours}): svaki pronalazač dobija poklon iznenađenja. Osoblje ti daje kod za pult za posljednju zagonetku.","Desk closed? Call the phone number on the door.":"Pult je zatvoren? Pozovi broj telefona koji je na vratima.","Enter the desk code":"Unesi kod za pult","The finders’ desk · question {k} of 3":"Pult pronalazača · pitanje {k} od 3","Each wrong answer costs {miss} of the riddle’s {pts} points; after three, the answer is shown.":"Svaki pogrešan odgovor odnosi {miss} od {pts} poena zagonetke; nakon tri, odgovor se prikazuje.","Riddle points so far: {n}.":"Poeni zagonetke do sada: {n}.","Next question":"Sljedeće pitanje","Finish":"Završi","Later":"Kasnije","Finale · Home to the Kissing Cats":"Finale · Kući, pod Mačiji poljubac","The Kissing Cats":"Mačiji poljubac","The Kissing Cats: two rocks leaning together, the whole green peridot glowing in the hollow between them":"Mačiji poljubac: dvije stijene nagnute jedna ka drugoj, a u udubljenju između njih sija cijeli zeleni peridot","The ten pieces go back into the hollow under the kiss, one by one. Each one clicks and glows. The tenth locks with a chime, and the whole stone lights up green.":"Deset djelova se vraća u udubljenje ispod poljupca, jedan po jedan. Svaki škljocne i zasija. Deseti legne uz zvuk zvona, i cijeli kamen zasija zeleno.","Prokletije Peridot":"Prokletijski Peridot","The peridot is whole again.":"Peridot je ponovo cijeli.","Test":"Proba","A test-mode stamp: it shows the game works, it does not count at the desk.":"Pečat iz probnog načina: pokazuje da igra radi, ali na pultu se ne računa.","Your field stamp. Show it, with 10/10 on this phone, at the Tourist Info Centre in Gusinje.":"Tvoj terenski pečat. Pokaži ga, sa 10/10 na ovom telefonu, u Turističkom info centru u Gusinju.","The Kissing Cats again":"Ponovo Mačiji poljubac","Prokletije Peridot · Part Two":"Prokletijski Peridot · Drugi dio","The peridot is whole. But the old story said sunrise, and it never said which one.":"Peridot je cijeli. Ali stara priča je govorila o izlasku sunca, a nikad nije rekla kojem.","Coming soon":"Uskoro","Start over?":"Početi ispočetka?","Your points, the places you have found and your field stamp on this phone are cleared. This cannot be undone.":"Tvoji poeni, pronađena mjesta i terenski pečat na ovom telefonu biće obrisani. Ovo se ne može poništiti.","Cancel":"Otkaži","Yes, start over":"Da, ispočetka","Save code copied":"Kod za čuvanje je kopiran","Selected: copy it now":"Označeno: sad ga kopiraj","That is not a save code. Check it and try again.":"To nije kod za čuvanje. Provjeri ga i pokušaj ponovo.","Test: 40 m south of {place}. Walk north with the joystick.":"Proba: 40 m južno od mjesta {place}. Hodaj ka sjeveru džojstikom.","Test position at {place}: wait {s} s":"Probna pozicija: {place}. Sačekaj {s} s","Your count?":"Tvoj broj?","Type a number first.":"Prvo upiši broj.","You counted {n}.":"Izbrojano: {n}.","Yes, {n}.":"Tačno, {n}.","It is {n}.":"Tačno je {n}.","Not quite.":"Nije baš.","Count again: there are more.":"Prebroj ponovo: ima ih više.","Count again: there are fewer.":"Prebroj ponovo: ima ih manje.","You saw: {v}.":"Vidiš: {v}.","The answer: {a}.":"Odgovor: {a}.","Look again and try another answer.":"Pogledaj ponovo i probaj drugi odgovor.","Right.":"Tačno.","It’s {a}.":"Tačan odgovor: {a}.","Not this time.":"Ovaj put ne.","It doesn’t fit.":"Ne uklapa se.","Think back to the places, and try again.":"Sjeti se mjesta i pokušaj ponovo.","The camera can’t start inside the Claude app, so you see a painted valley. To see the peridot in your room, open the game in Chrome or Safari:":"Kamera ne može da se pokrene u Claude aplikaciji, pa vidiš naslikanu dolinu. Da vidiš peridot u svojoj sobi, otvori igru u Chromeu ili Safariju:","The camera needs a secure (https) address. Open the game from https://…":"Kameri treba bezbjedna (https) adresa. Otvori igru preko https://…","The camera is blocked for this site. Allow it in the browser (the lock icon by the address, then Camera), close this view and open it again.":"Kamera je blokirana za ovaj sajt. Dozvoli je u pregledaču (ikonica katanca pored adrese, pa Kamera), zatvori ovaj prikaz i otvori ga ponovo.","No camera found, so you see a painted valley instead.":"Kamera nije pronađena, pa umjesto nje vidiš naslikanu dolinu.","Camera {i} / {n}":"Kamera {i} / {n}","This camera is zoomed in ({deg}°): trying the next one…":"Ova kamera je zumirana ({deg}°): probam sljedeću…","Copied":"Kopirano","Select & copy":"Označi i kopiraj","Copy link":"Kopiraj link","look":"traženje","Point and tap Here":"Usmjeri i dodirni Ovdje","Hold steady":"Drži mirno","Look around":"Pogledaj oko sebe","Here":"Ovdje","A peridot shard has come down out there too: find it and catch it.":"I tamo je pao djelić peridota: pronađi ga i uhvati.","Turn on the compass…":"Uključujem kompas…","Peridot shard: tap to take it":"Djelić peridota: dodirni da ga uzmeš","N":"S","E":"I","S":"J","W":"Z","NE":"SI","SE":"JI","SW":"JZ","NW":"SZ","There it is, in {what}! It drops down in front of you…":"Eno ga! Pada ispred tebe…","There it is, in {what}! Tap the shard.":"Eno ga! Dodirni djelić.","Facing {dir}":"Smjer: {dir}","No compass: north is a guess":"Nema kompasa: sjever je procjena","No compass here: drag to turn":"Ovdje nema kompasa: povuci da okreneš","{deg}° off.":"Odstupanje {deg}°.","The way: {dir} ({deg}°).":"Pravac: {dir} ({deg}°).","Not quite: that is almost the opposite way. Turn around and try again.":"Nije baš: to je skoro suprotan pravac. Okreni se i pokušaj ponovo.","Not quite: about {d}° off. Turn to the right and try again.":"Nije baš: odstupanje je oko {d}°. Okreni se udesno i pokušaj ponovo.","Not quite: about {d}° off. Turn to the left and try again.":"Nije baš: odstupanje je oko {d}°. Okreni se ulijevo i pokušaj ponovo.","Not quite: about {d}° off. Turn a little to the right and try again.":"Nije baš: odstupanje je oko {d}°. Okreni se malo udesno i pokušaj ponovo.","Not quite: about {d}° off. Turn a little to the left and try again.":"Nije baš: odstupanje je oko {d}°. Okreni se malo ulijevo i pokušaj ponovo.","Hint: {hint}":"Pomoć: {hint}","Done":"Završeno","You are here":"Ovdje si","Opens with every piece":"Otvara se kad imaš sve djelove","{dist} away":"{dist} odavde","Gusinje town: {a} of {b} sites done":"Grad Gusinje: završeno {a} od {b} mjesta","T1–T8 · Gusinje town":"T1–T8 · grad Gusinje","{a}/{b} done":"{a}/{b} završeno","{km} km trail on foot":"{km} km pješačke staze","{place}: a peridot shard is here":"{place}: ovdje je djelić peridota","MONTENEGRO":"CRNA GORA","ALBANIA":"ALBANIJA","Prokletije National Park":"Nacionalni park Prokletije","Start":"Početak","The game follows you from site to site.":"Igra te prati od mjesta do mjesta.","Stand in the open for a moment.":"Stani na otvoreno na trenutak.","Location blocked":"Lokacija blokirana","Use the plaque codes":"Koristi kodove sa tabli","Every site has a plaque with a 4-character code.":"Svako mjesto ima tablu s kodom od 4 znaka.","No GPS":"Nema GPS-a","You’re here":"Stigli smo","Tap to start":"Dodirni za početak","Arriving":"Stižemo","Stay here {n} s":"Ostani ovdje još {n} s","Arrived":"Stigli smo","Your target":"Tvoj cilj","Nearest site":"Najbliže mjesto","You’re close · waiting for better GPS (±{n} m)":"Blizu si · čekam bolji GPS (±{n} m)","You’re in the zone":"U zoni si","Well done":"Bravo","All mapped sites found":"Sva mjesta na mapi su pronađena","Open the list for the rest.":"Za ostalo otvori spisak.","Sites":"Mjesta","Pick a site on the map":"Izaberi mjesto na mapi","Or open the list.":"Ili otvori spisak.","test":"proba","{n}/{m} places":"{n}/{m} mjesta","Test mode":"Probni način","Play anywhere":"Igraj bilo gdje","Try the field game at home: your real progress is kept apart and the start page doesn’t see it.":"Probaj igru na terenu od kuće: tvoj pravi napredak se čuva odvojeno, a početna stranica ga ne vidi.","Pick a site: you start 40 m from it. Walk with the joystick on the map, or with the Walk button in the camera view (it walks the way your phone faces). Turn by turning your phone; on a computer, drag. Arriving takes 5 seconds here.":"Izaberi mjesto: krećeš 40 m od njega. Hodaj džojstikom na mapi ili dugmetom Hodaj u prikazu kamere (hoda u pravcu u kom gleda telefon). Okrećeš se okretanjem telefona; na računaru povuci mišem. Dolazak ovdje traje 5 sekundi.","Tourist Info Centre":"Turistički info centar","Reset test progress":"Obriši probni napredak","Leave test mode":"Izađi iz probnog načina","Backup":"Rezervna kopija","Your save code":"Tvoj kod za čuvanje","iPhone can clear a website’s saved progress after 7 days without a visit. Take a photo of this QR code, or copy the code into a note or a message to yourself: it brings your progress back, on this phone or another one.":"iPhone može obrisati sačuvani napredak sajta nakon 7 dana bez posjete. Fotografiši ovaj QR kod ili kopiraj kod u bilješku ili poruku sebi: njime vraćaš napredak, na ovom ili drugom telefonu.","Nothing to save yet. Played on another phone? Paste its save code below.":"Još nema šta da se sačuva. Imaš napredak na drugom telefonu? Zalijepi njegov kod ispod.","QR code with your save code":"QR kod s tvojim kodom za čuvanje","A save code to restore":"Kod za čuvanje koji vraćaš","Paste a save code to restore":"Zalijepi kod za čuvanje","Copy the code":"Kopiraj kod","Restore":"Vrati","Restore this progress?":"Vratiti ovaj napredak?","Places done: {n} of {m} · {pts} points":"Završena mjesta: {n} od {m} · {pts} poena","field stamp {s}":"terenski pečat {s}","It replaces the progress on this phone.":"Zamjenjuje napredak na ovom telefonu.","Restore it":"Vrati ga","That link holds no save code this game can read.":"U tom linku nema koda za čuvanje koji ova igra može da pročita.","Whoosh, just past it! Drag or flick straight at the shard.":"Fiju, odmah pored! Povuci ili baci pravo na djelić.","Close! Try again.":"Blizu! Pokušaj ponovo.","Missed. Let go of the orb right on the shard.":"Promašaj. Pusti kuglu baš na djelić.","It broke free! Once more.":"Oslobodio se! Još jednom.","Almost had it! Again!":"Skoro! Ponovo!","It wriggled out. Throw again!":"Izmigoljio se. Baci ponovo!","Find the shard":"Pronađi djelić","Here it comes!":"Evo ga, dolazi!","Catch the shard":"Uhvati djelić","It landed right in front of you! Drag the crystal orb up to it and let go, or flick it. Throw while the gold ring is small for a bonus.":"Pao je tačno ispred tebe! Povuci kristalnu kuglu do njega i pusti je, ili je baci brzim potezom. Baci dok je zlatni krug mali, za bonus.","Catch it from here":"Uhvati ga odavde","I lost your position. Tap ‘Catch it from here’ and it will fly to you.":"Izgubila sam tvoju poziciju. Dodirni ‘Uhvati ga odavde’ i doletjeće do tebe.","The shard is waiting {dist} away. Walk towards the green light!":"Djelić čeka {dist} odavde. Hodaj prema zelenoj svjetlosti!","Drag the orb up to the shard and let go, or flick it!":"Povuci kuglu do djelića i pusti je, ili je baci!","First find the shard: turn the way the green arrow points.":"Prvo pronađi djelić: okreni se kuda pokazuje zelena strelica.","First find the shard: turn the way the green arrow points (arrow keys).":"Prvo pronađi djelić: okreni se kuda pokazuje zelena strelica (tasteri sa strelicama).","Excellent":"Odlično","Great":"Sjajno","Nice":"Dobro","Collected!":"Sakupljeno!","Broke free!":"Pobjegao je!","Piece of the peridot collected":"Djelić peridota je sakupljen","Map:":"Mapa:","0/10 places":"0/10 mjesta","progress kept apart":"napredak se čuva odvojeno","Start near…":"Kreni blizu…","Leave":"Izađi","Walk":"Hodaj","Places":"Mjesta","Look":"Traži","Moving fast?":"Brzo se krećeš?","The camera view pauses above about 15 km/h, so nobody plays while driving. If you are a passenger, go on.":"Prikaz kamere se pauzira iznad oko 15 km/h, da niko ne bi igrao dok vozi. Ako si suvozač ili putnik, nastavi.","I’m a passenger":"Ja sam putnik","Close the camera":"Zatvori kameru","OK, play here":"U redu, igram ovdje","Hold to walk":"Drži za hodanje","Hint −25":"Pomoć −25","Map of the sites":"Mapa mjesta","Prokletijski Peridot start screen":"Početni ekran Prokletijskog Peridota","Chapters complete":"Završena poglavlja","Points and sites":"Poeni i mjesta","Sound":"Zvuk","Walk (test mode): drag the knob, or use W A S D":"Hodanje (probni način): povuci dugme ili koristi W A S D","Show my position":"Prikaži moju poziciju","Zoom in":"Uvećaj","Zoom out":"Umanji","Look around through your camera":"Pogledaj oko sebe kroz kameru","Close the camera view":"Zatvori prikaz kamere","Switch to the next back camera":"Prebaci na sljedeću zadnju kameru","Hold to walk the way your phone faces (test mode; or hold W)":"Drži za hodanje u pravcu u kom gleda telefon (probni način; ili drži W)","Crystal orb: drag it up to the shard and let go, or flick it; or press Enter to throw":"Kristalna kugla: povuci je do djelića i pusti, ili je baci; ili pritisni Enter za bacanje","AR trail missions · Prokletijski Peridot":"AR misije na stazama · Prokletijski Peridot"}},"sq":{"s":{"ch1.name":"Copat e qytetit","ch1.short":"Qyteti","ch1.how":"Në këmbë, rreth 2 orë","ch1.intro.0":"Gjashtë nga copat përfunduan këtu, në qytet.","ch1.intro.1":"Njerëzit i ruajtën ashtu siç Gucia ruan gjithçka: në familje, në dyqane, pranë dyerve të faltoreve të saj.","ch1.intro.2":"Shkojmë në këmbë. Rreth dy orë, po s’u ndalëm për burek.","ch1.intro.3":"Fillo ku të duash. Unë të tregoj rrugën.","ch1.end.0":"Gjashtë copa. Pjesa e gjithë qytetit.","ch1.end.1":"Dy prej tyre u ruajtën pesëdhjetë metra larg njëra-tjetrës. Mbaje mend, dikush do të të pyesë.","ch1.next.lines.0":"Tani uji. Tri copa u rrokullisën deri poshtë te burimet dhe lumi.","ch1.next.lines.1":"Merr makinën ose biçikletën. Dhe merr diçka të ngrohtë.","ch2.name":"Copat e ujit","ch2.short":"Uji","ch2.how":"Me makinë ose biçikletë, gjysmë dite","ch2.intro.0":"Kur guri u thye, disa copa nuk u ndalën derisa arritën te uji.","ch2.intro.1":"Tri prej tyre ndoqën lumin: te burimet, në kanion dhe poshtë, në fund të Syrit.","ch2.intro.2":"Qëndro pas buzëve dhe mbaji këpucët të thata. Ecim.","ch2.end.0":"Tri copat e ujit. Mua më ftohen duart vetëm duke të parë.","ch2.next.lines.0":"Mbeti edhe një copë, ajo që ra më afër shtëpisë.","ch2.next.lines.1":"Grebaja, nën Macet që Puthen. Shkojmë ta marrim.","ch3.name":"Copa e malit","ch3.short":"Majat","ch3.how":"Rreth 8 km me rrugë, taksë për parkun kombëtar","ch3.intro.0":"Grebaja. Shiko lart: ato mure janë Karanfilët.","ch3.intro.1":"Diku atje lart janë Macet që Puthen, ku guri qëndroi për shekuj.","ch3.intro.2":"Kur tërmeti e theu, një copë u rrokullis vetëm deri te uji i fundit në luginë.","ch3.intro.3":"Tani jemi në parkun kombëtar, ndaj paguhet një taksë e vogël. Ia vlen çdo cent.","ch3.end.0":"Copa e malit është e jona.","T1.title":"Sheshi i Ali Pashës","T1.heritage":"Trashëgimi kulturore","T1.scene.0":"Këtu takoheshin rrugët. Karvanët kalonin këtej, rrugës nga deti për në Pejë.","T1.scene.1":"Një copë udhëtoi me ta për vite, e mbështjellë në pëlhurën e një tregtari.","T1.scene.2":"Pastaj dikush vendosi se vendi i saj ishte këtu, ku nisin të gjitha rrugët.","T1.scene.3":"Shiko lart dhe përreth. Është diku mbi shesh.","T1.got":"Një për karvanët. Të lumtë.","T1.close":"Kjo është e para. Pjesa tjetër e qytetit është afër.","T1.look.say":"Rrotullohu ngadalë: rrugët e vjetra të karvanëve ende e tregojnë drejtimin.","T1.look.labels.0.name":"Drejt Pejës","T1.look.labels.1.name":"Vuthaj","T1.task.prompt":"Karvanët nisnin nga ky shesh për në Shkodër dhe drejt detit. Drejtoje telefonin nga shkonin, pastaj prek Këtu.","T1.task.hint":"Shkodra është në jugperëndim, përtej maleve.","T1.task.after":"Shkodra është rreth 60 km në jugperëndim në vijë ajrore; karvanët kalonin nëpër qafat e maleve.","T1.fact.title":"Një stacion karvanësh","T1.fact.text.0":"Në shekullin XIV Gucia ishte stacion karvanësh në rrugën nga Raguza (Dubrovniku) dhe Kotori, përmes Shkodrës, për në Pejë.","T1.fact.text.1":"Sheshi mban emrin e Ali Pashë Gucisë (1828–1888), një prej komandantëve të Lidhjes së Prizrenit.","T1.q.q":"Në cilën rrugë karvanësh ishte stacion Gucia?","T1.q.options.0":"Dubrovnik – Kotor – Shkodër – Pejë","T1.q.options.1":"Venecia – Vjena","T1.q.options.2":"Athina – Beogradi","T1.q.options.3":"Sarajeva – Spliti","T2.title":"Xhamia e Vezirit","T2.heritage":"Trashëgimi kulturore","T2.scene.0":"Xhamia e Vezirit. Shiko atë hajat prej druri: njerëzit pushojnë nën të prej shekujsh.","T2.scene.1":"Pas tërmetit, dikush la një copë këtu, aty ku e dinte se do të ishte e sigurt.","T2.scene.2":"Familjet që faleshin këtu e ruajtën për breza dhe kurrë nuk pyetën e kujt ishte.","T2.scene.3":"Detyrën e bëjmë nga jashtë. Në heshtje, të lutem.","T2.got":"Ngadalë. Dikush e ka ruajtur këtë shumë mirë.","T2.close":"Mbaje mend këtë xhami. Edhe fqinja e saj ruajti një copë.","T2.look.what":"hajati prej druri dhe minarja","T2.look.say":"Mbaje telefonin drejt hajatit dhe minares, pa e lëvizur.","T2.task.prompt":"Numëro shtyllat prej druri që mbajnë hajatin.","T2.task.hint":"Numëro vetëm shtyllat që arrijnë deri në tokë.","T2.fact.title":"Gur, dru dhe dhurata nga larg","T2.fact.text.0":"Një sallë faljeje prej guri me hajat dhe minare prej druri, ndërtesa fetare më e veçantë e Gucisë.","T2.fact.text.1":"U rinovua tërësisht më 1992 me dhurata nga gucianët që jetojnë në Shtetet e Bashkuara. Burimet nuk pajtohen se kur u ndërtua për herë të parë.","T2.q.q":"Kush e pagoi rinovimin e vitit 1992?","T2.q.options.0":"Gucianët që jetojnë në SHBA","T2.q.options.1":"Shteti osman","T2.q.options.2":"Parku kombëtar","T2.q.options.3":"Një kompani hotelesh","T3.title":"Kisha e Shën Gjergjit","T3.heritage":"Trashëgimi kulturore","T3.scene.0":"Kisha e Shën Gjergjit është vetëm rreth pesëdhjetë metra nga Xhamia e Vezirit.","T3.scene.1":"Dy copa u ruajtën në këtë rrugë të vetme, nga fqinj që faleshin ndryshe dhe i besonin njëri-tjetrit.","T3.scene.2":"Kjo është krejt Gucia, po më pyete mua.","T3.scene.3":"Copa është afër kambanores. A mund ta gjesh?","T3.got":"Dy fqinj, dy copa. Mbaje mend për më vonë.","T3.close":"Mirë. Te tjetra.","T3.look.what":"kambanorja","T3.look.say":"Gjej kambanoren dhe mbaje brenda rrethit.","T3.task.prompt":"Shiko përreth në oborrin e kishës. Ku është kambanorja?","T3.task.options.0":"Veçmas nga kisha, në verilindje","T3.task.options.1":"Mbi çatinë e kishës","T3.task.options.2":"Mbi portë","T3.task.options.3":"Nuk ka kambanore","T3.task.hint":"Shiko përtej oborrit, jo lart në çati.","T3.fact.title":"Një rrugë, disa besime","T3.fact.text.0":"Kisha Ortodokse Serbe e Shën Gjergjit u ndërtua më 1926, në kohën e mbretit Aleksandër.","T3.fact.text.1":"Ndodhet rreth 50 m nga Xhamia e Vezirit: pak qytete kanë xhami dhe kisha kaq afër.","T3.q.q":"Kur u ndërtua Kisha e Shën Gjergjit?","T4.title":"Xhamia e Re (e Radonçajve)","T4.heritage":"Trashëgimi kulturore","T4.scene.0":"Xhamia e Re. Në Guci, „e re“ do të thotë 1899.","T4.scene.1":"Çdo familje këtu ka lënë gjurmën e vet në qytet. Kjo xhami është gjurma e një familjeje në shesh.","T4.scene.2":"Familjet rreth sheshit e ruajtën copën e tyre si një çelës të vjetër shtëpie: brez pas brezi, e kurrë të humbur.","T4.scene.3":"Shiko lart, kupolën dhe minaren.","T4.got":"Edhe një në shtëpi. Po të shkon gjithnjë e më mirë.","T4.close":"Mbaji sytë hapur. Ky qytet i fsheh mirë gjërat.","T4.look.what":"kupola dhe minarja","T4.look.say":"Mbaje kupolën dhe minaren brenda rrethit.","T4.task.prompt":"Numëro dritaret në anën e xhamisë që shikon nga sheshi.","T4.task.hint":"Numëro çdo dritare që sheh në atë mur, lart dhe poshtë.","T4.fact.title":"Xhamia e një familjeje","T4.fact.text.0":"E ndërtuar më 1899 nga familja Radončić (Radonçaj).","T4.fact.text.1":"Xhamitë e Gucisë pasqyrojnë vëllazëritë dhe familjet që i ndërtuan.","T4.q.q":"Cila familje e ndërtoi këtë xhami?","T4.q.options.0":"Radončić","T4.q.options.1":"Bušatlija","T4.q.options.2":"Čekaj","T4.q.options.3":"Neković","T7.title":"Kulla e Sahatit","T7.heritage":"Trashëgimi kulturore","T7.scene.0":"Kulla e Sahatit është ndërtesa më e re në qytet, dhe ruan një copë të orës më të vjetër.","T7.scene.1":"Para orëve, peridoti ishte ora e luginës. Agimi nëpër gur u tregonte barinjve kur të ngjiteshin lart.","T7.scene.2":"Kjo copë e kaloi oqeanin. Një familje e çoi në Nju Jork dhe e solli në shtëpi për kullën.","T7.scene.3":"Shiko lart, te kadrani i orës.","T7.got":"Në shtëpi nga Nju Jorku. Mirë se u ktheve.","T7.close":"Ora më e vjetër dhe ora më e re. Më pëlqen kjo.","T7.look.what":"kadrani i orës","T7.look.say":"Drejtoje telefonin te një kadran ore lart në kullë dhe mbaje të qetë.","T7.task.prompt":"Krahasoje orën e kullës me telefonin tënd. Çfarë sheh?","T7.task.options.0":"E njëjta minutë","T7.task.options.1":"Një a dy minuta diferencë","T7.task.options.2":"Më shumë diferencë","T7.task.after":"Para telefonave dhe orëve të dorës, kulla e sahatit mbante kohën për gjithë qytetin: për lutjet, tregun dhe punën e ditës.","T7.fact.title":"Një dhuratë nga Nju Jorku","T7.fact.text.0":"Kulla e Sahatit e Gucisë ndodhet në hyrje të qytetit. Guri themeltar u vu më 4 shtator 2024 dhe u hap më 24 korrik 2026; brenda saj është edhe një muze.","T7.fact.text.1":"U ndërtua si vakëf, dhuratë për qytetin, nga njerëz nga Plava dhe Gucia që jetojnë në Nju Jork.","T7.q.q":"Kush e pagoi Kullën e Sahatit të Gucisë?","T7.q.options.0":"Njerëz nga Plava dhe Gucia që jetojnë në Nju Jork","T7.q.options.1":"Sulltani osman","T7.q.options.2":"Parku kombëtar","T7.q.options.3":"Një bankë në Podgoricë","T8.title":"Kisha e Shën Ndout, Dolja","T8.heritage":"Trashëgimi kulturore","T8.scene.0":"Kisha e Shën Ndout në Dolja. Lexo portën: të përshëndet në tri gjuhë.","T8.scene.1":"Shën Ndou është shenjti që njerëzit e thërrasin për ndihmë kur humbasin diçka.","T8.scene.2":"Pra, ku tjetër do të dilte një copë peridoti e humbur?","T8.scene.3":"Është afër derës së kambanores. Hidh një sy.","T8.got":"E humbur dhe e gjetur. Faleminderit, Shën Ndou.","T8.close":"Ajo rrugë vazhdon për në Grebajë. Do të kthehemi për të.","T8.look.what":"dera e kambanores","T8.look.say":"Mbaje derën e kambanores së kishës brenda rrethit.","T8.task.prompt":"Lexo tabelën pranë portës. Në sa gjuhë të përshëndet?","T8.task.hint":"Malazisht, shqip dhe…","T8.fact.title":"Mbrojtësi i gjërave të humbura","T8.fact.text.0":"Kisha katolike në Dolja u ndërtua në vitet 1933–1936 dhe u rinovua më 2011 me dhurata nga mërgimtarët.","T8.fact.text.1":"Shën Ndoun, Shën Antonin, njerëzit e thërrasin për të gjetur gjërat e humbura.","T8.q.q":"Shën Ndou është mbrojtësi i…","T8.q.options.0":"gjërave të humbura","T8.q.options.1":"udhëtarëve","T8.q.options.2":"maleve","T8.q.options.3":"burimeve","A1.title":"Burimet e Ali Pashës","A1.heritage":"Trashëgimi natyrore dhe kulturore","A1.scene.0":"Burimet e Ali Pashës. Uji këtu del drejt nga shkëmbi, në dhjetëra burime të vogla.","A1.scene.1":"Kjo copë u rrokullis në ujë dhe qëndroi aty për një kohë shumë të gjatë.","A1.scene.2":"Çdo vit, në Ilindan, më dy gusht, e gjithë lugina vjen këtu. Një mëngjes vere dikush e pa duke shkëlqyer.","A1.scene.3":"Shiko te rrëza e shkëmbit, aty ku del uji.","A1.got":"Ftohtë! Por është e jona.","A1.close":"Mbaje mend Ilindanin. Ka më shumë rëndësi se ç’mendon.","A1.look.what":"shkëmbi nga del uji","A1.look.say":"Drejtoje telefonin te rrëza e shkëmbit nga del uji dhe mbaje të qetë.","A1.task.prompt":"Nga vendi i shënuar: sa rrjedha të veçanta uji sheh që dalin nga shkëmbi?","A1.task.hint":"Numëro rrjedhat e bardha, jo valëzat.","A1.fact.title":"Ujë nga shkëmbi","A1.fact.text.0":"Rreth 2 km në jug të Gucisë, këtu buron Vruja, në shumë burime të vogla drejt nga shkëmbi.","A1.fact.text.1":"Çdo vit në Ilindan, më 2 gusht, njerëzit mblidhen te burimet, shumë prej tyre mërgimtarë që vijnë në shtëpi për verë.","A1.q.q":"Kur bëhet tubimi tradicional te burimet?","A1.q.options.0":"Më 2 gusht (Ilindan)","A1.q.options.1":"Më 1 maj","A1.q.options.2":"Më 13 qershor","A1.q.options.3":"Më 31 dhjetor","V1.title":"Ujëvara Grlja","V1.heritage":"Trashëgimi natyrore","V1.scene.0":"Dëgjo. Lumi këtu bie pesëmbëdhjetë metra brenda gurit.","V1.scene.1":"Një copë ra në kanion, dhe uji e lëmoi për vite.","V1.scene.2":"Kur në pranverë agimi kalonte nëpër gur, pleqtë e dinin se lumi së shpejti do të gjëmonte kështu.","V1.scene.3":"Qëndro pas parmakut. Kanioni nuk i kthen gjërat.","V1.got":"E lëmuar sa shkëlqen. Lumi e bëri mirë punën.","V1.close":"Ndalesa tjetër: vendi ku fillon ky ujë.","V1.look.what":"kanioni","V1.look.say":"Nga pika e shikimit, drejtoje telefonin në kanion dhe mbaje të qetë. Qëndro pas buzës.","V1.task.prompt":"Mbylli sytë për dhjetë sekonda dhe dëgjo. Sa e fortë është ujëvara sot?","V1.task.options.0":"Gjëmon","V1.task.options.1":"E fortë","V1.task.options.2":"E qetë","V1.task.after":"Ujëvara është më e zhurmshme në fund të pranverës, kur shkrihet bora në malet e larta. Njerëzit e luginës e lexonin atë çast në agimin nëpër peridot.","V1.fact.title":"Në kanion","V1.fact.text.0":"Grlja bie në një kanion të thellë e të ngushtë, buzë rrugës.","V1.fact.text.1":"Skakavica, që buron te Oko Skakavice, bashkohet me Grljën rreth 2,5 km më poshtë burimit të saj.","V1.q.q":"Ku fillon Skakavica?","V1.q.options.0":"Te Oko Skakavice","V1.q.options.1":"Te Burimet e Ali Pashës","V1.q.options.2":"Në Liqenin e Plavës","V1.q.options.3":"Në Grebajë","V2.title":"Oko Skakavice","V2.heritage":"Trashëgimi natyrore","V2.scene.0":"Oko Skakavice. Syri. Tetë metra i thellë, dhe e sheh çdo gur në fund.","V2.scene.1":"Kjo copë u zhyt deri në fund dhe priti mëngjesin më të kthjellët.","V2.scene.2":"Uji ka rreth pesë gradë. Pa notuar. Më beso, nuk do ta duash.","V2.scene.3":"Drejtoje telefonin në mes të pellgut. Ta nxjerrim.","V2.got":"Drejt nga fundi i Syrit. Shiko sa e kthjellët është.","V2.close":"Tetë metra. Mbaje mend atë numër.","V2.look.what":"uji i kaltër","V2.look.say":"Drejtoje telefonin në mes të pellgut dhe mbaje të qetë.","V2.task.prompt":"Çfarë ngjyre ka uji tani?","V2.task.options.0":"Bruz","V2.task.options.1":"E kaltër si qielli","V2.task.options.2":"Blu e gjelbër","V2.task.options.3":"Blu e errët","V2.task.options.4":"Gri e gjelbër","V2.task.after":"Ngjyra ndryshon nga bruz në të kaltër, sipas orës së ditës dhe dritës. Kthehu në një orë tjetër dhe shiko.","V2.fact.title":"Syri i Skakavicës","V2.fact.text.0":"Një burim karstik rreth 30 × 25 m dhe 8 m i thellë, një nga më të fuqishmit në Bjeshkët e Nemuna.","V2.fact.text.1":"Uji mbetet rreth 4,5–5 °C gjatë gjithë vitit. Pa notuar: është shumë i ftohtë.","V2.q.q":"Sa i ftohtë është uji?","V2.q.options.0":"Rreth 5 °C","V2.q.options.1":"Rreth 12 °C","V2.q.options.2":"Rreth 18 °C","V2.q.options.3":"Është i ngrirë","G1.title":"Lugina e Grebajës","G1.heritage":"Trashëgimi natyrore dhe kulturore · Suljova česma","G1.scene.0":"Suljova česma. Çezma e Suljos, uji i fundit i pijshëm para ngjitjeve.","G1.scene.1":"Barinjtë, rrugës për në bjeshkë, ndaleshin gjithmonë këtu për të pirë.","G1.scene.2":"Njëri prej tyre e gjeti këtë copë në përrua, dhe familja e tij e ruan që atëherë.","G1.scene.3":"Shiko çezmën, aty ku rrjedh uji.","G1.got":"Copa e malit. Ajo që nuk shkoi kurrë larg.","G1.close":"Uji i fundit. Mbaje mend.","G1.look.what":"çezma","G1.look.say":"Drejtoje telefonin te çezma, aty ku rrjedh uji, dhe mbaje të qetë.","G1.task.prompt":"Mbaje dorën nën ujë për pesë sekonda. Si të duket?","G1.task.options.0":"Akull","G1.task.options.1":"I ftohtë","G1.task.options.2":"I freskët","G1.task.after":"Mbushe shishen nëse ngjitesh më lart: rrugës lart nuk ka më ujë.","G1.fact.title":"Uji i fundit","G1.fact.text.0":"Suljova česma, çezma e Suljos, ndodhet buzë rrugës, në një copëz pyll halor në Grebajë.","G1.fact.text.1":"Është uji i fundit i pijshëm në luginë. Alpinistët mbushin shishet këtu para rrugëve drejt Karanfilëve, me Veliki vrhun (2 490 m) në mes.","G1.q.q":"Pse ndalen alpinistët te Suljova česma?","G1.q.options.0":"Është uji i fundit i pijshëm në luginë","G1.q.options.1":"Për të blerë bileta","G1.q.options.2":"Për të parë ujëvarën Grlja","G1.q.options.3":"Për të kapur autobusin","A.title":"Sporteli i gjetësve","A.desk.0":"I gjete të gjitha copat. Shumica e njerëzve nuk gjejnë asnjë.","A.desk.1":"Guri bashkohet sërish vetëm nëse kujtojmë ku ishte secila copë.","A.desk.2":"Tri pyetje. Mos nxito: çdo përgjigje e gabuar kushton pak.","A.desk.3":"Pastaj e çojmë në shtëpi.","A.riddle.0.q":"Copat e qytetit: dy prej tyre u ruajtën rreth 50 m larg njëra-tjetrës. Ku?","A.riddle.0.options.0":"Xhamia e Vezirit dhe Kisha e Shën Gjergjit","A.riddle.0.options.1":"Grlja dhe Oko Skakavice","A.riddle.0.options.2":"Sheshi dhe Suljova česma","A.riddle.0.options.3":"Dy burime në Grebajë","A.riddle.1.q":"Copat e ujit: sa i thellë është Syri i Skakavicës?","A.riddle.1.options.0":"Rreth 8 m","A.riddle.1.options.1":"Rreth 1 m","A.riddle.1.options.2":"Rreth 30 m","A.riddle.1.options.3":"Askush nuk e di","A.riddle.2.q":"Copa e malit: pse ndalen alpinistët te Suljova česma?","A.riddle.2.options.0":"Është uji i fundit i pijshëm në luginë","A.riddle.2.options.1":"Për të blerë bileta","A.riddle.2.options.2":"Për të parë ujëvarën Grlja","A.riddle.2.options.3":"Për të kapur autobusin","A.cats.0":"Ja ku janë. Macet që Puthen. Guri qëndroi pikërisht aty, nën puthjen, për shekuj.","A.cats.1":"Shiko. E gjelbër si uji i borës që shkrin.","A.cats.2":"Stërgjyshi im gjeti një gur të vogël të gjelbër nën Macet kur ishte djalë. E njëjta e gjelbër.","A.cats.3":"Pleqtë thonë se drita e tij në agim tregon rrugën për te një shpellë e fshehur.","A.cats.4":"Tani na duhet vetëm një agim.","opening.0":"Unë jam Meyra. U rrita pikërisht këtu, nën këto male.","opening.1":"Dhjetë vende në luginë ruajtën nga një copë të gurit. Unë e di ku janë.","opening.2":"Fotografitë nuk mund t’i tregojnë. Duhet të shkojmë atje, në këmbë.","opening.3":"Gjeji të dhjetat, dhe e çojmë peridotin në shtëpi, te Macet që Puthen. Gati?","legend.0":"Moti, një gur i zjarrtë ra nga qielli i natës dhe goditi Bjeshkët e Nemuna. Malet e mbajnë ende plagën. Por meteoriti la pas edhe diçka tjetër: një peridot të madh, të gjelbër si uji i borës që shkrin në pranverë, të zënë në një zgavër nën Macet që Puthen.","legend.1":"Për shekuj me radhë njerëzit e luginës jetuan sipas dritës së tij. Kur agimi kalonte nëpër gur, barinjtë e dinin se ishte koha t’i nxirrnin kopetë në bjeshkë, dhe bujqit e dinin se po vinte shkrirja e borës. Pleqtë thonë se kur dielli qëndronte pas gjithë gurit, drita e tij e gjelbër ndriçonte hyrjen e një shpelle të fshehur. Askush nuk e ka gjetur që atëherë, dhe ajo ende ruan sekretet e saj të lashta.","legend.2":"Pastaj toka u zgjua. Një tërmet i tronditi Macet dhe e copëtoi kristalin, dhe copat e tij u rrokullisën poshtë në luginat e Gucisë. Njerëzit i gjetën, i ruajtën dhe i kaluan dorë më dorë.","legend.3":"Copat janë ende diku atje. Gjeji, dhe drita mund të ndriçojë sërish.","allPieces.0":"Të dhjetat. Gjashtë nga qyteti, tri nga uji, një nga mali.","allPieces.1":"Eja në Qendrën e Informacionit Turistik në Guci dhe trego 10/10 në sportel. Të pret një dhuratë.","allPieces.2":"Pastaj e çojmë peridotin në shtëpi, te Macet që Puthen.","stillOut":"Lista jote tregon çfarë ka mbetur ende."},"u":{"points":"pikë","Answers":"Përgjigjet","Guardian of the Peridot in the Field":"Mbrojtës i Peridotit në terren","Field Keeper":"Rojtar në terren","Field Scout":"Zbulues në terren","On the trail":"Në shteg","Not in the field yet":"Ende jo në terren","north":"veri","north-east":"verilindje","east":"lindje","south-east":"juglindje","south":"jug","south-west":"jugperëndim","west":"perëndim","north-west":"veriperëndim","The Tourist Info Centre! Let’s make the peridot whole.":"Qendra e Informacionit Turistik! Ta bëjmë peridotin sërish të plotë.","You’re at {place}":"Arritëm: {place}","Test position":"Pozicion prove","Location on · ±{n} m":"Vendndodhja e ndezur · ±{n} m","Finding your position…":"Po kërkoj vendndodhjen tënde…","Location does not work inside this preview. On the game’s website it does; here, use the 4-character plaque codes.":"Vendndodhja nuk punon në këtë pamje paraprake. Në faqen e lojës punon; këtu përdor kodet me 4 shenja nga tabelat.","Location is blocked for this page. Every site also has a plaque with a 4-character code.":"Vendndodhja është e bllokuar për këtë faqe. Çdo vend ka edhe një tabelë me kod me 4 shenja.","Location is not available here. Every site also has a plaque with a 4-character code.":"Vendndodhja nuk është në dispozicion këtu. Çdo vend ka edhe një tabelë me kod me 4 shenja.","Location is off.":"Vendndodhja është e fikur.","On site":"Në vend","Code":"Kodi","New":"E re","bonus":"bonus","Finale · Tourist Info Centre, Gusinje":"Finalja · Qendra e Informacionit Turistik, Guci","Bring every piece, then home to the Kissing Cats":"Sill të gjitha copat, pastaj në shtëpi, te Macet që Puthen","AR trail missions":"Misionet AR në shtigje","Turn on location":"Ndiz vendndodhjen","Enter a plaque code":"Shkruaj kodin e tabelës","How it works":"Si luhet","Save code":"Kodi i ruajtjes","Start over":"Fillo nga e para","Turn off location":"Fik vendndodhjen","Test mode: start near a site":"Mënyra provë: nisu pranë një vendi","Test mode (play anywhere)":"Mënyra provë (luaj kudo)","Close":"Mbyll","Chapters complete: {n} of 3":"Kapituj të kryer: {n} nga 3","AR trail missions · the legend":"Misionet AR në shtigje · legjenda","Pieces of Peridot":"Copat e Peridotit","At each place: arrive (your phone notices after 20 seconds, or type the code from the plaque), find the piece through your camera and collect it, do one small task, and read the field note. Your location stays on this phone. At places of worship, everything is done from outside.":"Në çdo vend: arri (telefoni e kupton pas 20 sekondash, ose shkruaj kodin nga tabela), gjej copën përmes kamerës dhe mblidhe, kryej një detyrë të vogël dhe lexo shënimin e terrenit. Vendndodhja jote mbetet në këtë telefon. Te vendet e lutjes, gjithçka bëhet nga jashtë.","Turn on location and start":"Ndiz vendndodhjen dhe fillo","I have a plaque code":"Kam një kod tabele","Try it at home (test mode)":"Provoje në shtëpi (mënyra provë)","Chapter {n}":"Kapitulli {n}","On to {place}":"Tani: {place}","All places":"Të gjitha vendet","Find it from the clues; its pin appears within 60 m":"Gjeje sipas gjurmëve; shenja shfaqet brenda 60 m","Plaque code (zone not set yet)":"Kodi i tabelës (zona ende pa vendosur)","{dist} away · zone {r} m":"{dist} larg · zona {r} m","Zone {r} m · stay {s} s":"Zona {r} m · qëndro {s} s","Volušnica has no signal: type the code from the summit plaque. It is checked on your phone, offline.":"Në Volušnica nuk ka sinjal: shkruaj kodin nga tabela në majë. Kontrollohet në telefonin tënd, pa internet.","Go to the site: the mission starts after {s} seconds inside the zone. Or type the code from the site’s Peridot plaque.":"Shko te vendi: misioni fillon pas {s} sekondash brenda zonës. Ose shkruaj kodin nga tabela Peridot e vendit.","Find the site and type the code from its Peridot plaque.":"Gjej vendin dhe shkruaj kodin nga tabela e tij Peridot.","You’re here, and so is a piece of the peridot. Find it through your camera and catch it: drag the crystal orb up to it and let go, or flick it.":"Je këtu, dhe këtu është edhe një copë e peridotit. Gjeje përmes kamerës dhe kape: tërhiq sferën e kristaltë deri te ajo dhe lëshoje, ose hidhe me një lëvizje të shpejtë.","Now one small task that needs your eyes on the place.":"Tani një detyrë e vogël për të cilën duhet ta shikosh mirë vendin.","Last step: the field note and one question.":"Hapi i fundit: shënimi i terrenit dhe një pyetje.","Done: {pts} of {max} points.":"Kryer: {pts} nga {max} pikë.","Find the piece":"Gjej copën","Do the task":"Kryej detyrën","Field note":"Shënimi i terrenit","A working place of worship: everything is done from outside. Dress modestly if you go in, and stay outside at the Friday noon prayer.":"Vend lutjeje aktiv: gjithçka bëhet nga jashtë. Nëse hyn, vishu me kujdes, dhe të premten në mesditë, në kohën e xhumasë, qëndro jashtë.","From November to April snow may close the road here. Ask at the Tourist Info Centre before you drive.":"Nga nëntori deri në prill bora mund ta mbyllë rrugën deri këtu. Pyet në Qendrën e Informacionit Turistik para se të nisesh me makinë.","Status":"Gjendja","Done ✓":"Kryer ✓","On site ✓ (GPS)":"Në vend ✓ (GPS)","On site ✓ (code)":"Në vend ✓ (kodi)","Not visited":"Pa vizituar","Points":"Pikët","Where":"Ku","Enter plaque code":"Shkruaj kodin e tabelës","Show on map":"Trego në hartë","Test: start 40 m away":"Provë: nisu 40 m larg","Test: step back 40 m":"Provë: kthehu 40 m mbrapa","Test: pretend I’m here":"Provë: sikur jam këtu","Plaque code":"Kodi i tabelës","Enter a code":"Shkruaj një kod","Each site has a small Peridot plaque with a 4-character code (or scan its QR code with the camera).":"Çdo vend ka një tabelë të vogël Peridot me një kod me 4 shenja (ose skano kodin e saj QR me kamerë).","e.g. 7K2P":"p.sh. 7K2P","Hmm.":"Hm.","Confirm":"Konfirmo","Back":"Mbrapa","A plaque code has 4 characters.":"Kodi i tabelës ka 4 shenja.","That code belongs to no site in this game.":"Ky kod nuk i përket asnjë vendi në këtë lojë.","One character looks wrong. Check the plaque again (0 and O, 1 and I are not used).":"Një shenjë duket gabim. Kontrolloje sërish tabelën (0 dhe O, 1 dhe I nuk përdoren).","That is the code of {place}, not this site.":"Ky është kodi i vendit {place}, jo i këtij vendi.","task":"detyra","Count it":"Numëro","Look and listen":"Shiko dhe dëgjo","Look closely":"Shiko me vëmendje","One less":"Një më pak","Your count":"Numri yt","One more":"Një më shumë","Check":"Kontrollo","Hint (−{n})":"Ndihmë (−{n})","Hint":"Ndihmë","Try {n}. Right on the first try: {a} points, then {b}, then {c}.":"Përpjekja {n}. Saktë që herën e parë: {a} pikë, pastaj {b}, pastaj {c}.","Not this time":"Jo këtë herë","Well spotted.":"E vure re mirë.","Never mind.":"S’ka gjë.","field note":"shënimi i terrenit","Continue":"Vazhdo","{place} done":"{place}: kryer","Next in this chapter: {list}.":"Më tej në këtë kapitull: {list}.","Chapter {n} complete":"Kapitulli {n} u krye","Every piece found":"Të gjitha copat u gjetën","To the Tourist Info Centre":"Te Qendra e Informacionit Turistik","Bring every piece here: the finders’ gift and the last riddle wait at the desk, then the peridot goes home to the Kissing Cats. Pieces still out there: {n}.":"Sill këtu të gjitha copat: në sportel të presin dhurata e gjetësve dhe gjëegjëza e fundit, pastaj peridoti kthehet në shtëpi, te Macet që Puthen. Copa që mungojnë ende: {n}.","Tourist Info Centre, {address} · open {hours}.":"Qendra e Informacionit Turistik, {address} · hapur {hours}.","Show 10/10 at the desk of the Tourist Info Centre, {address} (open {hours}): every finder gets a surprise gift. The staff give you the desk code for the last riddle.":"Trego 10/10 në sportelin e Qendrës së Informacionit Turistik, {address} (hapur {hours}): çdo gjetës merr një dhuratë surprizë. Stafi të jep kodin e sportelit për gjëegjëzën e fundit.","Desk closed? Call the phone number on the door.":"Sporteli është i mbyllur? Telefono numrin që është në derë.","Enter the desk code":"Shkruaj kodin e sportelit","The finders’ desk · question {k} of 3":"Sporteli i gjetësve · pyetja {k} nga 3","Each wrong answer costs {miss} of the riddle’s {pts} points; after three, the answer is shown.":"Çdo përgjigje e gabuar kushton {miss} nga {pts} pikët e gjëegjëzës; pas tri, përgjigjja shfaqet.","Riddle points so far: {n}.":"Pikët e gjëegjëzës deri tani: {n}.","Next question":"Pyetja tjetër","Finish":"Përfundo","Later":"Më vonë","Finale · Home to the Kissing Cats":"Finalja · Në shtëpi, te Macet që Puthen","The Kissing Cats":"Macet që Puthen","The Kissing Cats: two rocks leaning together, the whole green peridot glowing in the hollow between them":"Macet që Puthen: dy shkëmbinj të përkulur drejt njëri-tjetrit, dhe në zgavrën mes tyre shkëlqen gjithë peridoti i gjelbër","The ten pieces go back into the hollow under the kiss, one by one. Each one clicks and glows. The tenth locks with a chime, and the whole stone lights up green.":"Dhjetë copat kthehen në zgavrën nën puthje, një nga një. Secila kërcet dhe ndriçon. E dhjeta zë vend me një tingëllimë, dhe gjithë guri ndriçon i gjelbër.","Prokletije Peridot":"Prokletijski Peridot","The peridot is whole again.":"Peridoti është sërish i plotë.","Test":"Provë","A test-mode stamp: it shows the game works, it does not count at the desk.":"Vulë nga mënyra provë: tregon se loja punon, por në sportel nuk vlen.","Your field stamp. Show it, with 10/10 on this phone, at the Tourist Info Centre in Gusinje.":"Vula jote e terrenit. Tregoje, me 10/10 në këtë telefon, në Qendrën e Informacionit Turistik në Guci.","The Kissing Cats again":"Sërish Macet që Puthen","Prokletije Peridot · Part Two":"Prokletijski Peridot · Pjesa e dytë","The peridot is whole. But the old story said sunrise, and it never said which one.":"Peridoti është i plotë. Por rrëfimi i vjetër fliste për agimin, dhe kurrë nuk tha për cilin.","Coming soon":"Së shpejti","Start over?":"Të fillosh nga e para?","Your points, the places you have found and your field stamp on this phone are cleared. This cannot be undone.":"Pikët, vendet e gjetura dhe vula jote e terrenit në këtë telefon do të fshihen. Kjo nuk mund të kthehet.","Cancel":"Anulo","Yes, start over":"Po, nga e para","Save code copied":"Kodi i ruajtjes u kopjua","Selected: copy it now":"U përzgjodh: kopjoje tani","That is not a save code. Check it and try again.":"Ky nuk është kod ruajtjeje. Kontrolloje dhe provo sërish.","Test: 40 m south of {place}. Walk north with the joystick.":"Provë: 40 m në jug të vendit {place}. Ec drejt veriut me levë.","Test position at {place}: wait {s} s":"Pozicion prove: {place}. Prit {s} s","Your count?":"Numri yt?","Type a number first.":"Shkruaj fillimisht një numër.","You counted {n}.":"Numërove: {n}.","Yes, {n}.":"Po, {n}.","It is {n}.":"Janë {n}.","Not quite.":"Jo krejt.","Count again: there are more.":"Numëro sërish: janë më shumë.","Count again: there are fewer.":"Numëro sërish: janë më pak.","You saw: {v}.":"Sheh: {v}.","The answer: {a}.":"Përgjigjja: {a}.","Look again and try another answer.":"Shiko sërish dhe provo një përgjigje tjetër.","Right.":"Saktë.","It’s {a}.":"Përgjigjja e saktë: {a}.","Not this time.":"Jo këtë herë.","It doesn’t fit.":"Nuk përshtatet.","Think back to the places, and try again.":"Kujto vendet dhe provo sërish.","The camera can’t start inside the Claude app, so you see a painted valley. To see the peridot in your room, open the game in Chrome or Safari:":"Kamera nuk mund të niset brenda aplikacionit Claude, ndaj sheh një luginë të pikturuar. Për ta parë peridotin në dhomën tënde, hape lojën në Chrome ose Safari:","The camera needs a secure (https) address. Open the game from https://…":"Kamera ka nevojë për një adresë të sigurt (https). Hape lojën nga https://…","The camera is blocked for this site. Allow it in the browser (the lock icon by the address, then Camera), close this view and open it again.":"Kamera është e bllokuar për këtë faqe. Lejoje në shfletues (ikona e drynit pranë adresës, pastaj Kamera), mbyll këtë pamje dhe hape sërish.","No camera found, so you see a painted valley instead.":"Nuk u gjet kamerë, ndaj në vend të saj sheh një luginë të pikturuar.","Camera {i} / {n}":"Kamera {i} / {n}","This camera is zoomed in ({deg}°): trying the next one…":"Kjo kamerë është e zmadhuar ({deg}°): po provoj tjetrën…","Copied":"U kopjua","Select & copy":"Përzgjidh dhe kopjo","Copy link":"Kopjo lidhjen","look":"kërkimi","Point and tap Here":"Drejtoje dhe prek Këtu","Hold steady":"Mbaje të qetë","Look around":"Shiko përreth","Here":"Këtu","A peridot shard has come down out there too: find it and catch it.":"Edhe atje ka rënë një copë peridoti: gjeje dhe kape.","Turn on the compass…":"Po ndez busullën…","Peridot shard: tap to take it":"Copë peridoti: preke për ta marrë","N":"V","E":"L","S":"J","W":"P","NE":"VL","SE":"JL","SW":"JP","NW":"VP","There it is, in {what}! It drops down in front of you…":"Ja ku është! Po bie para teje…","There it is, in {what}! Tap the shard.":"Ja ku është! Preke copën.","Facing {dir}":"Drejtimi: {dir}","No compass: north is a guess":"Pa busull: veriu është me hamendje","No compass here: drag to turn":"Këtu nuk ka busull: tërhiq për ta rrotulluar","{deg}° off.":"Shmangie {deg}°.","The way: {dir} ({deg}°).":"Drejtimi: {dir} ({deg}°).","Not quite: that is almost the opposite way. Turn around and try again.":"Jo krejt: ky është pothuajse drejtimi i kundërt. Kthehu dhe provo sërish.","Not quite: about {d}° off. Turn to the right and try again.":"Jo krejt: rreth {d}° shmangie. Kthehu djathtas dhe provo sërish.","Not quite: about {d}° off. Turn to the left and try again.":"Jo krejt: rreth {d}° shmangie. Kthehu majtas dhe provo sërish.","Not quite: about {d}° off. Turn a little to the right and try again.":"Jo krejt: rreth {d}° shmangie. Kthehu pak djathtas dhe provo sërish.","Not quite: about {d}° off. Turn a little to the left and try again.":"Jo krejt: rreth {d}° shmangie. Kthehu pak majtas dhe provo sërish.","Hint: {hint}":"Ndihmë: {hint}","Done":"Kryer","You are here":"Je këtu","Opens with every piece":"Hapet kur ke të gjitha copat","{dist} away":"{dist} larg","Gusinje town: {a} of {b} sites done":"Qyteti i Gucisë: {a} nga {b} vende të kryera","T1–T8 · Gusinje town":"T1–T8 · qyteti i Gucisë","{a}/{b} done":"{a}/{b} të kryera","{km} km trail on foot":"{km} km shteg në këmbë","{place}: a peridot shard is here":"{place}: këtu është një copë peridoti","MONTENEGRO":"MALI I ZI","ALBANIA":"SHQIPËRIA","Prokletije National Park":"Parku Kombëtar Prokletije","Start":"Fillimi","The game follows you from site to site.":"Loja të ndjek nga vendi në vend.","Stand in the open for a moment.":"Qëndro për një çast në hapësirë të hapur.","Location blocked":"Vendndodhja e bllokuar","Use the plaque codes":"Përdor kodet e tabelave","Every site has a plaque with a 4-character code.":"Çdo vend ka një tabelë me kod me 4 shenja.","No GPS":"Pa GPS","You’re here":"Arritëm","Tap to start":"Prek për të filluar","Arriving":"Po arrijmë","Stay here {n} s":"Qëndro këtu edhe {n} s","Arrived":"Arritëm","Your target":"Synimi yt","Nearest site":"Vendi më i afërt","You’re close · waiting for better GPS (±{n} m)":"Je afër · po pres GPS më të mirë (±{n} m)","You’re in the zone":"Je brenda zonës","Well done":"Të lumtë","All mapped sites found":"Të gjitha vendet në hartë u gjetën","Open the list for the rest.":"Për të tjerat hap listën.","Sites":"Vendet","Pick a site on the map":"Zgjidh një vend në hartë","Or open the list.":"Ose hap listën.","test":"provë","{n}/{m} places":"{n}/{m} vende","Test mode":"Mënyra provë","Play anywhere":"Luaj kudo","Try the field game at home: your real progress is kept apart and the start page doesn’t see it.":"Provoje lojën e terrenit në shtëpi: përparimi yt i vërtetë ruhet veçmas dhe faqja e fillimit nuk e sheh.","Pick a site: you start 40 m from it. Walk with the joystick on the map, or with the Walk button in the camera view (it walks the way your phone faces). Turn by turning your phone; on a computer, drag. Arriving takes 5 seconds here.":"Zgjidh një vend: nis 40 m larg tij. Ec me levë në hartë, ose me butonin Ec në pamjen e kamerës (ecën nga shikon telefoni). Rrotullohesh duke rrotulluar telefonin; në kompjuter, tërhiq. Arritja këtu zgjat 5 sekonda.","Tourist Info Centre":"Qendra e Informacionit Turistik","Reset test progress":"Fshi përparimin e provës","Leave test mode":"Dil nga mënyra provë","Backup":"Kopje rezervë","Your save code":"Kodi yt i ruajtjes","iPhone can clear a website’s saved progress after 7 days without a visit. Take a photo of this QR code, or copy the code into a note or a message to yourself: it brings your progress back, on this phone or another one.":"iPhone mund ta fshijë përparimin e ruajtur të një faqeje pas 7 ditësh pa vizitë. Fotografoje këtë kod QR, ose kopjoje kodin në një shënim a mesazh për veten: me të e rikthen përparimin, në këtë telefon ose në një tjetër.","Nothing to save yet. Played on another phone? Paste its save code below.":"Ende s’ka asgjë për të ruajtur. Ke luajtur në një telefon tjetër? Ngjit kodin e tij më poshtë.","QR code with your save code":"Kod QR me kodin tënd të ruajtjes","A save code to restore":"Kod ruajtjeje për ta rikthyer","Paste a save code to restore":"Ngjit një kod ruajtjeje","Copy the code":"Kopjo kodin","Restore":"Rikthe","Restore this progress?":"Ta rikthej këtë përparim?","Places done: {n} of {m} · {pts} points":"Vende të kryera: {n} nga {m} · {pts} pikë","field stamp {s}":"vula e terrenit {s}","It replaces the progress on this phone.":"Zëvendëson përparimin në këtë telefon.","Restore it":"Riktheje","That link holds no save code this game can read.":"Kjo lidhje nuk ka kod ruajtjeje që kjo lojë mund ta lexojë.","Whoosh, just past it! Drag or flick straight at the shard.":"Fiu, fare pranë! Tërhiqe ose hidhe drejt copës.","Close! Try again.":"Afër! Provo sërish.","Missed. Let go of the orb right on the shard.":"Humbe. Lëshoje sferën pikërisht mbi copë.","It broke free! Once more.":"U çlirua! Edhe një herë.","Almost had it! Again!":"Gati e kishe! Sërish!","It wriggled out. Throw again!":"Iku. Hidhe sërish!","Find the shard":"Gjej copën","Here it comes!":"Ja ku po vjen!","Catch the shard":"Kape copën","It landed right in front of you! Drag the crystal orb up to it and let go, or flick it. Throw while the gold ring is small for a bonus.":"Ra pikërisht para teje! Tërhiq sferën e kristaltë deri te ajo dhe lëshoje, ose hidhe me një lëvizje të shpejtë. Hidhe kur rrethi i artë është i vogël, për bonus.","Catch it from here":"Kape që këtu","I lost your position. Tap ‘Catch it from here’ and it will fly to you.":"Ta humba vendndodhjen. Prek ‘Kape që këtu’ dhe do të fluturojë te ti.","The shard is waiting {dist} away. Walk towards the green light!":"Copa të pret {dist} larg. Ec drejt dritës së gjelbër!","Drag the orb up to the shard and let go, or flick it!":"Tërhiqe sferën deri te copa dhe lëshoje, ose hidhe!","First find the shard: turn the way the green arrow points.":"Fillimisht gjej copën: kthehu nga tregon shigjeta e gjelbër.","First find the shard: turn the way the green arrow points (arrow keys).":"Fillimisht gjej copën: kthehu nga tregon shigjeta e gjelbër (tastet me shigjeta).","Excellent":"Shkëlqyeshëm","Great":"Bukur","Nice":"Mirë","Collected!":"U mblodh!","Broke free!":"Iku!","Piece of the peridot collected":"Copa e peridotit u mblodh","Map:":"Harta:","0/10 places":"0/10 vende","progress kept apart":"përparimi ruhet veçmas","Start near…":"Nisu pranë…","Leave":"Dil","Walk":"Ec","Places":"Vendet","Look":"Kërko","Moving fast?":"Po lëviz shpejt?","The camera view pauses above about 15 km/h, so nobody plays while driving. If you are a passenger, go on.":"Pamja e kamerës ndalet mbi rreth 15 km/h, që askush të mos luajë duke ngarë makinën. Nëse je pasagjer, vazhdo.","I’m a passenger":"Jam pasagjer","Close the camera":"Mbyll kamerën","OK, play here":"Në rregull, luaj këtu","Hold to walk":"Mbaje shtypur për të ecur","Hint −25":"Ndihmë −25","Map of the sites":"Harta e vendeve","Prokletijski Peridot start screen":"Ekrani i fillimit i Prokletijski Peridot","Chapters complete":"Kapituj të kryer","Points and sites":"Pikët dhe vendet","Sound":"Zëri","Walk (test mode): drag the knob, or use W A S D":"Ecja (mënyra provë): tërhiq dorezën, ose përdor W A S D","Show my position":"Trego vendndodhjen time","Zoom in":"Zmadho","Zoom out":"Zvogëlo","Look around through your camera":"Shiko përreth përmes kamerës","Close the camera view":"Mbyll pamjen e kamerës","Switch to the next back camera":"Kalo te kamera tjetër e pasme","Hold to walk the way your phone faces (test mode; or hold W)":"Mbaje shtypur për të ecur nga shikon telefoni (mënyra provë; ose mbaj W)","Crystal orb: drag it up to the shard and let go, or flick it; or press Enter to throw":"Sfera e kristaltë: tërhiqe deri te copa dhe lëshoje, ose hidhe; ose shtyp Enter për ta hedhur","AR trail missions · Prokletijski Peridot":"Misionet AR në shtigje · Prokletijski Peridot"}}};
 /* generated by tools/fieldmap/routes.py: the field map's base pictures, quest trails and labels (world units: Web Mercator px at z17) */
 const FIELDMAP = {"pics":[{"id":"overview","src":"fieldmap/overview.jpg","kind":"overview","box":[18615439.63,12381631.25,18632494.63,12396811.25]},{"id":"gusinje","src":"fieldmap/gusinje.webp","kind":"detail","box":[18624107.86,12384061.65,18627136.61,12387389.15]},{"id":"vusanje","src":"fieldmap/vusanje.webp","kind":"detail","box":[18625179.74,12389350.24,18627509.74,12392258.99]},{"id":"grebaje","src":"fieldmap/grebaje.webp","kind":"detail","box":[18620239.78,12390109.07,18622057.28,12391879.07]}],"trails":[{"id":"town","kind":"foot","pts":[[18625804.2,12384681.8],[18625797.9,12384680.2],[18625795.5,12384699.7],[18625793.7,12384769.9],[18625796.0,12384796.3],[18625800.2,12384812.3],[18625860.0,12384926.7],[18625886.9,12384913.6],[18625880.7,12384910.8],[18625886.9,12384913.6],[18625860.0,12384926.7],[18625792.8,12384967.0],[18625810.1,12384954.8],[18625714.3,12385013.9],[18625675.8,12384955.6],[18625669.5,12384964.3],[18625655.1,12384960.2],[18625669.5,12384964.3],[18625675.8,12384955.6],[18625642.1,12384912.7],[18625633.9,12384912.2],[18625590.6,12384931.7],[18625494.3,12384999.0],[18625404.3,12385076.4],[18625417.0,12385088.2],[18625429.7,12385107.0],[18625450.0,12385099.4],[18625429.7,12385107.0],[18625417.0,12385088.2],[18625404.3,12385076.4],[18625379.5,12385096.7],[18625340.4,12385135.3],[18625260.7,12385199.0],[18625175.4,12385255.5],[18624936.9,12385397.8],[18624907.0,12385428.0],[18624849.9,12385514.7],[18624837.0,12385529.2],[18624760.9,12385502.3],[18624711.9,12385480.9],[18624689.1,12385476.2],[18624652.4,12385473.6],[18624656.5,12385467.2],[18624673.4,12385453.3],[18624676.4,12385428.4]],"km":1.9},{"id":"T1-A1","kind":"road","pts":[[18625810.1,12384954.8],[18625788.6,12384973.4],[18625884.8,12385221.0],[18625916.5,12385330.3],[18625875.8,12385376.0],[18625987.5,12385479.3],[18626002.4,12385540.3],[18625989.9,12385603.3],[18625947.9,12385715.6],[18625920.3,12385745.9],[18625855.1,12385789.5],[18625831.9,12385835.7],[18625834.2,12385864.6],[18625858.4,12385938.5],[18625856.7,12385982.5],[18625846.0,12386015.8],[18625829.8,12386033.6],[18625771.3,12386054.2],[18625754.8,12386068.4],[18625659.6,12386252.6],[18625604.0,12386332.7],[18625454.3,12386439.1],[18625343.0,12386498.8],[18625317.6,12386519.0],[18625213.6,12386659.3],[18625166.9,12386710.0],[18625198.4,12386794.9]],"km":2.0,"lab":[18625858.8,12385948.3],"ang":87.6},{"id":"A1-V1","kind":"road","pts":[[18625198.4,12386794.9],[18625166.9,12386710.0],[18625213.6,12386659.3],[18625317.6,12386519.0],[18625343.0,12386498.8],[18625454.3,12386439.1],[18625604.0,12386332.7],[18625605.4,12386409.1],[18625563.2,12386503.4],[18625495.2,12386751.4],[18625597.1,12387177.2],[18625635.6,12387261.5],[18625638.8,12387318.7],[18625691.1,12387392.4],[18625736.5,12387515.6],[18625739.8,12387531.9],[18625728.1,12387605.7],[18625825.6,12387845.6],[18625848.4,12388011.0],[18625894.2,12388078.3],[18625919.2,12388133.0],[18625896.9,12388333.9],[18625900.3,12388356.1],[18625915.2,12388381.8],[18625971.5,12388423.6],[18625985.8,12388443.3],[18626006.1,12388484.0],[18626015.5,12388548.3],[18626064.6,12388653.0],[18626077.5,12388754.8],[18626117.5,12388799.4],[18626165.0,12388829.7],[18626199.7,12388871.4],[18626212.4,12388914.3],[18626246.9,12388985.9],[18626260.0,12389041.9],[18626293.1,12389089.3],[18626356.7,12389130.3],[18626395.6,12389173.4],[18626428.1,12389186.3],[18626513.0,12389198.0],[18626621.7,12389176.5],[18626654.1,12389178.1],[18626732.9,12389259.9],[18626776.3,12389254.4],[18626826.4,12389288.9],[18626877.4,12389304.4],[18626889.2,12389315.6],[18626902.8,12389453.2],[18626932.2,12389535.1],[18626935.6,12389666.9],[18626901.9,12389739.2],[18626718.6,12390047.5],[18626717.2,12390067.4],[18626745.6,12390109.2],[18626746.2,12390136.7],[18626732.9,12390150.8],[18626670.1,12390142.7],[18626630.9,12390161.9],[18626587.2,12390121.7]],"km":4.8,"lab":[18625903.7,12388271.3],"ang":-81.6},{"id":"V1-V2","kind":"road","pts":[[18626587.2,12390121.7],[18626630.9,12390161.9],[18626619.6,12390185.3],[18626633.8,12390216.2],[18626612.9,12390358.5],[18626584.4,12390409.4],[18626559.6,12390476.4],[18626494.7,12390564.5],[18626409.1,12390742.4],[18626380.7,12390828.6],[18626358.3,12390866.3],[18626332.2,12390891.0],[18626275.6,12390917.7],[18626265.6,12390930.6],[18626254.2,12391014.6],[18626228.8,12391062.1],[18626221.7,12391092.0],[18626227.4,12391230.6],[18626175.9,12391294.6],[18626154.6,12391348.4],[18626122.1,12391398.1],[18626115.6,12391447.6],[18626029.3,12391549.4],[18625988.3,12391572.6],[18625953.4,12391512.7]],"km":1.6,"lab":[18626324.9,12390895.4],"ang":-20.3},{"id":"T1-G1","kind":"road","pts":[[18625810.1,12384954.8],[18625788.6,12384973.4],[18625884.8,12385221.0],[18625916.5,12385330.3],[18625875.8,12385376.0],[18625881.2,12385384.4],[18625844.5,12385398.3],[18625767.1,12385399.0],[18625637.2,12385362.1],[18625480.4,12385244.9],[18625345.6,12385130.8],[18625268.1,12385193.8],[18625175.4,12385255.5],[18624934.1,12385400.0],[18624907.0,12385428.0],[18624837.0,12385529.2],[18624711.9,12385480.9],[18624627.2,12385468.3],[18624464.3,12385405.9],[18624348.9,12385398.2],[18624306.0,12385407.9],[18624190.8,12385457.4],[18624103.1,12385471.3],[18623867.0,12385589.1],[18623771.4,12385621.4],[18623694.8,12385629.4],[18623615.9,12385657.8],[18623450.0,12385641.8],[18623365.0,12385660.5],[18623232.3,12385725.6],[18623113.9,12385842.3],[18623070.7,12385865.3],[18623024.5,12385944.7],[18622966.9,12385996.6],[18622927.5,12386068.4],[18622846.7,12386146.6],[18622768.7,12386249.8],[18622749.5,12386299.1],[18622738.8,12386411.0],[18622711.0,12386565.8],[18622685.4,12386616.2],[18622632.1,12386759.8],[18622606.0,12386854.1],[18622582.2,12386996.4],[18622555.7,12387081.8],[18622446.9,12387241.8],[18622446.7,12387292.2],[18622463.4,12387424.8],[18622448.6,12387529.9],[18622460.0,12387684.3],[18622422.3,12387800.8],[18622432.1,12387871.7],[18622383.7,12387989.5],[18622387.9,12388054.1],[18622377.3,12388155.9],[18622292.9,12388276.6],[18622204.0,12388443.9],[18622184.6,12388498.7],[18622173.2,12388792.3],[18622152.7,12388930.0],[18622072.8,12389052.8],[18622040.9,12389088.0],[18621942.2,12389161.7],[18621857.9,12389258.6],[18621686.9,12389373.1],[18621641.7,12389432.7],[18621633.0,12389470.7],[18621591.9,12389531.7],[18621596.2,12389554.1],[18621626.9,12389555.0],[18621634.3,12389562.7],[18621637.0,12389609.6],[18621649.6,12389646.2],[18621650.7,12389718.5],[18621616.8,12389842.9],[18621562.0,12389924.2],[18621534.5,12389946.1],[18621537.3,12390001.4],[18621525.5,12390056.7],[18621537.7,12390140.4],[18621504.0,12390248.6],[18621491.9,12390265.9],[18621445.3,12390296.3],[18621435.0,12390315.8],[18621428.7,12390393.8],[18621439.4,12390485.3],[18621431.8,12390541.2],[18621398.2,12390588.6],[18621369.5,12390648.7],[18621340.9,12390685.2],[18621320.6,12390772.8],[18621282.5,12390806.7],[18621246.4,12390859.0],[18621216.3,12390887.4],[18621189.9,12390944.3],[18621143.9,12391006.9]],"km":8.4,"lab":[18622618.0,12386821.6],"ang":-80.1}],"peaks":[{"t":"Lagojvet","e":2540,"w":[18619173.6,12394765.1]},{"t":"Zla Kolata / Kollate e Keqe","e":2535,"w":[18631660.5,12394921.6]},{"t":"Dobra Kolata / Kollate e Mires","e":2525,"w":[18632016.5,12394419.6]},{"t":"Maja e Rosit / Rosni vrh","e":2522,"w":[18627416.9,12395611.4]},{"t":"Maja Shkurt","e":2499,"w":[18619033.8,12395522.3]},{"t":"Veliki vrh","e":2490,"w":[18621499.8,12393470.6]},{"t":"Sjeverni vrh","e":2460,"w":[18621743.5,12393188.7]},{"t":"L3","e":2455,"w":[18619585.4,12394886.4]},{"t":"Xhevahirit","e":2445,"w":[18620054.5,12394310.0]},{"t":"Maja Podi e Rosit","e":2444,"w":[18628101.8,12395067.8]},{"t":"Južni Vrh","e":2441,"w":[18621033.1,12393418.2]},{"t":"Vukoces","e":2431,"w":[18620002.9,12394929.9]},{"t":"Preht","e":2430,"w":[18619510.8,12394714.3]},{"t":"Maja Lugut Ujit","e":2428,"w":[18631755.5,12396129.6]},{"t":"Maja e Nagvacit","e":2412,"w":[18618160.5,12394222.5]},{"t":"Forca (Fortit)","e":2403,"w":[18620833.3,12394131.0]},{"t":"L6","e":2400,"w":[18619121.9,12395255.0]},{"t":"Maja Koprišit","e":2363,"w":[18618733.2,12395898.0]},{"t":"Maja Gosdines","e":2269,"w":[18618404.1,12393439.9]},{"t":"Maja Brinja e Lisit","e":2263,"w":[18617538.2,12394275.3]},{"t":"Karanfil Ljuljaševića","e":2224,"w":[18622914.9,12392424.0]},{"t":"Vojušit(Edhave)","e":2210,"w":[18619565.2,12392858.7]},{"t":"Veliki Trojan","e":2190,"w":[18618035.7,12386525.2]},{"t":"Očnjak","e":2185,"w":[18622089.1,12392026.8]},{"t":"Komljen","e":2151,"w":[18621780.0,12393785.6]},{"t":"Mali Karanfili","e":2119,"w":[18623419.2,12391444.7]},{"t":"Bora","e":2106,"w":[18631318.6,12389860.7]},{"t":"Talijanka/Maja e Vajushës","e":2057,"w":[18619000.4,12390987.7]},{"t":"Pukli krš","e":2052,"w":[18630043.6,12389310.8]},{"t":"Ćemena","e":2036,"w":[18629477.5,12388955.6]},{"t":"Brian i bunsit","e":2033,"w":[18625400.0,12394231.6]},{"t":"Popadija","e":2030,"w":[18618963.2,12390458.2]},{"t":"Podgojs","e":2021,"w":[18624075.6,12390491.9]},{"t":"Kulj Brešnjik","e":1995,"w":[18627621.1,12392295.6]},{"t":"Gvozdeni vrh","e":1988,"w":[18621348.1,12392360.5]},{"t":"Čokišta","e":1956,"w":[18622988.0,12395549.6]},{"t":"Karaula","e":1915,"w":[18620515.4,12388659.1]},{"t":"Volušnica","e":1879,"w":[18620444.8,12390813.9]},{"t":"Kukića bor","e":1812,"w":[18630931.4,12388819.5]},{"t":"Belić","e":1804,"w":[18628404.3,12392570.7]},{"t":"Vezirova brada","e":1781,"w":[18623780.2,12387963.9]},{"t":"Bor","e":1723,"w":[18628275.2,12388412.6]},{"t":"Ploče","e":1678,"w":[18622929.4,12390117.6]},{"t":"Maja Taljanit","e":1585,"w":[18616486.0,12384130.1]},{"t":"Čunova brada","e":1543,"w":[18624294.2,12388794.6]},{"t":"Somina","e":1422,"w":[18625565.3,12382898.5]},{"t":"Pajišta","e":1386,"w":[18625290.9,12390285.9]},{"t":"Fite","e":1342,"w":[18624266.0,12393953.6]},{"t":"Mala Jerina","e":1275,"w":[18627699.3,12383358.5]},{"t":"Mala glava","e":1233,"w":[18622974.2,12385245.5]},{"t":"Glavica","e":1068,"w":[18621407.1,12384028.6]}],"places":[{"t":"Gusinje","k":"town","w":[18625809.2,12384951.4]},{"t":"Perperan","k":"hamlet","w":[18620450.1,12395989.9]},{"t":"Katun Roman","k":"locality","w":[18627282.1,12392616.6]},{"t":"Stanovi","k":"hamlet","w":[18628329.1,12391923.6]},{"t":"Katun Zastan","k":"hamlet","w":[18624307.7,12394673.9]},{"t":"Lepushë","k":"village","w":[18616210.0,12389460.8]},{"t":"Desni Grnčar","k":"village","w":[18621270.8,12383374.4]},{"t":"Škala","k":"hamlet","w":[18621459.3,12389812.6]},{"t":"Katun Popadija","k":"hamlet","w":[18619596.3,12388491.6]},{"t":"Godilja","k":"hamlet","w":[18618406.7,12383538.4]},{"t":"Katun Balijica","k":"locality","w":[18619381.7,12385700.4]},{"t":"Budaç","k":"hamlet","w":[18616397.6,12385970.9]},{"t":"Žuta prla","k":"locality","w":[18617867.8,12388055.1]},{"t":"Livada velika","k":"locality","w":[18618753.9,12387867.2]},{"t":"Krlje","k":"locality","w":[18620761.1,12383182.0]},{"t":"Popadija","k":"locality","w":[18618985.2,12390014.9]},{"t":"Pila e Budaćit","k":"locality","w":[18616496.0,12387046.5]},{"t":"Koljenoviće","k":"village","w":[18626587.9,12386059.9]},{"t":"Ćosovići","k":"hamlet","w":[18625975.9,12387653.8]},{"t":"Vusanje","k":"village","w":[18626994.6,12389650.1]},{"t":"Kruševo","k":"village","w":[18628843.9,12385317.1]},{"t":"Dolja","k":"village","w":[18623541.2,12385678.6]},{"t":"Dosuđe","k":"village","w":[18626685.2,12383672.6]},{"t":"Derviševići","k":"hamlet","w":[18624073.9,12383189.8]},{"t":"Vrela","k":"hamlet","w":[18626005.6,12383596.9]},{"t":"Gerani","k":"hamlet","w":[18625395.1,12388748.2]},{"t":"Lazi","k":"hamlet","w":[18621918.7,12384082.1]},{"t":"Bucelj","k":"hamlet","w":[18622693.2,12383876.6]},{"t":"Dragija","k":"hamlet","w":[18625198.9,12386234.7]},{"t":"Katun Vezirova brada","k":"locality","w":[18623967.6,12389092.2]},{"t":"Gropa Vezirova","k":"locality","w":[18622974.7,12389264.1]},{"t":"Budžaci","k":"hamlet","w":[18622472.2,12386463.6]},{"t":"Ahmedmujovići","k":"hamlet","w":[18622265.2,12386130.6]},{"t":"Ciri Kače","k":"hamlet","w":[18628038.6,12384084.6]},{"t":"Bojovići","k":"hamlet","w":[18623047.3,12382978.6]},{"t":"Luke","k":"hamlet","w":[18622432.1,12387340.6]},{"t":"Dolja","k":"hamlet","w":[18622234.9,12388273.0]},{"t":"Zarunica","k":"hamlet","w":[18627502.2,12390292.8]},{"t":"Ali pašini izvori","k":"hamlet","w":[18625154.6,12386697.7]},{"t":"Katuni","k":"hamlet","w":[18628586.1,12388261.6]},{"t":"Huljeva livada","k":"hamlet","w":[18627312.1,12387327.7]},{"t":"Laništa","k":"hamlet","w":[18622139.5,12386998.5]},{"t":"Jagnjičar","k":"locality","w":[18622888.5,12391074.3]},{"t":"Ploče","k":"locality","w":[18623494.1,12390160.0]},{"t":"Višnjevo","k":"village","w":[18630804.8,12384786.9]},{"t":"Martinoviće","k":"village","w":[18630188.4,12383159.6]},{"t":"Koljenovića katun","k":"hamlet","w":[18630417.5,12390173.7]},{"t":"Kukića katun","k":"hamlet","w":[18631626.4,12388148.6]},{"t":"Gropa Memina","k":"hamlet","w":[18632078.5,12387185.7]}]};
 
@@ -638,7 +639,7 @@ const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const smooth = (k) => { k = clamp(k, 0, 1); return k * k * (3 - 2 * k); };
 const wrapDeg = (d) => ((d % 360) + 540) % 360 - 180;
 const lerp = (a, b, k) => a + (b - a) * k;
-const fmt = (n) => Math.round(n).toLocaleString('en-US');
+const fmt = (n) => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, { en: ',', me: '.', sq: '\u00a0' }[LANG]);   // 7,000 · 7.000 · 7 000 (by hand: not every phone has the number formats)
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const coarse = matchMedia('(pointer: coarse)').matches;
@@ -659,6 +660,35 @@ function persist() {   // only the field part is ours: the virtual missions on t
   out.field = save.field;
   store.set(SAVE_KEY, JSON.stringify(out));
 }
+/* ---------------------------------------------------------------- languages (fix plan step 7, 16 Nov 2026)
+   English, Montenegrin or Albanian: the language picked on the start screen (peridot.lang), else the phone's language, as the
+   start screen does; ?lang=en|me|sq picks one and keeps it. The words come from i18n/game-text.csv through the build (STRINGS):
+   story lines by their place in the story (T1.scene.0, ch2.intro.1, A.riddle.0.q), the rest by its English wording, with {name}
+   for the parts filled in. A missing translation shows the English. */
+const LANGS = ['en', 'me', 'sq'];
+const LANG = (() => {
+  const q = new URLSearchParams(location.search).get('lang');
+  if (LANGS.includes(q)) { store.set('peridot.lang', q); return q; }
+  const saved = store.get('peridot.lang'); if (LANGS.includes(saved)) return saved;
+  const nav = (navigator.language || 'en').toLowerCase();
+  if (/^(sr|bs|hr|me|cnr)\b/.test(nav)) return 'me';
+  if (/^sq\b/.test(nav)) return 'sq';
+  return 'en';
+})();
+const STR = (typeof STRINGS !== 'undefined' && STRINGS[LANG]) || { s: {}, u: {} };
+function T(text, vars) {   // a line of the game in the player's language; {name} parts filled from vars
+  let out = (LANG !== 'en' && STR.u[text]) || text;
+  if (vars) out = out.replace(/\{(\w+)\}/g, (m, k) => (k in vars ? String(vars[k]) : m));
+  return out;
+}
+const QUOTE = { en: ['“', '”'], me: ['„', '“'], sq: ['„', '“'] }[LANG];
+const qt = (line) => `${QUOTE[0]}${line}${QUOTE[1]}`;   // Meyra's words
+const dec = (x, d = 1) => { const t = x.toFixed(d); return LANG === 'en' ? t : t.replace('.', ','); };   // 1.9 km · 1,9 km
+document.documentElement.lang = { en: 'en', me: 'sr-Latn-ME', sq: 'sq' }[LANG];
+for (const el of document.querySelectorAll('[data-t]')) el.textContent = T(el.textContent.trim());   // the page's own words
+for (const el of document.querySelectorAll('[aria-label]')) el.setAttribute('aria-label', T(el.getAttribute('aria-label')));
+document.title = T(document.title);
+
 let app = 'map';
 /* ---------------------------------------------------------------- toast + sound */
 let toastTimer = 0;
@@ -711,16 +741,16 @@ function showCard(model) {
   h.push(`<h2 id="card-title" tabindex="-1">${esc(model.title)}</h2>`);
   if (model.sub) h.push(`<p class="sub">${esc(model.sub)}</p>`);
   if (model.banner) h.push(`<img class="banner${model.field === 'cats' ? ' cats' : ''}" src="${esc(model.banner)}" alt="${esc(model.bannerAlt || '')}">`);
-  if (model.big) h.push(`<div class="big"><b>${fmt(model.big[0])}</b><span>/ ${fmt(model.big[1])} points</span></div>`);
+  if (model.big) h.push(`<div class="big"><b>${fmt(model.big[0])}</b><span>/ ${fmt(model.big[1])} ${esc(T('points'))}</span></div>`);
   if (model.html) h.push(model.html);
-  const cub = model.cub ? `<div class="cub">${CUB_FACE}<div class="lines"><b class="who">${CUB}</b>${[].concat(model.cub).map((l) => `<p>“${esc(l)}”</p>`).join('')}</div></div>` : '';
+  const cub = model.cub ? `<div class="cub">${CUB_FACE}<div class="lines"><b class="who">${CUB}</b>${[].concat(model.cub).map((l) => `<p>${esc(qt(l))}</p>`).join('')}</div></div>` : '';
   if (cub && !model.cubLast) h.push(cub);
   if (model.data) h.push(`<dl class="facts">${model.data.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>`);
   if (model.body) h.push(`<div class="body">${model.body.map((p) => `<p>${esc(p)}</p>`).join('')}</div>`);
   if (cub && model.cubLast) h.push(cub);
   if (model.html2) h.push(model.html2);
   if (model.options) {
-    h.push(`<div class="options" role="group" aria-label="Answers">${model.options.map((o, i) =>
+    h.push(`<div class="options" role="group" aria-label="${esc(T('Answers'))}">${model.options.map((o, i) =>
       `<button class="opt ${o.state || ''}" data-id="${o.id}" ${model.answered ? 'disabled' : ''}><span class="mark" aria-hidden="true">${o.state === 'correct' ? '✓' : o.state === 'wrong' ? '✕' : 'ABCD'[i]}</span><span>${esc(o.label)}</span></button>`).join('')}</div>`);
   }
   if (model.note) h.push(`<p class="note ${model.note.tone}"><b>${esc(model.note.head)}</b>${esc(model.note.text)}</p>`);
@@ -1023,6 +1053,24 @@ const ASSEMBLY = { id: 'A', title: 'The finders’ desk', zone: null, code: 'SB6
   cats: ['There they are. The Kissing Cats. The stone sat right there, under the kiss, for centuries.', 'Look at that. Green as meltwater.',
     'My great-grandfather found a little green stone under the Cats when he was a boy. Same green.', 'The old ones say its light shows the way to a hidden cave at sunrise.',
     'Now all we need is a sunrise.'] };
+/* the story in the player's language (step 7): every text field below, by its path. The extraction tool (tools/i18n/extract.mjs)
+   walks the same fields with the same TEXT_KEYS, so the table and the game agree. */
+const TEXT_KEYS = ['title', 'heritage', 'scene', 'got', 'close', 'say', 'what', 'name', 'prompt', 'options', 'hint', 'after', 'text', 'q', 'intro', 'end', 'lines', 'short', 'how', 'desk', 'cats', 'clues'];
+function localize(node, path) {
+  for (const [k, v] of Object.entries(node)) {
+    const p = `${path}.${k}`;
+    if (typeof v === 'string') { if (TEXT_KEYS.includes(k)) node[k] = STR.s[p] || v; }
+    else if (Array.isArray(v)) v.forEach((x, i) => { if (typeof x === 'string') { if (TEXT_KEYS.includes(k)) v[i] = STR.s[`${p}.${i}`] || x; } else if (x && typeof x === 'object') localize(x, `${p}.${i}`); });
+    else if (v && typeof v === 'object') localize(v, p);
+  }
+}
+if (LANG !== 'en') {
+  for (const c of FIELD_CHAPTERS) localize(c, `ch${c.n}`);
+  for (const f of FIELD) localize(f, f.id);
+  localize(ASSEMBLY, 'A');
+  for (const [name, arr] of [['opening', OPENING], ['legend', LEGEND], ['allPieces', ALL_PIECES]]) arr.forEach((x, i) => { arr[i] = STR.s[`${name}.${i}`] || x; });
+}
+const stillOut = () => STR.s.stillOut || STILL_OUT;
 const FIELD_BY_ID = Object.fromEntries(FIELD.map((f) => [f.id, f]));
 /* answers in a fixed order for each place (fix plan step 2, 16 Nov 2026): numbers in rising order, everything else shuffled
    with a seed per question, so the right answer is no longer always A. The salt was picked so the 15 right answers spread
@@ -1099,10 +1147,10 @@ const chapterDone = (c) => c.ids.filter((id) => !FIELD_BY_ID[id].bonus).every(fi
 const partsHome = () => FIELD_CHAPTERS.filter((c) => fieldSave().ch[c.n]).length;
 function fieldRank() {
   const fs = fieldSave();
-  if (fs.assembled && FIELD.every((f) => fieldDone(f.id)) && fieldTotal() >= 0.9 * FIELD_MAX) return 'Guardian of the Peridot in the Field';
-  if (fs.assembled) return 'Field Keeper';
-  if (partsHome() >= 1) return 'Field Scout';
-  return FIELD.some((f) => frec(f.id)?.arrived) ? 'On the trail' : 'Not in the field yet';
+  if (fs.assembled && FIELD.every((f) => fieldDone(f.id)) && fieldTotal() >= 0.9 * FIELD_MAX) return T('Guardian of the Peridot in the Field');
+  if (fs.assembled) return T('Field Keeper');
+  if (partsHome() >= 1) return T('Field Scout');
+  return FIELD.some((f) => frec(f.id)?.arrived) ? T('On the trail') : T('Not in the field yet');
 }
 
 /* ---------------------------------------------------------------- geometry */
@@ -1116,8 +1164,8 @@ function bearingDeg(a, b) {
   const y = Math.sin(dl) * Math.cos(p2), x = Math.cos(p1) * Math.sin(p2) - Math.sin(p1) * Math.cos(p2) * Math.cos(dl);
   return (Math.atan2(y, x) / DEG + 360) % 360;
 }
-const fmtDist = (m) => m < 1000 ? `${Math.round(m / 5) * 5} m` : `${(m / 1000).toFixed(m < 10000 ? 1 : 0)} km`;
-const COMPASS8 = ['north', 'north-east', 'east', 'south-east', 'south', 'south-west', 'west', 'north-west'];
+const fmtDist = (m) => m < 1000 ? `${Math.round(m / 5) * 5} m` : `${dec(m / 1000, m < 10000 ? 1 : 0)} km`;
+const COMPASS8 = [T('north'), T('north-east'), T('east'), T('south-east'), T('south'), T('south-west'), T('west'), T('north-west')];
 const dirWord = (deg) => COMPASS8[Math.round(((deg % 360) + 360) % 360 / 45) % 8];
 
 /* ---------------------------------------------------------------- location (watchPosition, dwell)
@@ -1270,7 +1318,7 @@ function arrive(id, how) {
   if (id === 'A') {
     if (fieldSave().arrivedA) return;
     fieldSave().arrivedA = how; persist(); sound('piece');
-    arrivedPrompt = 'A'; toast(`${CUB}: “The Tourist Info Centre! Let’s make the peridot whole.”`, 3200);
+    arrivedPrompt = 'A'; toast(`${CUB}: ${qt(T('The Tourist Info Centre! Let’s make the peridot whole.'))}`, 3200);
     if (canInterrupt()) assemblyCard();
     return;
   }
@@ -1280,7 +1328,7 @@ function arrive(id, how) {
   fs.m[id] = { ...(fs.m[id] || {}), arrived: how, at: Date.now() };
   persist(); refreshFieldMarkers(); sound('piece');
   arrivedPrompt = id; prefetchThree();
-  toast(`+${FP.arrive} · You’re at ${f.title}`, 2800);
+  toast(`+${FP.arrive} · ${T('You’re at {place}', { place: f.title })}`, 2800);
   if (navigator.vibrate) try { navigator.vibrate([60, 40, 60]); } catch { /* */ }
   if (canInterrupt()) { if (firstInChapter) chapterIntroCard(chapterOf(f), id); else fieldMissionCard(id); }
   updateFieldChip();
@@ -1289,21 +1337,21 @@ function arrive(id, how) {
 /* ---------------------------------------------------------------- cards */
 function fieldAccent(c) { document.documentElement.style.setProperty('--accent', c ? c.color : '#c9a13b'); }
 function locLine() {
-  if (loc.sim) return `Test position · ${loc.fix ? `${loc.fix.lat.toFixed(5)}, ${loc.fix.lon.toFixed(5)}` : ''}`;
-  if (loc.state === 'on' && fixFresh()) return `Location on · ±${Math.round(loc.fix.acc)} m`;
-  if (loc.state === 'asking' || (loc.state === 'on' && !fixFresh())) return 'Finding your position…';
-  if ((loc.state === 'denied' || loc.state === 'unavailable') && framed) return 'Location does not work inside this preview. On the game’s website it does; here, use the 4-character plaque codes.';
-  if (loc.state === 'denied') return 'Location is blocked for this page. Every site also has a plaque with a 4-character code.';
-  if (loc.state === 'unavailable') return 'Location is not available here. Every site also has a plaque with a 4-character code.';
-  return 'Location is off.';
+  if (loc.sim) return `${T('Test position')} · ${loc.fix ? `${loc.fix.lat.toFixed(5)}, ${loc.fix.lon.toFixed(5)}` : ''}`;
+  if (loc.state === 'on' && fixFresh()) return T('Location on · ±{n} m', { n: Math.round(loc.fix.acc) });
+  if (loc.state === 'asking' || (loc.state === 'on' && !fixFresh())) return T('Finding your position…');
+  if ((loc.state === 'denied' || loc.state === 'unavailable') && framed) return T('Location does not work inside this preview. On the game’s website it does; here, use the 4-character plaque codes.');
+  if (loc.state === 'denied') return T('Location is blocked for this page. Every site also has a plaque with a 4-character code.');
+  if (loc.state === 'unavailable') return T('Location is not available here. Every site also has a plaque with a 4-character code.');
+  return T('Location is off.');
 }
 function statusOf(f) {
   const r = frec(f.id);
   if (r?.done) return { cls: 'done', text: fmt(fieldPts(r)) };
-  if (r?.arrived) return { cls: 'on', text: 'On site' };
+  if (r?.arrived) return { cls: 'on', text: T('On site') };
   if (fixFresh() && f.zone && !(f.hidden)) return { cls: '', text: fmtDist(distM([loc.fix.lat, loc.fix.lon], [f.zone.lat, f.zone.lon])) };
-  if (!f.zone || f.hidden) return { cls: '', text: 'Code' };
-  return { cls: '', text: 'New' };
+  if (!f.zone || f.hidden) return { cls: '', text: T('Code') };
+  return { cls: '', text: T('New') };
 }
 function fieldCard() {
   fieldAccent(null);
@@ -1313,35 +1361,35 @@ function fieldCard() {
     const n = list.filter((f) => fieldDone(f.id)).length;
     const items = list.map((f) => {
       const st = statusOf(f);
-      const sub = `${f.heritage}${f.bonus ? ' · bonus' : ''}${SURVEY ? ` · code ${f.code}${f.zone ? '' : ' · zone not set'}` : ''}`;
+      const sub = `${f.heritage}${f.bonus ? ` · ${T('bonus')}` : ''}${SURVEY ? ` · code ${f.code}${f.zone ? '' : ' · zone not set'}` : ''}`;
       return `<li><button data-id="f:open:${f.id}"><span class="fnum">${f.id}</span><span class="n">${esc(f.title)}<small>${esc(sub)}</small></span><span class="s ${st.cls}">${esc(st.text)}</span></button></li>`;
     }).join('');
     return `<p class="route-head" style="--route: ${c.color}"><i></i>${'I II III'.split(' ')[c.n - 1]} · ${esc(c.name)} · ${esc(c.how)}<span>${fs.ch[c.n] ? '✓' : `${n}/${list.length}`}</span></p><ul class="sheet-list field-list">${items}</ul>`;
   }).join('');
   const aSt = fs.assembled ? `<span class="s done">${fmt(fs.riddlePts ?? FP.assembly)}</span>` : `<span class="s">${piecesDone()}/${FIELD.length}</span>`;
-  const asm = `<p class="route-head" style="--route: var(--peridot)"><i></i>Finale · Tourist Info Centre, Gusinje<span></span></p><ul class="sheet-list field-list"><li><button data-id="f:open:A"><span class="fnum">★</span><span class="n">${esc(ASSEMBLY.title)}<small>Bring every piece, then home to the Kissing Cats${SURVEY ? ` · code ${ASSEMBLY.code}` : ''}</small></span>${aSt}</button></li></ul>`;
+  const asm = `<p class="route-head" style="--route: var(--peridot)"><i></i>${esc(T('Finale · Tourist Info Centre, Gusinje'))}<span></span></p><ul class="sheet-list field-list"><li><button data-id="f:open:A"><span class="fnum">★</span><span class="n">${esc(ASSEMBLY.title)}<small>${esc(T('Bring every piece, then home to the Kissing Cats'))}${SURVEY ? ` · code ${ASSEMBLY.code}` : ''}</small></span>${aSt}</button></li></ul>`;
   const on = fieldOn && loc.state !== 'off';
   showCard({
-    field: 'list', kicker: 'AR trail missions', title: fieldRank(), big: [fieldTotal(), FIELD_MAX],
+    field: 'list', kicker: T('AR trail missions'), title: fieldRank(), big: [fieldTotal(), FIELD_MAX],
     html: `<p class="locline ${loc.state}">${esc(locLine())}</p>${partsSVG()}`,
     list: chapters + asm,
     actions: [
-      ...(on ? [] : [{ id: 'f:loc-on', label: 'Turn on location', primary: true }]),
-      { id: 'f:code', label: 'Enter a plaque code', primary: on },
-      { id: 'f:intro', label: 'How it works' },   // stays in the list (bug 16)
-      { id: 'f:savecode', label: 'Save code' },   // backup (step 5)
-      ...(!TEST && (fs.assembled || FIELD.some((f) => frec(f.id)?.arrived)) ? [{ id: 'f:restart', label: 'Start over' }] : []),
-      ...(SURVEY ? [{ id: 'f:export', label: 'Export settings' }] : []),
-      ...(on && !TEST ? [{ id: 'f:loc-off', label: 'Turn off location' }] : []),
-      TEST ? { id: 'f:test', label: 'Test mode: start near a site' } : { id: 'f:test-on', label: 'Test mode (play anywhere)' },
-      { id: 'close', label: 'Close' },
+      ...(on ? [] : [{ id: 'f:loc-on', label: T('Turn on location'), primary: true }]),
+      { id: 'f:code', label: T('Enter a plaque code'), primary: on },
+      { id: 'f:intro', label: T('How it works') },   // stays in the list (bug 16)
+      { id: 'f:savecode', label: T('Save code') },   // backup (step 5)
+      ...(!TEST && (fs.assembled || FIELD.some((f) => frec(f.id)?.arrived)) ? [{ id: 'f:restart', label: T('Start over') }] : []),
+      ...(SURVEY ? [{ id: 'f:export', label: 'Export settings' }] : []),   // staff tools stay in English
+      ...(on && !TEST ? [{ id: 'f:loc-off', label: T('Turn off location') }] : []),
+      TEST ? { id: 'f:test', label: T('Test mode: start near a site') } : { id: 'f:test-on', label: T('Test mode (play anywhere)') },
+      { id: 'close', label: T('Close') },
     ],
   });
   updateFieldChip();
 }
 function partsSVG() {   // the three chapters: town, water, mountain
   const fs = fieldSave();
-  return `<div class="parts" aria-label="Chapters complete: ${partsHome()} of 3">${FIELD_CHAPTERS.map((c) => `<span class="part ${fs.ch[c.n] ? 'got' : ''}" style="--pc:${c.color}">${PART_ICON[c.n]}<b>${esc(c.short)}</b></span>`).join('')}</div>`;
+  return `<div class="parts" aria-label="${esc(T('Chapters complete: {n} of 3', { n: partsHome() }))}">${FIELD_CHAPTERS.map((c) => `<span class="part ${fs.ch[c.n] ? 'got' : ''}" style="--pc:${c.color}">${PART_ICON[c.n]}<b>${esc(c.short)}</b></span>`).join('')}</div>`;
 }
 const piecesDone = () => FIELD.filter((f) => fieldDone(f.id)).length;
 const PART_ICON = {   // towers, a drop, a peak
@@ -1354,18 +1402,18 @@ function fieldIntroCard() {
   fieldAccent(null);
   fieldSave().seenIntro = true; persist();
   showCard({
-    field: 'intro', kicker: 'AR trail missions · the legend', title: 'Pieces of Peridot',
+    field: 'intro', kicker: T('AR trail missions · the legend'), title: T('Pieces of Peridot'),
     html: '<img class="intro-badge" src="logo/peridot-badge.png" alt="" width="532" height="648">',
     body: LEGEND, cub: OPENING, cubLast: true,
-    rules: 'At each place: arrive (your phone notices after 20 seconds, or type the code from the plaque), find the piece through your camera and collect it, do one small task, and read the field note. Your location stays on this phone. At places of worship, everything is done from outside.',
-    actions: [{ id: 'f:go', label: 'Turn on location and start', primary: true }, { id: 'f:code', label: 'I have a plaque code' }, { id: 'f:test-on', label: 'Try it at home (test mode)' }],
+    rules: T('At each place: arrive (your phone notices after 20 seconds, or type the code from the plaque), find the piece through your camera and collect it, do one small task, and read the field note. Your location stays on this phone. At places of worship, everything is done from outside.'),
+    actions: [{ id: 'f:go', label: T('Turn on location and start'), primary: true }, { id: 'f:code', label: T('I have a plaque code') }, { id: 'f:test-on', label: T('Try it at home (test mode)') }],
   });
 }
 function chapterIntroCard(c, thenId) {   // played at the first place you reach in a chapter
   fieldAccent(c);
   showCard({
-    field: 'chintro', kicker: `Chapter ${ROMAN[c.n - 1]} · ${c.how}`, title: c.name, html: partsSVG(), cub: c.intro,
-    actions: [thenId ? { id: `f:open:${thenId}`, label: `On to ${FIELD_BY_ID[thenId].title}`, primary: true } : { id: 'f:list', label: 'All places', primary: true }],
+    field: 'chintro', kicker: `${T('Chapter {n}', { n: ROMAN[c.n - 1] })} · ${c.how}`, title: c.name, html: partsSVG(), cub: c.intro,
+    actions: [thenId ? { id: `f:open:${thenId}`, label: T('On to {place}', { place: FIELD_BY_ID[thenId].title }), primary: true } : { id: 'f:list', label: T('All places'), primary: true }],
   });
 }
 function fieldMissionCard(id) {
@@ -1374,39 +1422,39 @@ function fieldMissionCard(id) {
   fieldAccent(c);
   if (arrivedPrompt === id && r.arrived) arrivedPrompt = null;
   const z = zoneOf(f);
-  const where = !z || f.hidden ? (f.hidden ? 'Find it from the clues; its pin appears within 60 m' : 'Plaque code (zone not set yet)')
-    : fixFresh() ? `${fmtDist(distM([loc.fix.lat, loc.fix.lon], [z.lat, z.lon]))} away · zone ${z.r} m` : `Zone ${z.r} m · stay ${z.dwell} s`;
+  const where = !z || f.hidden ? (f.hidden ? T('Find it from the clues; its pin appears within 60 m') : T('Plaque code (zone not set yet)'))
+    : fixFresh() ? T('{dist} away · zone {r} m', { dist: fmtDist(distM([loc.fix.lat, loc.fix.lon], [z.lat, z.lon])), r: z.r }) : T('Zone {r} m · stay {s} s', { r: z.r, s: z.dwell });
   const stage = !r.arrived ? 'arrive' : !r.look ? 'look' : r.task == null ? 'task' : r.q == null ? 'fact' : 'done';
   if (stage === 'look' || (stage === 'arrive' && fixFresh())) prefetchThree();
   const next = {
-    arrive: f.offline ? 'Volušnica has no signal: type the code from the summit plaque. It is checked on your phone, offline.'
-      : z && !f.hidden ? `Go to the site: the mission starts after ${z.dwell} seconds inside the zone. Or type the code from the site’s Peridot plaque.`
-      : 'Find the site and type the code from its Peridot plaque.',
-    look: 'You’re here, and so is a piece of the peridot. Find it through your camera and catch it: drag the crystal orb up to it and let go, or flick it.',
-    task: 'Now one small task that needs your eyes on the place.',
-    fact: 'Last step: the field note and one question.',
-    done: `Done: ${fmt(fieldPts(r))} of ${SITE_MAX} points.`,
+    arrive: f.offline ? T('Volušnica has no signal: type the code from the summit plaque. It is checked on your phone, offline.')
+      : z && !f.hidden ? T('Go to the site: the mission starts after {s} seconds inside the zone. Or type the code from the site’s Peridot plaque.', { s: z.dwell })
+      : T('Find the site and type the code from its Peridot plaque.'),
+    look: T('You’re here, and so is a piece of the peridot. Find it through your camera and catch it: drag the crystal orb up to it and let go, or flick it.'),
+    task: T('Now one small task that needs your eyes on the place.'),
+    fact: T('Last step: the field note and one question.'),
+    done: T('Done: {pts} of {max} points.', { pts: fmt(fieldPts(r)), max: SITE_MAX }),
   }[stage];
-  const primary = { arrive: null, look: { id: `f:look:${id}`, label: 'Find the piece' }, task: { id: `f:task:${id}`, label: 'Do the task' }, fact: { id: `f:fact:${id}`, label: 'Field note' }, done: null }[stage];
+  const primary = { arrive: null, look: { id: `f:look:${id}`, label: T('Find the piece') }, task: { id: `f:task:${id}`, label: T('Do the task') }, fact: { id: `f:fact:${id}`, label: T('Field note') }, done: null }[stage];
   const body = [next];
-  if (f.worship && stage !== 'done') body.push('A working place of worship: everything is done from outside. Dress modestly if you go in, and stay outside at the Friday noon prayer.');
-  if (f.winter && stage === 'arrive' && [10, 11, 0, 1, 2, 3].includes(new Date().getMonth())) body.push('From November to April snow may close the road here. Ask at the Tourist Info Centre before you drive.');
+  if (f.worship && stage !== 'done') body.push(T('A working place of worship: everything is done from outside. Dress modestly if you go in, and stay outside at the Friday noon prayer.'));
+  if (f.winter && stage === 'arrive' && [10, 11, 0, 1, 2, 3].includes(new Date().getMonth())) body.push(T('From November to April snow may close the road here. Ask at the Tourist Info Centre before you drive.'));
   showCard({
-    field: 'mission', fid: id, kicker: `Chapter ${ROMAN[c.n - 1]} · ${c.name}${f.bonus ? ' · bonus' : ''}`, title: f.title, sub: f.heritage,
+    field: 'mission', fid: id, kicker: `${T('Chapter {n}', { n: ROMAN[c.n - 1] })} · ${c.name}${f.bonus ? ` · ${T('bonus')}` : ''}`, title: f.title, sub: f.heritage,
     cub: stage === 'arrive' || stage === 'look' ? f.scene : stage === 'done' ? f.close : null,
-    data: [['Status', r.done ? 'Done ✓' : r.arrived ? `On site ✓ (${r.arrived === 'gps' ? 'GPS' : 'code'})` : 'Not visited'], ['Points', `${fmt(fieldPts(r))} / ${SITE_MAX}`],
-      ['Where', where]],
+    data: [[T('Status'), r.done ? T('Done ✓') : r.arrived ? (r.arrived === 'gps' ? T('On site ✓ (GPS)') : T('On site ✓ (code)')) : T('Not visited')], [T('Points'), `${fmt(fieldPts(r))} / ${SITE_MAX}`],
+      [T('Where'), where]],
     html: f.hidden && !r.arrived ? `<ol class="clues">${f.clues.map((t) => `<li>${esc(t)}</li>`).join('')}</ol>` : '',
     body,
     html2: SURVEY ? surveyHTML(f) : '',
     actions: [
       ...(primary ? [{ ...primary, primary: true }] : []),
-      ...(stage === 'arrive' ? [{ id: `f:code:${id}`, label: 'Enter plaque code', primary: true }] : []),
-      ...(stage === 'done' ? [{ id: `f:fact:${id}`, label: 'Field note' }] : []),
-      ...(z && !f.hidden ? [{ id: `f:map:${id}`, label: 'Show on map' }] : []),
-      ...(TEST && z && (stage === 'arrive' || stage === 'look') ? [{ id: `f:near:${id}`, label: stage === 'arrive' ? 'Test: start 40 m away' : 'Test: step back 40 m' }] : []),
-      ...((SURVEY || DEBUG || TEST) && z && stage === 'arrive' ? [{ id: `f:sim:${id}`, label: 'Test: pretend I’m here' }] : []),
-      { id: 'f:list', label: 'All places' },
+      ...(stage === 'arrive' ? [{ id: `f:code:${id}`, label: T('Enter plaque code'), primary: true }] : []),
+      ...(stage === 'done' ? [{ id: `f:fact:${id}`, label: T('Field note') }] : []),
+      ...(z && !f.hidden ? [{ id: `f:map:${id}`, label: T('Show on map') }] : []),
+      ...(TEST && z && (stage === 'arrive' || stage === 'look') ? [{ id: `f:near:${id}`, label: stage === 'arrive' ? T('Test: start 40 m away') : T('Test: step back 40 m') }] : []),
+      ...((SURVEY || DEBUG || TEST) && z && stage === 'arrive' ? [{ id: `f:sim:${id}`, label: T('Test: pretend I’m here') }] : []),
+      { id: 'f:list', label: T('All places') },
     ],
     onShow: (el) => { if (SURVEY) wireSurvey(el, f); },
   });
@@ -1415,23 +1463,23 @@ function codeCard(id, msg) {
   const f = id ? (id === 'A' ? ASSEMBLY : FIELD_BY_ID[id]) : null;
   fieldAccent(f && f.ch ? chapterOf(f) : null);
   showCard({
-    field: 'code', fid: id, kicker: 'Plaque code', title: f ? f.title : 'Enter a code',
-    body: ['Each site has a small Peridot plaque with a 4-character code (or scan its QR code with the camera).'],
-    html: `<label class="codebox"><span class="sr">Code</span><input id="f-code" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="6" placeholder="e.g. 7K2P" inputmode="text"></label>`,
-    note: msg ? { tone: 'bad', head: 'Hmm.', text: msg } : null,
-    actions: [{ id: `f:code-go:${id || ''}`, label: 'Confirm', primary: true }, { id: id ? `f:open:${id}` : 'f:list', label: 'Back' }],
+    field: 'code', fid: id, kicker: T('Plaque code'), title: f ? f.title : T('Enter a code'),
+    body: [T('Each site has a small Peridot plaque with a 4-character code (or scan its QR code with the camera).')],
+    html: `<label class="codebox"><span class="sr">${esc(T('Code'))}</span><input id="f-code" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="6" placeholder="${esc(T('e.g. 7K2P'))}" inputmode="text"></label>`,
+    note: msg ? { tone: 'bad', head: T('Hmm.'), text: msg } : null,
+    actions: [{ id: `f:code-go:${id || ''}`, label: T('Confirm'), primary: true }, { id: id ? `f:open:${id}` : 'f:list', label: T('Back') }],
     onShow: (el) => { const i = el.querySelector('#f-code'); i?.focus({ preventScroll: true }); i?.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); fieldAction(`code-go:${id || ''}`); } }); },
   });
 }
 function checkCode(id, raw) {
   const v = normCode(raw);
-  if (v.length !== 4) return codeCard(id, 'A plaque code has 4 characters.');
+  if (v.length !== 4) return codeCard(id, T('A plaque code has 4 characters.'));
   const hit = [...FIELD, ASSEMBLY].find((f) => f.code === v);
   if (!hit) {
     const ok = stampCheck(v.slice(0, 3)) === v[3];
-    return codeCard(id, ok ? 'That code belongs to no site in this game.' : 'One character looks wrong. Check the plaque again (0 and O, 1 and I are not used).');
+    return codeCard(id, ok ? T('That code belongs to no site in this game.') : T('One character looks wrong. Check the plaque again (0 and O, 1 and I are not used).'));
   }
-  if (id && hit.id !== id) return codeCard(id, `That is the code of ${hit.title}, not this site.`);
+  if (id && hit.id !== id) return codeCard(id, T('That is the code of {place}, not this site.', { place: hit.title }));
   arrive(hit.id, 'code');
   if (hit.id === 'A') assemblyCard(); else fieldMissionCard(hit.id);
 }
@@ -1442,19 +1490,19 @@ function taskCard(id, state = {}) {
   fieldAccent(chapterOf(f));
   if (t.type === 'point') { openAR(f, 'point'); return; }
   const tries = r.tries || 0;
-  const model = { field: 'task', fid: id, kicker: `${f.title} · task`, title: t.type === 'number' ? 'Count it' : t.type === 'observe' ? 'Look and listen' : 'Look closely', body: [t.prompt] };
+  const model = { field: 'task', fid: id, kicker: `${f.title} · ${T('task')}`, title: t.type === 'number' ? T('Count it') : t.type === 'observe' ? T('Look and listen') : T('Look closely'), body: [t.prompt] };
   if (t.type === 'number') {
-    model.html = `<div class="numbox"><button class="btn" data-id="f:num:-1" aria-label="One less">−</button><input id="f-num" type="number" inputmode="numeric" min="0" max="999" value="${state.val ?? ''}" aria-label="Your count"><button class="btn" data-id="f:num:1" aria-label="One more">+</button></div>`;
-    model.actions = [{ id: `f:check:${id}`, label: 'Check', primary: true }, ...(t.hint && !r.hint ? [{ id: `f:hint:${id}`, label: `Hint (−${FP.hint})` }] : []), { id: `f:open:${id}`, label: 'Back' }];
+    model.html = `<div class="numbox"><button class="btn" data-id="f:num:-1" aria-label="${esc(T('One less'))}">−</button><input id="f-num" type="number" inputmode="numeric" min="0" max="999" value="${state.val ?? ''}" aria-label="${esc(T('Your count'))}"><button class="btn" data-id="f:num:1" aria-label="${esc(T('One more'))}">+</button></div>`;
+    model.actions = [{ id: `f:check:${id}`, label: T('Check'), primary: true }, ...(t.hint && !r.hint ? [{ id: `f:hint:${id}`, label: T('Hint (−{n})', { n: FP.hint }) }] : []), { id: `f:open:${id}`, label: T('Back') }];
     model.onShow = (el) => { const i = el.querySelector('#f-num'); i?.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); fieldAction(`check:${id}`); } }); };
   } else {
     model.options = t.options.map((label, i) => ({ id: `f:pick:${id}:${i}`, label, state: state.marks?.[i] || '' }));
     if (t.type === 'choice') model.options = inOrder(model.options, t.options, `t:${id}`);
-    model.actions = [...(t.hint && !r.hint && t.type !== 'observe' ? [{ id: `f:hint:${id}`, label: `Hint (−${FP.hint})` }] : []), { id: `f:open:${id}`, label: 'Back' }];
+    model.actions = [...(t.hint && !r.hint && t.type !== 'observe' ? [{ id: `f:hint:${id}`, label: T('Hint (−{n})', { n: FP.hint }) }] : []), { id: `f:open:${id}`, label: T('Back') }];
   }
-  if (r.hint && t.hint) model.note = { tone: '', head: 'Hint', text: t.hint };
+  if (r.hint && t.hint) model.note = { tone: '', head: T('Hint'), text: t.hint };
   if (state.note) model.note = state.note;
-  if (tries) model.rules = `Try ${tries + 1}. Right on the first try: ${FP.task} points, then ${FP.task - 50}, then ${FP.task - 100}.`;
+  if (tries) model.rules = T('Try {n}. Right on the first try: {a} points, then {b}, then {c}.', { n: tries + 1, a: FP.task, b: FP.task - 50, c: FP.task - 100 });
   showCard(model);
 }
 function taskPoints(r) { return Math.max(0, FP.task - 50 * (r.tries || 0) - (r.hint ? FP.hint : 0)); }
@@ -1464,9 +1512,9 @@ function finishTask(id, ok, after) {
   sound(ok ? 'right' : 'wrong');
   fieldAccent(chapterOf(f));
   showCard({
-    field: 'task-done', fid: id, kicker: `${f.title} · task`, title: ok ? `+${r.task}` : 'Not this time',
-    note: { tone: ok ? '' : 'bad', head: ok ? 'Well spotted.' : 'Never mind.', text: after || '' },
-    actions: [{ id: `f:fact:${id}`, label: 'Field note', primary: true }],
+    field: 'task-done', fid: id, kicker: `${f.title} · ${T('task')}`, title: ok ? `+${r.task}` : T('Not this time'),
+    note: { tone: ok ? '' : 'bad', head: ok ? T('Well spotted.') : T('Never mind.'), text: after || '' },
+    actions: [{ id: `f:fact:${id}`, label: T('Field note'), primary: true }],
   });
 }
 function factCard(id, state = {}) {
@@ -1475,11 +1523,11 @@ function factCard(id, state = {}) {
   const answered = r.q != null;
   const marks = state.marks || (answered ? q.options.map((_, i) => (i === q.a ? 'correct' : 'dim')) : []);
   showCard({
-    field: 'fact', fid: id, kicker: `${f.title} · field note`, title: f.fact.title, body: f.fact.text,
+    field: 'fact', fid: id, kicker: `${f.title} · ${T('field note')}`, title: f.fact.title, body: f.fact.text,
     html2: `<p class="qline">${esc(q.q)}</p>`,
     options: inOrder(q.options.map((label, i) => ({ id: `f:q:${id}:${i}`, label, state: marks[i] || '' })), q.options, `q:${id}`), answered,
     note: state.note || null,
-    actions: answered ? [{ id: `f:after:${id}`, label: 'Continue', primary: true }] : [{ id: `f:open:${id}`, label: 'Back' }],
+    actions: answered ? [{ id: `f:after:${id}`, label: T('Continue'), primary: true }] : [{ id: `f:open:${id}`, label: T('Back') }],
   });
 }
 function missionDoneCard(id) {
@@ -1492,19 +1540,19 @@ function missionDoneCard(id) {
   const left = c.ids.filter((x) => !fieldDone(x) && !FIELD_BY_ID[x].bonus).map((x) => FIELD_BY_ID[x].title);
   sound('done');
   showCard({
-    field: 'done', fid: id, kicker: `Chapter ${ROMAN[c.n - 1]} · ${c.name}`, title: `${f.title} done`, big: [fieldPts(r), SITE_MAX],
-    cub: f.close, body: left.length ? [`Next in this chapter: ${left.join(', ')}.`] : null,
-    actions: [{ id: 'f:list', label: 'All places', primary: true }, { id: 'close', label: 'Close' }],
+    field: 'done', fid: id, kicker: `${T('Chapter {n}', { n: ROMAN[c.n - 1] })} · ${c.name}`, title: T('{place} done', { place: f.title }), big: [fieldPts(r), SITE_MAX],
+    cub: f.close, body: left.length ? [T('Next in this chapter: {list}.', { list: left.join(', ') })] : null,
+    actions: [{ id: 'f:list', label: T('All places'), primary: true }, { id: 'close', label: T('Close') }],
   });
 }
 function chapterCard(c) {   // a chapter complete: Meyra's lines, and where to go next
   sound('piece'); fieldAccent(c);
   const fs = fieldSave(), all = partsHome() === 3;
-  const nx = c.next && !fs.ch[c.next.ch] && (!c.next.needs || fs.ch[c.next.needs]) ? c.next.lines : [STILL_OUT];
+  const nx = c.next && !fs.ch[c.next.ch] && (!c.next.needs || fs.ch[c.next.needs]) ? c.next.lines : [stillOut()];
   showCard({
-    field: 'chapter', kicker: `Chapter ${ROMAN[c.n - 1]} complete · +${FP.chapter}`, title: all ? 'Every piece found' : c.name, html: partsSVG(),
+    field: 'chapter', kicker: `${T('Chapter {n} complete', { n: ROMAN[c.n - 1] })} · +${FP.chapter}`, title: all ? T('Every piece found') : c.name, html: partsSVG(),
     cub: all ? ALL_PIECES : [...c.end, ...nx],
-    actions: [{ id: all ? 'f:open:A' : 'f:list', label: all ? 'To the Tourist Info Centre' : 'All places', primary: true }, { id: 'close', label: 'Close' }],
+    actions: [{ id: all ? 'f:open:A' : 'f:list', label: all ? T('To the Tourist Info Centre') : T('All places'), primary: true }, { id: 'close', label: T('Close') }],
   });
 }
 function assemblyCard(state = {}) {   // the finale, step 1: the finders' desk at the Tourist Info Centre (gift + riddle)
@@ -1513,28 +1561,28 @@ function assemblyCard(state = {}) {   // the finale, step 1: the finders' desk a
   if (fs.assembled) { finaleCard(); return; }
   const left = FIELD.length - piecesDone();
   if (partsHome() < 3) {
-    showCard({ field: 'assembly', kicker: 'Finale · Tourist Info Centre, Gusinje', title: ASSEMBLY.title, html: partsSVG(),
-      body: [`Bring every piece here: the finders’ gift and the last riddle wait at the desk, then the peridot goes home to the Kissing Cats. Still out there: ${left} ${left === 1 ? 'piece' : 'pieces'}.`,
-        `Tourist Info Centre, ${ASSEMBLY.address} · open ${ASSEMBLY.hours}.`],
-      actions: [{ id: 'f:list', label: 'All places', primary: true }, { id: 'close', label: 'Close' }] });
+    showCard({ field: 'assembly', kicker: T('Finale · Tourist Info Centre, Gusinje'), title: ASSEMBLY.title, html: partsSVG(),
+      body: [T('Bring every piece here: the finders’ gift and the last riddle wait at the desk, then the peridot goes home to the Kissing Cats. Pieces still out there: {n}.', { n: left }),
+        T('Tourist Info Centre, {address} · open {hours}.', { address: ASSEMBLY.address, hours: ASSEMBLY.hours })],
+      actions: [{ id: 'f:list', label: T('All places'), primary: true }, { id: 'close', label: T('Close') }] });
     return;
   }
   if (!fs.arrivedA) {
-    showCard({ field: 'assembly', kicker: 'Finale · Tourist Info Centre, Gusinje', title: ASSEMBLY.title, html: partsSVG(), cub: ALL_PIECES,
-      body: [`Show 10/10 at the desk of the Tourist Info Centre, ${ASSEMBLY.address} (open ${ASSEMBLY.hours}): every finder gets a surprise gift. The staff give you the desk code for the last riddle.`,
-        'Desk closed? Call the phone number on the door.'],
-      actions: [{ id: 'f:code:A', label: 'Enter the desk code', primary: true }, ...((SURVEY || DEBUG) && ASSEMBLY.zone ? [{ id: 'f:sim:A', label: 'Test: pretend I’m here' }] : []), { id: 'f:list', label: 'All places' }] });
+    showCard({ field: 'assembly', kicker: T('Finale · Tourist Info Centre, Gusinje'), title: ASSEMBLY.title, html: partsSVG(), cub: ALL_PIECES,
+      body: [T('Show 10/10 at the desk of the Tourist Info Centre, {address} (open {hours}): every finder gets a surprise gift. The staff give you the desk code for the last riddle.', { address: ASSEMBLY.address, hours: ASSEMBLY.hours }),
+        T('Desk closed? Call the phone number on the door.')],
+      actions: [{ id: 'f:code:A', label: T('Enter the desk code'), primary: true }, ...((SURVEY || DEBUG) && ASSEMBLY.zone ? [{ id: 'f:sim:A', label: T('Test: pretend I’m here') }] : []), { id: 'f:list', label: T('All places') }] });
     return;
   }
   const k = state.k ?? fs.ridK ?? 0, q = ASSEMBLY.riddle[k], wrong = fs.ridWrong?.[k] || [], out = wrong.length >= 3;   // out: three misses, the answer is shown
   const marks = Object.fromEntries([...wrong.map((i) => [i, 'wrong']), ...(out ? [[q.a, 'correct']] : [])]);
   const lost = RIDDLE_MISS * Object.values(fs.ridWrong || {}).reduce((a, w) => a + w.length, 0);
-  showCard({ field: 'riddle', kicker: `The finders’ desk · question ${k + 1} of 3`, title: FIELD_CHAPTERS[k].name, html: partsSVG(),
+  showCard({ field: 'riddle', kicker: T('The finders’ desk · question {k} of 3', { k: k + 1 }), title: FIELD_CHAPTERS[k].name, html: partsSVG(),
     cub: k === 0 && !wrong.length ? ASSEMBLY.desk : null,
     body: [q.q], options: inOrder(q.options.map((label, i) => ({ id: `f:rid:${k}:${i}`, label, state: marks[i] || (out ? 'dim' : '') })), q.options, `r:${k}`), answered: out,
     note: state.note || null,
-    rules: `Each wrong answer costs ${RIDDLE_MISS} of the riddle’s ${fmt(FP.assembly)} points; after three, the answer is shown.${lost ? ` Riddle points so far: ${fmt(FP.assembly - lost)}.` : ''}`,
-    actions: out ? [{ id: `f:ridnext:${k}`, label: k < ASSEMBLY.riddle.length - 1 ? 'Next question' : 'Finish', primary: true }] : [{ id: 'f:list', label: 'Later' }] });
+    rules: T('Each wrong answer costs {miss} of the riddle’s {pts} points; after three, the answer is shown.', { miss: RIDDLE_MISS, pts: fmt(FP.assembly) }) + (lost ? ` ${T('Riddle points so far: {n}.', { n: fmt(FP.assembly - lost) })}` : ''),
+    actions: out ? [{ id: `f:ridnext:${k}`, label: k < ASSEMBLY.riddle.length - 1 ? T('Next question') : T('Finish'), primary: true }] : [{ id: 'f:list', label: T('Later') }] });
 }
 function riddleNext(k) {   // a question answered (or shown): the next one, or the peridot made whole
   const fs = fieldSave();
@@ -1545,10 +1593,10 @@ function riddleNext(k) {   // a question answered (or shown): the next one, or t
 function catsCard() {   // the finale, step 2: home to the Kissing Cats (painted for now; the AR scene comes in step 10 of the plan)
   fieldAccent(null); sound('piece');
   showCard({
-    field: 'cats', kicker: 'Finale · Home to the Kissing Cats', title: 'The Kissing Cats', banner: 'catch/kissing-cats.webp', bannerAlt: 'The Kissing Cats: two rocks leaning together, the whole green peridot glowing in the hollow between them',
-    html: '<p class="narr">The ten pieces go back into the hollow under the kiss, one by one. Each one clicks and glows. The tenth locks with a chime, and the whole stone lights up green.</p>',
+    field: 'cats', kicker: T('Finale · Home to the Kissing Cats'), title: T('The Kissing Cats'), banner: 'catch/kissing-cats.webp', bannerAlt: T('The Kissing Cats: two rocks leaning together, the whole green peridot glowing in the hollow between them'),
+    html: `<p class="narr">${esc(T('The ten pieces go back into the hollow under the kiss, one by one. Each one clicks and glows. The tenth locks with a chime, and the whole stone lights up green.'))}</p>`,
     cub: ASSEMBLY.cats,
-    actions: [{ id: 'f:end', label: 'Continue', primary: true }],
+    actions: [{ id: 'f:end', label: T('Continue'), primary: true }],
   });
 }
 function finaleCard() {   // the end card: rank, points, the field stamp
@@ -1556,18 +1604,18 @@ function finaleCard() {   // the end card: rank, points, the field stamp
   if (!fs.stamp) { fs.stamp = newStamp(TEST ? 'T' : 'F'); persist(); }   // test mode: PRK-T…, so the desk can tell it apart (bug 7)
   const test = fs.stamp.startsWith('PRK-T');
   showCard({
-    field: 'finale', kicker: 'Prokletije Peridot', title: 'The peridot is whole again.', sub: fieldRank(), big: [fieldTotal(), FIELD_MAX],
+    field: 'finale', kicker: T('Prokletije Peridot'), title: T('The peridot is whole again.'), sub: fieldRank(), big: [fieldTotal(), FIELD_MAX],
     // no QR on the stamp until a staff page can check it (bug 6): the desk reads the code and looks at 10/10 on the phone
-    html: `${partsSVG()}<div class="stamp${test ? ' test' : ''}">${test ? '<b class="test-mark">Test</b>' : ''}<code>${esc(fs.stamp)}</code><p>${test ? 'A test-mode stamp: it shows the game works, it does not count at the desk.' : 'Your field stamp. Show it, with 10/10 on this phone, at the Tourist Info Centre in Gusinje.'}</p></div>`,
-    actions: [{ id: 'f:part2', label: 'Continue', primary: true }, { id: 'f:cats', label: 'The Kissing Cats again' }, { id: 'f:list', label: 'All places' }],
+    html: `${partsSVG()}<div class="stamp${test ? ' test' : ''}">${test ? `<b class="test-mark">${esc(T('Test'))}</b>` : ''}<code>${esc(fs.stamp)}</code><p>${esc(test ? T('A test-mode stamp: it shows the game works, it does not count at the desk.') : T('Your field stamp. Show it, with 10/10 on this phone, at the Tourist Info Centre in Gusinje.'))}</p></div>`,
+    actions: [{ id: 'f:part2', label: T('Continue'), primary: true }, { id: 'f:cats', label: T('The Kissing Cats again') }, { id: 'f:list', label: T('All places') }],
   });
 }
 function partTwoCard() {   // coming soon, no date
   fieldAccent(null);
   showCard({
-    field: 'part2', kicker: 'Prokletije Peridot · Part Two', title: 'The Kissing Cats',
-    body: ['The peridot is whole. But the old story said sunrise, and it never said which one.'], html2: '<p class="soon">Coming soon</p>',
-    actions: [{ id: 'f:list', label: 'All places', primary: true }, { id: 'close', label: 'Close' }],
+    field: 'part2', kicker: T('Prokletije Peridot · Part Two'), title: T('The Kissing Cats'),
+    body: [T('The peridot is whole. But the old story said sunrise, and it never said which one.')], html2: `<p class="soon">${esc(T('Coming soon'))}</p>`,
+    actions: [{ id: 'f:list', label: T('All places'), primary: true }, { id: 'close', label: T('Close') }],
   });
 }
 
@@ -1592,19 +1640,19 @@ function fieldAction(a) {
   if (verb === 'test-on') { store.set('peridot.field.test', '1'); location.reload(); return; }
   if (verb === 'test-exit') { store.set('peridot.field.test', '0'); store.set('peridot.field.testpos', ''); if (new URLSearchParams(location.search).has('test')) location.href = location.pathname + location.hash; else location.reload(); return; }
   if (verb === 'restart') {   // bug 17: start over, after a confirmation
-    showCard({ field: 'restart', kicker: 'AR trail missions', title: 'Start over?', body: ['Your points, the places you have found and your field stamp on this phone are cleared. This cannot be undone.'],
-      actions: [{ id: 'f:list', label: 'Cancel', primary: true }, { id: 'f:restart-yes', label: 'Yes, start over' }] });
+    showCard({ field: 'restart', kicker: T('AR trail missions'), title: T('Start over?'), body: [T('Your points, the places you have found and your field stamp on this phone are cleared. This cannot be undone.')],
+      actions: [{ id: 'f:list', label: T('Cancel'), primary: true }, { id: 'f:restart-yes', label: T('Yes, start over') }] });
     return;
   }
   if (verb === 'savecode') { saveCodeCard(); return; }
   if (verb === 'copysave') {
     const code = $('save-code')?.textContent || '', link = `${PAGE_URL}#save-${code}`;
-    navigator.clipboard?.writeText(link).then(() => toast('Save code copied', 1800), () => { const r = document.createRange(); r.selectNodeContents($('save-code')); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); toast('Selected: copy it now', 2200); });
+    navigator.clipboard?.writeText(link).then(() => toast(T('Save code copied'), 1800), () => { const r = document.createRange(); r.selectNodeContents($('save-code')); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); toast(T('Selected: copy it now'), 2200); });
     return;
   }
   if (verb === 'restore') {
     const data = readSaveCode($('f-restore')?.value);
-    if (!data) { saveCodeCard({ note: { tone: 'bad', head: 'Hmm.', text: 'That is not a save code. Check it and try again.' } }); return; }
+    if (!data) { saveCodeCard({ note: { tone: 'bad', head: T('Hmm.'), text: T('That is not a save code. Check it and try again.') } }); return; }
     restoreCard(data); return;
   }
   if (verb === 'restore-yes') { if (pendingRestore) { save.field = pendingRestore; persist(); location.href = location.pathname + location.search; } return; }
@@ -1614,32 +1662,32 @@ function fieldAction(a) {
   if (verb === 'near') {   // test: 40 m south of the site, so you can walk in
     const f = id === 'A' ? ASSEMBLY : FIELD_BY_ID[id], z = zoneOf(f);
     simulateAt(z.lat - 40 / 110540, z.lon); startOrientation(); keepCompass = true; view.follow = true; updateFollowBtn();
-    toast(`Test: 40 m south of ${f.title}. Walk north with the joystick.`, 3200); closeCard(); flyToField(id); return;
+    toast(T('Test: 40 m south of {place}. Walk north with the joystick.', { place: f.title }), 3200); closeCard(); flyToField(id); return;
   }
-  if (verb === 'sim') { const f = id === 'A' ? ASSEMBLY : FIELD_BY_ID[id]; const z = zoneOf(f); simulateAt(z.lat + 0.00005, z.lon); toast(`Test position at ${f.title}: wait ${z.dwell} s`, 2400); closeCard(); flyToField(id); return; }
+  if (verb === 'sim') { const f = id === 'A' ? ASSEMBLY : FIELD_BY_ID[id]; const z = zoneOf(f); simulateAt(z.lat + 0.00005, z.lon); toast(T('Test position at {place}: wait {s} s', { place: f.title, s: z.dwell }), 2400); closeCard(); flyToField(id); return; }
   if (verb === 'look') { openAR(FIELD_BY_ID[id], 'look'); return; }
   if (verb === 'task') { taskCard(id); return; }
   if (verb === 'hint') { const r = frec(id); r.hint = true; persist(); sound('tap'); taskCard(id, { val: $('f-num')?.value }); return; }
   if (verb === 'num') { const i = $('f-num'); if (i) i.value = String(Math.max(0, (+i.value || 0) + (+id))); sound('tap'); return; }
   if (verb === 'check') {
     const f = FIELD_BY_ID[id], t = f.task, r = frec(id), raw = $('f-num')?.value;
-    if (raw === '' || raw == null || !Number.isFinite(+raw)) { taskCard(id, { note: { tone: 'bad', head: 'Your count?', text: 'Type a number first.' } }); return; }
+    if (raw === '' || raw == null || !Number.isFinite(+raw)) { taskCard(id, { note: { tone: 'bad', head: T('Your count?'), text: T('Type a number first.') } }); return; }
     const v = Math.round(+raw); r.val = v;
-    if (t.answer == null) { finishTask(id, true, `You counted ${v}.${t.after ? ` ${t.after}` : ''}`); return; }
-    if (v === t.answer) { finishTask(id, true, `Yes, ${v}.${t.after ? ` ${t.after}` : ''}`); return; }
+    if (t.answer == null) { finishTask(id, true, `${T('You counted {n}.', { n: v })}${t.after ? ` ${t.after}` : ''}`); return; }
+    if (v === t.answer) { finishTask(id, true, `${T('Yes, {n}.', { n: v })}${t.after ? ` ${t.after}` : ''}`); return; }
     r.tries = (r.tries || 0) + 1; persist(); sound('wrong');
-    if (r.tries >= 3) { finishTask(id, false, `It is ${t.answer}.${t.after ? ` ${t.after}` : ''}`); return; }
-    taskCard(id, { val: v, note: { tone: 'bad', head: 'Not quite.', text: `Count again${v < t.answer ? ': there are more' : ': there are fewer'}.` } });
+    if (r.tries >= 3) { finishTask(id, false, `${T('It is {n}.', { n: t.answer })}${t.after ? ` ${t.after}` : ''}`); return; }
+    taskCard(id, { val: v, note: { tone: 'bad', head: T('Not quite.'), text: v < t.answer ? T('Count again: there are more.') : T('Count again: there are fewer.') } });
     return;
   }
   if (verb === 'pick') {
     const f = FIELD_BY_ID[id], t = f.task, r = frec(id), i = +arg;
-    if (t.type === 'observe') { r.val = t.options[i]; finishTask(id, true, `You saw: ${t.options[i]}. ${t.after || ''}`); return; }
+    if (t.type === 'observe') { r.val = t.options[i]; finishTask(id, true, `${T('You saw: {v}.', { v: t.options[i] })} ${t.after || ''}`); return; }
     if (i === t.a) { finishTask(id, true, t.after || ''); return; }
     r.tries = (r.tries || 0) + 1; persist(); sound('wrong');
     r.marks ||= {}; r.marks[i] = 'wrong';
-    if (r.tries >= 3) { finishTask(id, false, `The answer: ${t.options[t.a]}. ${t.after || ''}`); return; }
-    taskCard(id, { marks: r.marks, note: { tone: 'bad', head: 'Not quite.', text: 'Look again and try another answer.' } });
+    if (r.tries >= 3) { finishTask(id, false, `${T('The answer: {a}.', { a: t.options[t.a] })} ${t.after || ''}`); return; }
+    taskCard(id, { marks: r.marks, note: { tone: 'bad', head: T('Not quite.'), text: T('Look again and try another answer.') } });
     return;
   }
   if (verb === 'fact') { factCard(id); return; }
@@ -1647,7 +1695,7 @@ function fieldAction(a) {
     const f = FIELD_BY_ID[id], r = frec(id), i = +arg; if (r.q != null) return;
     const ok = i === f.q.a; r.q = ok ? FP.q : 0; persist(); sound(ok ? 'right' : 'wrong');
     const marks = f.q.options.map((_, j) => (j === f.q.a ? 'correct' : j === i ? 'wrong' : 'dim'));
-    factCard(id, { marks, note: { tone: ok ? '' : 'bad', head: ok ? `+${FP.q}` : 'Not quite.', text: ok ? 'Right.' : `It’s “${f.q.options[f.q.a]}”.` } });
+    factCard(id, { marks, note: { tone: ok ? '' : 'bad', head: ok ? `+${FP.q}` : T('Not quite.'), text: ok ? T('Right.') : T('It’s {a}.', { a: qt(f.q.options[f.q.a]) }) } });
     return;
   }
   if (verb === 'after') { const r = frec(id); if (!r.done) { r.done = Date.now(); persist(); } missionDoneCard(id); return; }
@@ -1656,7 +1704,7 @@ function fieldAction(a) {
     if (fs.assembled) return;
     if (i !== q.a) {
       fs.ridWrong ||= {}; const w = fs.ridWrong[k] ||= []; if (!w.includes(i)) w.push(i); persist(); sound('wrong');
-      assemblyCard({ k, note: w.length >= 3 ? { tone: 'bad', head: 'Not this time.', text: `It’s “${q.options[q.a]}”.` } : { tone: 'bad', head: `It doesn’t fit. −${RIDDLE_MISS}`, text: 'Think back to the places, and try again.' } });
+      assemblyCard({ k, note: w.length >= 3 ? { tone: 'bad', head: T('Not this time.'), text: T('It’s {a}.', { a: qt(q.options[q.a]) }) } : { tone: 'bad', head: `${T('It doesn’t fit.')} −${RIDDLE_MISS}`, text: T('Think back to the places, and try again.') } });
       return;
     }
     sound('right'); riddleNext(k); return;
@@ -1796,12 +1844,12 @@ function camNote(why) {
   const el = $('ar-camnote'); if (!el) return;
   const url = PUBLIC_FIELD + (TEST ? '?test' : '');
   if (why === 'embedded') {
-    $('ar-camnote-text').textContent = 'The camera can’t start inside the Claude app, so you see a painted valley. To see the peridot in your room, open the game in Chrome or Safari:';
+    $('ar-camnote-text').textContent = T('The camera can’t start inside the Claude app, so you see a painted valley. To see the peridot in your room, open the game in Chrome or Safari:');
     const a = $('ar-camnote-link'); a.href = url; a.textContent = url.replace('https://', ''); a.hidden = false; $('ar-camnote-copy').hidden = false;
   } else {
-    $('ar-camnote-text').textContent = why === 'insecure' ? 'The camera needs a secure (https) address. Open the game from https://…'
-      : why === 'denied' ? 'The camera is blocked for this site. Allow it in the browser (the lock icon by the address, then Camera), close this view and open it again.'
-      : 'No camera found, so you see a painted valley instead.';
+    $('ar-camnote-text').textContent = why === 'insecure' ? T('The camera needs a secure (https) address. Open the game from https://…')
+      : why === 'denied' ? T('The camera is blocked for this site. Allow it in the browser (the lock icon by the address, then Camera), close this view and open it again.')
+      : T('No camera found, so you see a painted valley instead.');
     $('ar-camnote-link').hidden = true; $('ar-camnote-copy').hidden = true;
   }
   el.hidden = false;
@@ -1871,7 +1919,7 @@ $('ar-lens').addEventListener('click', async () => {
   const i = camSel.list.findIndex((d) => d.deviceId === camSel.devId), d = camSel.list[(i + 1) % camSel.list.length];
   writeLS(CAM_KEY, { id: d.deviceId, manual: true }); camSel.manualPick = true;
   await useLens(d.deviceId); const f = lensFovOf(d.deviceId);
-  toast(`Camera ${camSel.list.indexOf(d) + 1} / ${camSel.list.length}${f ? ` · ${Math.round(f)}°` : ''}`, 1800);
+  toast(`${T('Camera {i} / {n}', { i: camSel.list.indexOf(d) + 1, n: camSel.list.length })}${f ? ` · ${Math.round(f)}°` : ''}`, 1800);
 });
 async function startCamera() {
   $('ar-camnote').hidden = true;
@@ -1947,7 +1995,7 @@ function learnFov(t) {
     if (DEBUG) console.log('[fov] learned', med.toFixed(1), 'from', s.length);
     if (med < LENS_MIN && camSel.list.length > 1 && !camSel.manualPick) {   // a zoomed-in lens: try the next back camera
       const next = camSel.list.find((d) => d.deviceId !== camSel.devId && !camSel.tried.has(d.deviceId) && (lensFovOf(d.deviceId) ?? 99) >= LENS_MIN);
-      if (next) useLens(next.deviceId, `This camera is zoomed in (${Math.round(med)}°): trying the next one…`);
+      if (next) useLens(next.deviceId, T('This camera is zoomed in ({deg}°): trying the next one…', { deg: Math.round(med) }));
     }
   }
 }
@@ -1955,9 +2003,9 @@ const arLag = () => { const s = camFov.lagS; if (!s.length) return 60; const a =
 $('ar-camnote-close').addEventListener('click', () => { $('ar-camnote').hidden = true; });
 $('ar-camnote-copy').addEventListener('click', async () => {
   const url = $('ar-camnote-link').href, btn = $('ar-camnote-copy');
-  try { await navigator.clipboard.writeText(url); btn.textContent = 'Copied'; }
-  catch { const r = document.createRange(); r.selectNodeContents($('ar-camnote-link')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent = 'Select & copy'; }
-  setTimeout(() => { btn.textContent = 'Copy link'; }, 2500);
+  try { await navigator.clipboard.writeText(url); btn.textContent = T('Copied'); }
+  catch { const r = document.createRange(); r.selectNodeContents($('ar-camnote-link')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent = T('Select & copy'); }
+  setTimeout(() => { btn.textContent = T('Copy link'); }, 2500);
 });
 function stopCamera() { arStream?.getTracks().forEach((t) => t.stop()); arStream = null; arVideo.srcObject = null; arEl.classList.remove('cam'); }
 function targetBearing(f) {
@@ -1972,12 +2020,12 @@ function openAR(f, mode) {
   camFov.frameT = null; camFov.lagS = []; camSel.tried = new Set(); camSel.manualPick = !!readLS(CAM_KEY)?.manual;
   startOrientation(); if (mode !== 'point') startCamera();   // the camera only for finding the piece (battery): pointing needs only the compass
   const c = f.ch ? chapterOf(f) : null; fieldAccent(c);
-  $('ar-kicker').textContent = mode === 'record' ? 'Survey · record bearing' : `${f.title} · ${mode === 'point' ? 'task' : 'look'}`;
-  $('ar-title').textContent = mode === 'point' || mode === 'record' ? 'Point and tap Here' : f.look.mode === 'scan' ? 'Hold steady' : 'Look around';
+  $('ar-kicker').textContent = mode === 'record' ? 'Survey · record bearing' : `${f.title} · ${mode === 'point' ? T('task') : T('look')}`;
+  $('ar-title').textContent = mode === 'point' || mode === 'record' ? T('Point and tap Here') : f.look.mode === 'scan' ? T('Hold steady') : T('Look around');
   $('ar-say').textContent = mode === 'point' ? f.task.prompt : mode === 'record' ? `Stand at the zone centre, point at ${PLACES[f.task.target] ? f.task.target : 'the target'} and tap Here.` : f.look.say;
   const act = $('ar-act'), withAct = mode === 'point' || mode === 'record';   // the look has no button: no Skip (bug 15), and scanning needs only a steady phone (bug 13)
   act.hidden = !withAct;
-  act.textContent = 'Here';
+  act.textContent = T('Here');
   $('ar-hint').hidden = !(mode === 'point' && f.task.hint && !frec(f.id)?.hint);
   $('ar-aim').hidden = !(mode === 'point' || mode === 'record' || f.look?.mode === 'scan');
   $('ar-scan').hidden = !(mode === 'look' && f.look.mode === 'scan');
@@ -1996,10 +2044,10 @@ function openAR(f, mode) {
         if (sh && f.look.mode === 'sky') sh.hidden = false;
       });
     } else if (f.look.mode === 'sky') {   // no GPS: the shard comes down out there; turn to find it, then catch it
-      startCatch(f, sh.b).then((ok) => { if (ok) { sh.hidden = true; $('ar-say').textContent = `${f.look.say} A peridot shard has come down out there too: find it and catch it.`; } });
+      startCatch(f, sh.b).then((ok) => { if (ok) { sh.hidden = true; $('ar-say').textContent = `${f.look.say} ${T('A peridot shard has come down out there too: find it and catch it.')}`; } });
     } else prefetchThree();
   }
-  $('ar-where').textContent = 'Turn on the compass…';
+  $('ar-where').textContent = T('Turn on the compass…');
   arT0 = performance.now();
   cancelAnimationFrame(arRAF); arRAF = requestAnimationFrame(arLoop);
 }
@@ -2018,10 +2066,10 @@ function buildARItems() {
   if (arMode === 'look' && f.look.mode === 'scan') items.push({ kind: 'shard', ahead: true, hidden: true });
   arItems.innerHTML = items.map((it, i) => it.kind === 'label'
     ? `<div class="ar-label glass" data-i="${i}"><b>${esc(it.name)}</b><small>${esc(it.sub || '')}</small></div>`
-    : `<button class="ar-shard" data-i="${i}" aria-label="Peridot shard: tap to take it">${GEM_SVG}</button>`).join('');
+    : `<button class="ar-shard" data-i="${i}" aria-label="${esc(T('Peridot shard: tap to take it'))}">${GEM_SVG}</button>`).join('');
   arItems._items = items;
   // ribbon of compass letters
-  arRibbon.innerHTML = Array.from({ length: 24 }, (_, k) => k * 15).map((d) => `<span data-d="${d}" class="${d % 45 ? 'tick' : 'cardinal'}">${d % 90 === 0 ? 'NESW'[d / 90] : d % 45 === 0 ? ['NE', 'SE', 'SW', 'NW'][(d - 45) / 90] : ''}</span>`).join('');
+  arRibbon.innerHTML = Array.from({ length: 24 }, (_, k) => k * 15).map((d) => `<span data-d="${d}" class="${d % 45 ? 'tick' : 'cardinal'}">${d % 90 === 0 ? [T('N'), T('E'), T('S'), T('W')][d / 90] : d % 45 === 0 ? [T('NE'), T('SE'), T('SW'), T('NW')][(d - 45) / 90] : ''}</span>`).join('');
 }
 function arLoop(now) {
   if (!arOpen) return;
@@ -2048,8 +2096,8 @@ function arLoop(now) {
       const it = items[0], f = arF; it.found = true; it.b = orient.heading; it.e = orient.elev; sound('shard'); $('ar-act').hidden = true;
       startCatch(f, it.b).then((ok) => {
         if (!arOpen || arF !== f) return;
-        if (ok) $('ar-say').textContent = `There it is, in ${f.look.what}! It drops down in front of you…`;
-        else { it.hidden = false; $('ar-say').textContent = `There it is, in ${f.look.what}! Tap the shard.`; }
+        if (ok) $('ar-say').textContent = T('There it is, in {what}! It drops down in front of you…', { what: f.look.what });
+        else { it.hidden = false; $('ar-say').textContent = T('There it is, in {what}! Tap the shard.', { what: f.look.what }); }
       });
     }
   }
@@ -2066,9 +2114,9 @@ function arLoop(now) {
     el.style.display = Math.abs(dx) < 80 && Math.abs(x - w / 2) < w * 0.6 ? '' : 'none';
     el.style.transform = `translateX(${x.toFixed(1)}px)`;
   });
-  if (orient.compass) $('ar-where').textContent = `Facing ${dirWord(orient.heading)} · ${Math.round(orient.heading)}°`;
-  else if (!orient.manual) $('ar-where').textContent = `No compass: north is a guess · ${Math.round(orient.heading)}°`;
-  else if (now - arT0 > 1600) $('ar-where').textContent = `No compass here: drag to turn · ${Math.round(orient.heading)}°`;
+  if (orient.compass) $('ar-where').textContent = `${T('Facing {dir}', { dir: dirWord(orient.heading) })} · ${Math.round(orient.heading)}°`;
+  else if (!orient.manual) $('ar-where').textContent = `${T('No compass: north is a guess')} · ${Math.round(orient.heading)}°`;
+  else if (now - arT0 > 1600) $('ar-where').textContent = `${T('No compass here: drag to turn')} · ${Math.round(orient.heading)}°`;
   catchFrame(now, w, h);
   if (DEBUG && window.__afterAr) window.__afterAr(now, w, h);
 }
@@ -2091,14 +2139,14 @@ arItems.addEventListener('click', (e) => {
   const b = e.target.closest('.ar-shard'); if (!b || arShardGot) return;
   arShardGot = true; sound('shard'); b.classList.add('got');
   const f = arF, r = frec(f.id); r.look = Date.now(); persist();
-  $('ar-say').textContent = `${CUB}: “${f.got}”`;
+  $('ar-say').textContent = `${CUB}: ${qt(f.got)}`;
   setTimeout(() => { if (arOpen && arF === f) afterLook(f); }, 1100);
 });
 function taskIntro(id) { taskCard(id); }   // a pointing task opens the camera view (since step 3 straight away, no mission card in between)
 function arToPoint(f) {   // after the catch at a place with a pointing task: the task starts in the same view (bug 14), camera off (battery)
   stopCatch(); stopCamera(); $('ar-lens').hidden = true; arMode = 'point'; arScan = 0; arShardGot = false; arEl.classList.remove('holding');
-  $('ar-kicker').textContent = `${f.title} · task`; $('ar-title').textContent = 'Point and tap Here'; $('ar-say').textContent = f.task.prompt;
-  const act = $('ar-act'); act.hidden = false; act.textContent = 'Here';
+  $('ar-kicker').textContent = `${f.title} · ${T('task')}`; $('ar-title').textContent = T('Point and tap Here'); $('ar-say').textContent = f.task.prompt;
+  const act = $('ar-act'); act.hidden = false; act.textContent = T('Here');
   $('ar-hint').hidden = !(f.task.hint && !frec(f.id)?.hint); $('ar-aim').hidden = false; $('ar-scan').hidden = true;
   buildARItems(); updateFieldChip();
 }
@@ -2115,16 +2163,18 @@ actBtn.addEventListener('click', () => {
   if (arMode === 'point') {
     const r = frec(f.id), want = targetBearing(f), diff = Math.abs(wrapDeg(orient.heading - want));
     const ok = diff <= f.task.tol;
-    if (ok) { closeAR(() => finishTask(f.id, true, `${Math.round(diff)}° off. ${f.task.after || ''}`)); return; }
+    if (ok) { closeAR(() => finishTask(f.id, true, `${T('{deg}° off.', { deg: Math.round(diff) })} ${f.task.after || ''}`)); return; }
     r.tries = (r.tries || 0) + 1; persist(); sound('wrong');
-    if (r.tries >= 3) { closeAR(() => finishTask(f.id, false, `It is towards the ${dirWord(want)} (${Math.round(want)}°). ${f.task.after || ''}`)); return; }
-    const side = wrapDeg(want - orient.heading) > 0 ? 'right' : 'left';
-    $('ar-say').textContent = diff > 100 ? `Not quite: that is almost the opposite way. Turn around and try again.` : `Not quite: about ${Math.round(diff)}° off. Turn ${diff > 45 ? '' : 'a little '}to the ${side} and try again.`;
+    if (r.tries >= 3) { closeAR(() => finishTask(f.id, false, `${T('The way: {dir} ({deg}°).', { dir: dirWord(want), deg: Math.round(want) })} ${f.task.after || ''}`)); return; }
+    const right = wrapDeg(want - orient.heading) > 0, d = Math.round(diff);
+    $('ar-say').textContent = diff > 100 ? T('Not quite: that is almost the opposite way. Turn around and try again.')
+      : diff > 45 ? (right ? T('Not quite: about {d}° off. Turn to the right and try again.', { d }) : T('Not quite: about {d}° off. Turn to the left and try again.', { d }))
+      : (right ? T('Not quite: about {d}° off. Turn a little to the right and try again.', { d }) : T('Not quite: about {d}° off. Turn a little to the left and try again.', { d }));
   }
 });
 $('ar-hint').addEventListener('click', () => {
   const f = arF, r = frec(f.id); r.hint = true; persist(); sound('tap');
-  $('ar-say').textContent = `Hint: ${f.task.hint}`; $('ar-hint').hidden = true;
+  $('ar-say').textContent = T('Hint: {hint}', { hint: f.task.hint }); $('ar-hint').hidden = true;
 });
 $('ar-close').addEventListener('click', () => { sound('tap'); closeAR(); });
 $('ar-fast-yes').addEventListener('click', () => {   // a passenger: go on, and don't ask again for 15 minutes
@@ -2294,11 +2344,11 @@ function siteState(f) {
   return r?.done ? 'done' : r?.arrived ? 'here' : 'open';
 }
 function plateSub(f, st) {
-  if (st === 'done') return 'Done';
-  if (st === 'here') return 'You are here';
-  if (st === 'locked') return 'Opens with every piece';
-  if (fixFresh() && f.zone) return `${fmtDist(distM([loc.fix.lat, loc.fix.lon], [f.zone.lat, f.zone.lon]))} away`;
-  return f.zone ? `Zone ${Math.round(f.zone.r)} m · stay ${f.zone.dwell || 20} s` : '';
+  if (st === 'done') return T('Done');
+  if (st === 'here') return T('You are here');
+  if (st === 'locked') return T('Opens with every piece');
+  if (fixFresh() && f.zone) return T('{dist} away', { dist: fmtDist(distM([loc.fix.lat, loc.fix.lon], [f.zone.lat, f.zone.lon])) });
+  return f.zone ? T('Zone {r} m · stay {s} s', { r: Math.round(f.zone.r), s: f.zone.dwell || 20 }) : '';
 }
 /* borders (16 Nov 2026, the user: "Add borders to this map"): the Montenegro–Albania border with the two names beside it, the edge of
    Prokletije National Park with a soft green band inside it, and a slate frame with an inlaid gold line where the painted map ends */
@@ -2397,10 +2447,10 @@ function drawMap() {
   if (merged) {   // the town as one pin and one label
     const townDone = FIELD.filter((f) => f.ch === 1 && f.zone && fieldDone(f.id)).length, townN = FIELD.filter((f) => f.ch === 1 && f.zone).length;
     const [x, y] = toScreen(W(42.5634, 19.8312));
-    pins.push(`<g class="mk cluster" data-act="zoomtown" transform="translate(${x.toFixed(1)} ${y.toFixed(1)})" style="--o:${gemOffset('town')}" role="button" aria-label="Gusinje town: ${townDone} of ${townN} sites done">${gemMark(null, townDone === townN ? 'done' : 'open', false).replace(/<g class="gem-done".*$/, '')}<g class="gem-count" transform="translate(11 -38)"><circle r="10"/><text y="4">${townN - townDone}</text></g></g>`);
-    const title = 'T1–T8 · Gusinje town', sub = `${townDone}/${townN} done${TOWN_KM ? ` · ${TOWN_KM} km trail on foot` : ''}`;
+    pins.push(`<g class="mk cluster" data-act="zoomtown" transform="translate(${x.toFixed(1)} ${y.toFixed(1)})" style="--o:${gemOffset('town')}" role="button" aria-label="${esc(T('Gusinje town: {a} of {b} sites done', { a: townDone, b: townN }))}">${gemMark(null, townDone === townN ? 'done' : 'open', false).replace(/<g class="gem-done".*$/, '')}<g class="gem-count" transform="translate(11 -38)"><circle r="10"/><text y="4">${townN - townDone}</text></g></g>`);
+    const title = T('T1–T8 · Gusinje town'), sub = `${T('{a}/{b} done', { a: townDone, b: townN })}${TOWN_KM ? ` · ${T('{km} km trail on foot', { km: dec(TOWN_KM) })}` : ''}`;
     const [px, py] = plateBox(x, y, title, sub, true);
-    plates.push(`<button class="mk-plate" data-act="zoomtown" style="transform:translate(${px.toFixed(1)}px,${py.toFixed(1)}px)"><b>${title}</b><i>${sub}</i></button>`);
+    plates.push(`<button class="mk-plate" data-act="zoomtown" style="transform:translate(${px.toFixed(1)}px,${py.toFixed(1)}px)"><b>${esc(title)}</b><i>${esc(sub)}</i></button>`);
   }
   const isKey = (f) => f.id === selectedId || f.id === tgt?.id;
   const showPlate = (f) => isKey(f) || (f.ch === 1 ? s > 0.6 : s > 0.026);
@@ -2411,7 +2461,7 @@ function drawMap() {
     const st = siteState(f), sel = f.id === selectedId || f.id === tgt?.id ? 'sel' : '';
     const r = frec(f.id), near = f.id !== 'A' && !r?.look && st !== 'done' && (r?.arrived || (fixFresh() && distM([loc.fix.lat, loc.fix.lon], [f.zone.lat, f.zone.lon]) < Math.max(150, f.zone.r * 3)));
     const shard = f.id !== 'A' && !r?.look && st !== 'done';
-    pins.push(`<g class="mk ${st} ${sel}" data-act="open:${f.id}" transform="translate(${x.toFixed(1)} ${y.toFixed(1)})" style="--o:${gemOffset(f.id)}" role="button" aria-label="${esc(f.title)}${shard ? ': a peridot shard is here' : ''}">${gemMark(f, st, near)}</g>`);
+    pins.push(`<g class="mk ${st} ${sel}" data-act="open:${f.id}" transform="translate(${x.toFixed(1)} ${y.toFixed(1)})" style="--o:${gemOffset(f.id)}" role="button" aria-label="${esc(shard ? T('{place}: a peridot shard is here', { place: f.title }) : f.title)}">${gemMark(f, st, near)}</g>`);
     if (showPlate(f)) {
       const title = `${f.id === 'A' ? '★' : f.id} · ${f.title}`, sub = plateSub(f, st);
       const at = plateBox(x, y, title, sub, isKey(f));
@@ -2422,7 +2472,7 @@ function drawMap() {
   for (const t of TRAILS) {
     if (!t.lab || s < 0.022) continue;
     const [x, y] = toScreen(t.lab);
-    if (onScreen([x, y]) && fits(x - 24, y - 22, x + 24, y + 4)) names.push(`<text class="tr-km" transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${t.ang})" y="-9">${t.km} km</text>`);
+    if (onScreen([x, y]) && fits(x - 24, y - 22, x + 24, y + 4)) names.push(`<text class="tr-km" transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${t.ang})" y="-9">${dec(t.km)} km</text>`);
   }
   // names stay inside the frame's inner gold hairline
   const [fx0, fy0] = toScreen([MAP_BOX[0], MAP_BOX[1]]), [fx1, fy1] = toScreen([MAP_BOX[2], MAP_BOX[3]]);
@@ -2436,7 +2486,7 @@ function drawMap() {
   const fitsTurned = (at, half) => fits(...turnedBox(at, half));
   if (s < 0.5) {
     for (const near of [W(42.548, 19.758), W(42.476, 19.862)]) {   // a pair on each side of the border: they may touch each other, not the rest
-      const pair = [['MONTENEGRO', false], ['ALBANIA', true]].map(([txt, other]) => {
+      const pair = [[T('MONTENEGRO'), false], [T('ALBANIA'), true]].map(([txt, other]) => {
         const at = lineLabel(BD.state, near, GUS_W, other, 19);
         return at && onScreen([at.x, at.y], 20) ? { txt, at, box: turnedBox(at, txt.length * 4.6) } : null;
       }).filter((l) => l && inFrame(...l.box) && free(l.box));
@@ -2444,7 +2494,7 @@ function drawMap() {
     }
     if (s > 0.03) {
       const at = lineLabel(BD.park, W(42.5285, 19.875), PARK_IN_W, false, 13);
-      if (at && onScreen([at.x, at.y], 20) && inFrame(...turnedBox(at, 72)) && fitsTurned(at, 72)) names.push(`<text class="bd-park-name" transform="translate(${at.x.toFixed(1)} ${at.y.toFixed(1)}) rotate(${at.ang.toFixed(1)})">Prokletije National Park</text>`);
+      if (at && onScreen([at.x, at.y], 20) && inFrame(...turnedBox(at, 72)) && fitsTurned(at, 72)) names.push(`<text class="bd-park-name" transform="translate(${at.x.toFixed(1)} ${at.y.toFixed(1)}) rotate(${at.ang.toFixed(1)})">${esc(T('Prokletije National Park'))}</text>`);
     }
   }
   // names: the town and the valleys in gold capitals, villages and hamlets in italics, peaks with their heights
@@ -2579,7 +2629,7 @@ $('btn-me').addEventListener('click', () => {
   sound('tap');
   if (!fieldOn || loc.state === 'off' || loc.state === 'denied' || loc.state === 'unavailable') { startLocation(); }
   view.follow = true; updateFollowBtn();
-  if (fixFresh()) animateTo(W(loc.fix.lat, loc.fix.lon), Math.max(view.s, 1.1)); else toast('Finding your position…');
+  if (fixFresh()) animateTo(W(loc.fix.lat, loc.fix.lon), Math.max(view.s, 1.1)); else toast(T('Finding your position…'));
 });
 $('map-plates').addEventListener('click', (e) => { if (e.detail !== 0) return; const b = e.target.closest('[data-act]'); if (b) { sound('tap'); mapTap(b.dataset.act); } });   // keyboard: Enter or Space on a label
 $('btn-plus').addEventListener('click', () => zoomAt(mapW / 2, mapH / 2, 1.6));
@@ -2630,34 +2680,34 @@ function updateFieldChip() {
   if (!show) return;
   const arrow = $('g-arrow'), ring = $('g-ring');
   let kicker = '', title = '', line = '', act = 'f:list', rot = null, k = 0;
-  if (!fieldOn || loc.state === 'off') { kicker = 'Start'; title = 'Turn on location'; line = 'The game follows you from site to site.'; act = 'f:loc-on'; }
-  else if (loc.state === 'asking' || (loc.state === 'on' && !fixFresh())) { kicker = 'GPS'; title = 'Finding your position…'; line = 'Stand in the open for a moment.'; }
-  else if (loc.state === 'denied') { kicker = 'Location blocked'; title = 'Use the plaque codes'; line = 'Every site has a plaque with a 4-character code.'; act = 'f:code'; }
-  else if (loc.state === 'unavailable') { kicker = 'No GPS'; title = 'Use the plaque codes'; line = 'Every site has a plaque with a 4-character code.'; act = 'f:code'; }
+  if (!fieldOn || loc.state === 'off') { kicker = T('Start'); title = T('Turn on location'); line = T('The game follows you from site to site.'); act = 'f:loc-on'; }
+  else if (loc.state === 'asking' || (loc.state === 'on' && !fixFresh())) { kicker = 'GPS'; title = T('Finding your position…'); line = T('Stand in the open for a moment.'); }
+  else if (loc.state === 'denied') { kicker = T('Location blocked'); title = T('Use the plaque codes'); line = T('Every site has a plaque with a 4-character code.'); act = 'f:code'; }
+  else if (loc.state === 'unavailable') { kicker = T('No GPS'); title = T('Use the plaque codes'); line = T('Every site has a plaque with a 4-character code.'); act = 'f:code'; }
   else {
     const here = [...FIELD, ASSEMBLY].find((f) => dwellSince[f.id]);
     if (arrivedPrompt) {
       const a = arrivedPrompt === 'A' ? ASSEMBLY : FIELD_BY_ID[arrivedPrompt];
-      kicker = 'You’re here'; title = a.title; line = 'Tap to start'; act = `f:open:${arrivedPrompt}`; k = 1;
+      kicker = T('You’re here'); title = a.title; line = T('Tap to start'); act = `f:open:${arrivedPrompt}`; k = 1;
     } else if (here && !(here.id === 'A' ? fieldSave().arrivedA : frec(here.id)?.arrived)) {
       const z = zoneOf(here), left = Math.max(0, Math.ceil(z.dwell - (Date.now() - dwellSince[here.id]) / 1000));
-      kicker = 'Arriving'; title = here.title; line = left ? `Stay here ${left} s` : 'Arrived'; act = `f:open:${here.id}`;
+      kicker = T('Arriving'); title = here.title; line = left ? T('Stay here {n} s', { n: left }) : T('Arrived'); act = `f:open:${here.id}`;
       k = 1 - left / z.dwell;
     } else {
       const t = targetSite();
       if (t) {
         const me = [loc.fix.lat, loc.fix.lon], b = bearingDeg(me, [t.zone.lat, t.zone.lon]), d = distM(me, [t.zone.lat, t.zone.lon]);
         const done = t.id === 'A' ? false : frec(t.id)?.arrived;
-        kicker = done ? 'Continue' : t.id === selectedId ? 'Your target' : 'Nearest site';
+        kicker = done ? T('Continue') : t.id === selectedId ? T('Your target') : T('Nearest site');
         title = t.title; act = `f:open:${t.id}`;
-        line = d <= t.zone.r ? (loc.fix.acc > t.zone.acc ? `You’re close · waiting for better GPS (±${Math.round(loc.fix.acc)} m)` : 'You’re in the zone') : `${fmtDist(d)} ${dirWord(b)}${loc.fix.acc > 30 ? ` · GPS ±${Math.round(loc.fix.acc)} m` : ''}`;
+        line = d <= t.zone.r ? (loc.fix.acc > t.zone.acc ? T('You’re close · waiting for better GPS (±{n} m)', { n: Math.round(loc.fix.acc) }) : T('You’re in the zone')) : `${fmtDist(d)} ${dirWord(b)}${loc.fix.acc > 30 ? ` · GPS ±${Math.round(loc.fix.acc)} m` : ''}`;
         const live = orient.compass && performance.now() - orient.last < 3000;
         rot = live ? b - orient.heading : b;
-      } else if (FIELD.every((f) => f.hidden || !f.zone || fieldDone(f.id))) { kicker = 'Well done'; title = 'All mapped sites found'; line = 'Open the list for the rest.'; }
-      else { kicker = 'Sites'; title = 'Pick a site on the map'; line = 'Or open the list.'; }
+      } else if (FIELD.every((f) => f.hidden || !f.zone || fieldDone(f.id))) { kicker = T('Well done'); title = T('All mapped sites found'); line = T('Open the list for the rest.'); }
+      else { kicker = T('Sites'); title = T('Pick a site on the map'); line = T('Or open the list.'); }
     }
   }
-  if (loc.sim) kicker = `[test] ${kicker}`;
+  if (loc.sim) kicker = `[${T('test')}] ${kicker}`;
   $('g-kicker').textContent = kicker; $('g-title').textContent = title; $('g-line').textContent = line;
   guideEl.dataset.act = act;
   arrow.toggleAttribute('hidden', rot == null);
@@ -2672,7 +2722,7 @@ function updateTop() {
   const fs = fieldSave();
   $('top-parts').innerHTML = FIELD_CHAPTERS.map((c) => `<li class="${fs.ch[c.n] ? 'got' : ''}" style="--pc:${c.color}" title="${esc(c.name)}">${PART_ICON[c.n]}</li>`).join('');
   $('top-points').textContent = fmt(fieldTotal());
-  $('top-done').textContent = `${piecesDone()}/${FIELD.length} places`;
+  $('top-done').textContent = T('{n}/{m} places', { n: piecesDone(), m: FIELD.length });
 }
 $('btn-sites').addEventListener('click', () => { sound('tap'); fieldCard(); });
 $('btn-code').addEventListener('click', () => { sound('tap'); codeCard(null); });
@@ -2709,11 +2759,11 @@ function testCard() {
   fieldAccent(null);
   const sites = [...FIELD, ASSEMBLY].filter((f) => f.zone);
   showCard({
-    field: 'test', kicker: 'Test mode', title: 'Play anywhere',
-    body: ['Try the field game at home: your real progress is kept apart and the start page doesn’t see it.',
-      'Pick a site: you start 40 m from it. Walk with the joystick on the map, or with the Walk button in the camera view (it walks the way your phone faces). Turn by turning your phone; on a computer, drag. Arriving takes 5 seconds here.'],
-    list: `<ul class="sheet-list field-list">${sites.map((f) => `<li><button data-id="f:near:${f.id}"><span class="fnum">${f.id === 'A' ? '★' : f.id}</span><span class="n">${esc(f.title)}<small>${esc(f.id === 'A' ? 'Tourist Info Centre' : statusOf(f).text)}</small></span></button></li>`).join('')}</ul>`,
-    actions: [{ id: 'f:test-reset', label: 'Reset test progress' }, { id: 'f:test-exit', label: 'Leave test mode' }, ...(loc.sim ? [{ id: 'close', label: 'Close' }] : [])],
+    field: 'test', kicker: T('Test mode'), title: T('Play anywhere'),
+    body: [T('Try the field game at home: your real progress is kept apart and the start page doesn’t see it.'),
+      T('Pick a site: you start 40 m from it. Walk with the joystick on the map, or with the Walk button in the camera view (it walks the way your phone faces). Turn by turning your phone; on a computer, drag. Arriving takes 5 seconds here.')],
+    list: `<ul class="sheet-list field-list">${sites.map((f) => `<li><button data-id="f:near:${f.id}"><span class="fnum">${f.id === 'A' ? '★' : f.id}</span><span class="n">${esc(f.title)}<small>${esc(f.id === 'A' ? T('Tourist Info Centre') : statusOf(f).text)}</small></span></button></li>`).join('')}</ul>`,
+    actions: [{ id: 'f:test-reset', label: T('Reset test progress') }, { id: 'f:test-exit', label: T('Leave test mode') }, ...(loc.sim ? [{ id: 'close', label: T('Close') }] : [])],
   });
 }
 function updateTestUI() {
@@ -2811,13 +2861,13 @@ function saveCodeCard(state = {}) {
   fieldAccent(null);
   const has = hasProgress(), code = has ? saveCode() : '', url = `${PAGE_URL}#save-${code}`;
   showCard({
-    field: 'savecode', kicker: 'Backup', title: 'Your save code',
-    body: [has ? 'iPhone can clear a website’s saved progress after 7 days without a visit. Take a photo of this QR code, or copy the code into a note or a message to yourself: it brings your progress back, on this phone or another one.'
-      : 'Nothing to save yet. Played on another phone? Paste its save code below.'],
-    html: has ? `<div class="savecode"><canvas id="save-qr" width="264" height="264" aria-label="QR code with your save code"></canvas><code id="save-code">${esc(code)}</code></div>` : '',
-    html2: `<label class="codebox restore"><span class="sr">A save code to restore</span><input id="f-restore" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Paste a save code to restore"></label>`,
+    field: 'savecode', kicker: T('Backup'), title: T('Your save code'),
+    body: [has ? T('iPhone can clear a website’s saved progress after 7 days without a visit. Take a photo of this QR code, or copy the code into a note or a message to yourself: it brings your progress back, on this phone or another one.')
+      : T('Nothing to save yet. Played on another phone? Paste its save code below.')],
+    html: has ? `<div class="savecode"><canvas id="save-qr" width="264" height="264" aria-label="${esc(T('QR code with your save code'))}"></canvas><code id="save-code">${esc(code)}</code></div>` : '',
+    html2: `<label class="codebox restore"><span class="sr">${esc(T('A save code to restore'))}</span><input id="f-restore" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="${esc(T('Paste a save code to restore'))}"></label>`,
     note: state.note || null,
-    actions: [...(has ? [{ id: 'f:copysave', label: 'Copy the code', primary: true }] : []), { id: 'f:restore', label: 'Restore', primary: !has }, { id: 'f:list', label: 'Back' }],
+    actions: [...(has ? [{ id: 'f:copysave', label: T('Copy the code'), primary: true }] : []), { id: 'f:restore', label: T('Restore'), primary: !has }, { id: 'f:list', label: T('Back') }],
     onShow: (el) => { const cv = el.querySelector('#save-qr'); if (cv) drawQR(cv, url); },
   });
 }
@@ -2826,9 +2876,9 @@ function restoreCard(data) {   // what the code holds, before it replaces this p
   const n = FIELD.filter((f) => data.m[f.id]?.done).length;
   const pts = FIELD.reduce((a, f) => a + fieldPts(data.m[f.id]), 0) + Object.keys(data.ch).length * FP.chapter + (data.assembled ? data.riddlePts : 0);
   showCard({
-    field: 'restore', kicker: 'Backup', title: 'Restore this progress?',
-    body: [`${n} of ${FIELD.length} places done, ${fmt(pts)} points${data.stamp ? `, field stamp ${data.stamp}` : ''}.`, 'It replaces the progress on this phone.'],
-    actions: [{ id: 'f:restore-yes', label: 'Restore it', primary: true }, { id: 'f:list', label: 'Cancel' }],
+    field: 'restore', kicker: T('Backup'), title: T('Restore this progress?'),
+    body: [`${T('Places done: {n} of {m} · {pts} points', { n, m: FIELD.length, pts: fmt(pts) })}${data.stamp ? ` · ${T('field stamp {s}', { s: data.stamp })}` : ''}.`, T('It replaces the progress on this phone.')],
+    actions: [{ id: 'f:restore-yes', label: T('Restore it'), primary: true }, { id: 'f:list', label: T('Cancel') }],
   });
 }
 
@@ -3006,8 +3056,9 @@ const RUNE_RING = null;   // e.g. 'catch/ring.png': an engraved ring picture to 
 const GROUND = { eye: 1.45, ahead: 4.5, hover: 0.35 };   // phone height above the ground; where the shard lands (v20: 4.5 m, was 3 m: too close); how high it floats
 const CATCH = { dist: 4.7, size: 0.46, hitR: 0.36, orbR: 0.1, ringMax: 0.42, ringMin: 0.11, period: 1.9, flick: 520, g: 9.8 };   // v20: a smaller shard (was 0.72 m)
 const THROWS = [{ name: 'Excellent', max: 0.42, bonus: 50, p: 0.45 }, { name: 'Great', max: 0.68, bonus: 25, p: 0.3 }, { name: 'Nice', max: 1.01, bonus: 10, p: 0.15 }];
-const MISS_LINES = ['Whoosh, just past it! Drag or flick straight at the shard.', 'Close! Try again.', 'Missed. Let go of the orb right on the shard.'];
-const ESCAPE_LINES = ['It broke free! Once more.', 'Almost had it! Again!', 'It wriggled out. Throw again!'];
+const MISS_LINES = [T('Whoosh, just past it! Drag or flick straight at the shard.'), T('Close! Try again.'), T('Missed. Let go of the orb right on the shard.')];
+const ESCAPE_LINES = [T('It broke free! Once more.'), T('Almost had it! Again!'), T('It wriggled out. Throw again!')];
+const meyra = (line) => `${CUB}: ${qt(line)}`;
 const cat = { on: false, T: null, gl: null, failed: false, state: 'off', f: null, b: 0, e: 0, d: 2.4, spot: null, sp: null, land: null, staleT: 0, sayT: 0, ox: 0, oy: 0, otx: 0, oty: 0, nextDodge: 0, ring: 1, ringT0: 0,
   throws: 0, misses: 0, escapes: 0, fly: null, seq: null, w: 0, h: 0, prev: 0 };
 const orbEl = $('ar-orb'), popEl = $('ar-pop'), arrowEl = $('ar-arrow'), distEl = $('ar-dist');
@@ -3131,7 +3182,7 @@ async function startApproach(f, spot) {
   if (!(await readyCatch(f))) return false;
   resetCatch(f); cat.state = 'approach'; cat.spot = spot;
   arEl.classList.add('approaching'); orbEl.hidden = true; cat.gl.pillar.visible = true;
-  $('ar-title').textContent = 'Find the shard';
+  $('ar-title').textContent = T('Find the shard');
   return true;
 }
 const landRange = () => clamp(8 + (loc.fix?.acc || 10) * 0.5, 10, 20);
@@ -3145,15 +3196,15 @@ function landNow() {   // from the approach: the shard flies down to you
   if (cat.state !== 'approach') return;
   const G = cat.gl, b = cat.sp ? (Math.atan2(cat.sp.e, cat.sp.n) / DEG + 360) % 360 : orient.heading;
   landTo(groundSpot(b), G.root.position, G.root.scale.x, 1300);
-  say(`${CUB}: “Here it comes!”`);
+  say(meyra(T('Here it comes!')));
 }
 function beginAim() {
   const now = performance.now();
   Object.assign(cat, { state: 'aim', land: null, ringT0: now / 1000, nextDodge: now + 4500 });
   const G = cat.gl; G.root.scale.setScalar(1); G.gem.scale.setScalar(CATCH.size); G.pillar.visible = false;
   arEl.classList.remove('approaching'); arEl.classList.add('catching'); orbEl.hidden = false; orbEl.classList.remove('gone');
-  $('ar-title').textContent = 'Catch the shard';
-  say(`${CUB}: “It landed right in front of you! Drag the crystal orb up to it and let go, or flick it. Throw while the gold ring is small for a bonus.”`);
+  $('ar-title').textContent = T('Catch the shard');
+  say(meyra(T('It landed right in front of you! Drag the crystal orb up to it and let go, or flick it. Throw while the gold ring is small for a bonus.')));
 }
 function stopCatch() {
   cat.on = false; cat.state = 'off'; cat.fly = cat.seq = null; orbDrag = null;
@@ -3245,11 +3296,10 @@ function approachFrame(now, dt, w, h) {
   distEl.hidden = !(top.z < 1 && Math.abs(top.x) < 1.1 && Math.abs(top.y) < 1.1);
   if (!distEl.hidden) { distEl.textContent = fmtDist(dist); distEl.style.transform = `translate(${((top.x + 1) / 2 * w).toFixed(0)}px, ${((1 - top.y) / 2 * h).toFixed(0)}px) translate(-50%, -100%)`; }
   const act = $('ar-act'), near = dist <= 40 || cat.staleT > 15;   // can't get closer (a wall, a fence, no GPS)? catch it from here
-  if (act.hidden === near) { act.hidden = !near; act.textContent = 'Catch it from here'; }
+  if (act.hidden === near) { act.hidden = !near; act.textContent = T('Catch it from here'); }
   if (now > cat.sayT) {
     cat.sayT = now + 1500;
-    const where = f.look.what ? `by ${f.look.what}` : `at ${f.title}`;
-    say(cat.staleT > 15 ? `${CUB}: “I lost your position. Tap ‘Catch it from here’ and it will fly to you.”` : `${CUB}: “The shard is waiting ${where}, ${fmtDist(dist)} away. Walk towards the green light!”`);
+    say(meyra(cat.staleT > 15 ? T('I lost your position. Tap ‘Catch it from here’ and it will fly to you.') : T('The shard is waiting {dist} away. Walk towards the green light!', { dist: fmtDist(dist) })));
   }
   if (live && dist <= landRange()) landNow();
 }
@@ -3290,15 +3340,15 @@ const endOrbDrag = (e) => {
   const now = performance.now(), recent = d.pts.filter((p) => now - p[2] < 110), a = recent[0] || d.pts[0], z = d.pts[d.pts.length - 1];
   const dt = Math.max(0.016, (z[2] - a[2]) / 1000), vx = (z[0] - a[0]) / dt, vy = (z[1] - a[1]) / dt;
   const tx = z[0] - d.x0, ty = z[1] - d.y0, fast = -vy >= CATCH.flick;
-  if (!fast && -ty < 40) { if (d.moved > 14) say(`${CUB}: “Drag the orb up to the shard and let go, or flick it!”`); return; }
-  if (!arrowEl.hidden) { say(`${CUB}: “First find the shard: turn the way the green arrow points.”`); return; }
+  if (!fast && -ty < 40) { if (d.moved > 14) say(meyra(T('Drag the orb up to the shard and let go, or flick it!'))); return; }
+  if (!arrowEl.hidden) { say(meyra(T('First find the shard: turn the way the green arrow points.'))); return; }
   if (fast) throwOrb(d.x0, d.y0, vx, vy);   // a flick: the aim line starts where the orb rests, in the direction of the swipe
   else throwOrb(d.x0, d.y0, tx, ty, false, z[1]);   // dragged up and let go: a lob along the drag, as far as it was dragged
 };
 orbEl.addEventListener('pointerup', endOrbDrag); orbEl.addEventListener('pointercancel', endOrbDrag);
 orbEl.addEventListener('click', (e) => {   // keyboard (Enter or Space): a straight throw at the shard
   if (e.detail !== 0 || cat.state !== 'aim') return;
-  if (!arrowEl.hidden) { say(`${CUB}: “First find the shard: turn the way the green arrow points (arrow keys).”`); return; }
+  if (!arrowEl.hidden) { say(meyra(T('First find the shard: turn the way the green arrow points (arrow keys).'))); return; }
   const r = orbEl.getBoundingClientRect(), a = arEl.getBoundingClientRect();
   throwOrb(r.left + r.width / 2 - a.left, r.top - a.top, 0, -1500, true);
 });
@@ -3338,14 +3388,14 @@ function updateFly(dt) {
 function miss() {
   if (DEBUG) console.log('[catch] missed by', cat.fly?.best?.toFixed(2), 'm');
   const G = cat.gl; cat.fly = null; G.orb.visible = false; cat.misses++; cat.state = 'aim'; orbEl.classList.remove('gone');
-  sound('miss'); say(`${CUB}: “${MISS_LINES[(cat.misses - 1) % MISS_LINES.length]}”`);
+  sound('miss'); say(meyra(MISS_LINES[(cat.misses - 1) % MISS_LINES.length]));
   if (Math.random() < 0.35) dodge(performance.now());
 }
 function hit(d) {
   cat.fly = null;
   const inRing = d <= CATCH.ringMax * cat.ring + 0.04, q = inRing ? THROWS.find((x) => cat.ring <= x.max) : null;
   cat.lastQ = q; sound('hit'); buzz([20, 30, 20]);
-  if (q) pop(`${q.name}!`, q === THROWS[0] ? 'green' : 'gold');
+  if (q) pop(`${T(q.name)}!`, q === THROWS[0] ? 'green' : 'gold');   // T('Excellent') T('Great') T('Nice')
   const now = performance.now(), G = cat.gl;
   cat.state = 'absorb';
   const p = 0.55 + (q ? q.p : 0) + 0.2 * cat.escapes, caught = cat.escapes >= 2 || Math.random() < p;
@@ -3376,10 +3426,10 @@ function updateSeq(now, dt) {
   const end = wob - S.wobbles * 850;
   if (S.caught) {
     if (cat.state !== 'caught') {
-      cat.state = 'caught'; sound('caught'); buzz([40, 30, 90]); pop('Collected!', 'green');
+      cat.state = 'caught'; sound('caught'); buzz([40, 30, 90]); pop(T('Collected!'), 'green');
       G.orbGlow.material.color.setHex(0xb6ff4a); G.orbGlow.material.opacity = 1;
       G.burst.forEach((s) => { s.position.copy(G.orb.position); s.userData.v.set(Math.random() - 0.5, Math.random() * 0.9 + 0.2, Math.random() - 0.5).normalize().multiplyScalar(1.1 + Math.random() * 1.4); s.material.opacity = 1; });
-      say(`${CUB}: “${cat.f.got}”`);
+      say(meyra(cat.f.got));
       setTimeout(finishCatch, 2300);
     }
     for (const s of G.burst) { s.userData.v.y -= 2.2 * dt; s.position.addScaledVector(s.userData.v, dt); s.material.opacity = Math.max(0, 1 - end / 1300); }
@@ -3387,7 +3437,7 @@ function updateSeq(now, dt) {
     return;
   }
   // it breaks free: the orb bursts and the shard flies back to its place
-  if (cat.state !== 'escape') { cat.state = 'escape'; sound('escape'); buzz(25); pop('Broke free!'); S.back = G.orb.position.clone(); }
+  if (cat.state !== 'escape') { cat.state = 'escape'; sound('escape'); buzz(25); pop(T('Broke free!')); S.back = G.orb.position.clone(); }
   G.root.visible = true;   // every frame: the line above the wobbles hides it again (v19 bug: the shard stayed invisible after it broke free)
   const k = Math.min(1, end / 550);
   G.orb.scale.setScalar(1 + k * 1.6); G.orbBall.material.opacity = 0.78 * (1 - k); G.orbGlow.material.opacity = 0.85 * (1 - k);
@@ -3395,7 +3445,7 @@ function updateSeq(now, dt) {
   G.root.position.copy(S.back).lerp(home, smooth(k)); G.gem.scale.setScalar(CATCH.size * smooth(k)); G.glow.material.opacity = 0.8 * k;
   if (k >= 1) {
     cat.seq = null; cat.escapes++; cat.state = 'aim'; G.orb.visible = false; G.orb.scale.setScalar(1); G.orb.rotation.set(0, 0, 0);
-    orbEl.classList.remove('gone'); say(`${CUB}: “${ESCAPE_LINES[(cat.escapes - 1) % ESCAPE_LINES.length]}”`);
+    orbEl.classList.remove('gone'); say(meyra(ESCAPE_LINES[(cat.escapes - 1) % ESCAPE_LINES.length]));
   }
 }
 function finishCatch() {
@@ -3403,7 +3453,7 @@ function finishCatch() {
   const f = cat.f, r = frec(f.id);
   const pts = Math.max(60, FP.catch + (cat.lastQ ? cat.lastQ.bonus : 0) - 10 * cat.misses);
   r.catch = pts; r.throwQ = cat.lastQ ? cat.lastQ.name : null; r.throws = cat.throws; r.look = Date.now(); persist();
-  refreshFieldMarkers(); toast(`+${pts} · Piece of the peridot collected`, 2600);
+  refreshFieldMarkers(); toast(`+${pts} · ${T('Piece of the peridot collected')}`, 2600);
   afterLook(f);
 }
 if (DEBUG) setTimeout(() => { if (window.game) Object.assign(window.game, { cat, startCatch, throwOrb, loadThree }); }, 0);
@@ -3415,7 +3465,7 @@ function fieldHash(h) {   // #field-T2 opens the site; #field-T2-6DYP (the plaqu
   if (sv) {
     const data = readSaveCode(sv[1]);
     try { history.replaceState(null, '', location.pathname + location.search); } catch { /* */ }
-    setTimeout(() => (data ? restoreCard(data) : saveCodeCard({ note: { tone: 'bad', head: 'Hmm.', text: 'That link holds no save code this game can read.' } })), 300);
+    setTimeout(() => (data ? restoreCard(data) : saveCodeCard({ note: { tone: 'bad', head: T('Hmm.'), text: T('That link holds no save code this game can read.') } })), 300);
     return true;
   }
   const m = /^field-([A-Z]\d?)(?:-([0-9A-Za-z]{4}))?$/.exec(h || ''); if (!m) return false;
@@ -3441,7 +3491,7 @@ if (fieldOn) startLocation();
 updateTestUI();
 if (TEST && !loc.sim) setTimeout(testCard, 300);
 else if (!fieldHash(location.hash.slice(1)) && !fieldSave().seenIntro) setTimeout(fieldIntroCard, 300);
-if (DEBUG) window.game = { noteSpeed, speedNow, FAST, FIELD, ASSEMBLY, save, loc, orient, view, arView, arProject, dirBE, camFov, camSel, arLag, simulateAt, testWalk, testMove, TEST, arrive, fieldAction, fieldTotal, FIELD_MAX, drawMap, perf, get arOpen() { return arOpen; }, get card() { return card; } };
+if (DEBUG) window.game = { LANG, T, noteSpeed, speedNow, FAST, FIELD, ASSEMBLY, save, loc, orient, view, arView, arProject, dirBE, camFov, camSel, arLag, simulateAt, testWalk, testMove, TEST, arrive, fieldAction, fieldTotal, FIELD_MAX, drawMap, perf, get arOpen() { return arOpen; }, get card() { return card; } };
 
 
 </script>
