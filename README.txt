@@ -36,7 +36,16 @@ WHAT IS IN THIS FOLDER
   partners/       logos under the menu on the start screen: TO Gusinje, Xplore Prokletije, Ministry of Tourism
   catch/          meyra.jpg and meyra-face.jpg: Meyra's painted face (camera view, speech bubbles); kissing-cats.webp: the finale
   field-redirect/index.html   forwarder for the address on the printed map (see below)
-  three.js 0.160.0 loads from jsDelivr; the fonts load from Google Fonts.
+  vendor/         three.module.js (three.js 0.160.0): ships with the game so the 3D piece works with no signal (jsDelivr is
+                  only a fallback). The fonts load from Google Fonts and are kept on the phone after the first visit.
+  sw.js           the service worker (offline, since 16 Nov 2026): pages come from the network first, so a new version arrives
+                  when there is signal; all other files come from the phone first. "Ready for the mountains" in Before you go
+                  saves every file (about 9 MB) on Wi-Fi in town. build.py writes its file list and version; upload it with
+                  the rest, in the same folder as index.html.
+  manifest.webmanifest, icons/   make the game installable ("Add to Home Screen"); on an iPhone a game on the home
+                  screen also keeps its saved progress longer.
+  Save code       in the game, Places > Save code: the whole progress in 52 characters and a QR code (it opens
+                  xplore-prokletije.com/field/#save-...); Restore asks before it replaces the progress on a phone.
 
   Updating an earlier copy: the m/ folder (the virtual missions' photos), landing/orb.jpg, landing/phone.jpg,
   landing/menu-visit.jpg, catch/ari.jpg and fieldmap/valley3d.jpg are no longer used and can be deleted from the site. landing/trail.jpg is new: replace the old one.
@@ -44,6 +53,7 @@ WHAT IS IN THIS FOLDER
 HOSTING
   Upload the folder as it is to https://xplore-prokletije.com/p/ . Static files only: no database, no build step.
   Use HTTPS. Location, compass and camera only work over HTTPS on your own site.
+  The offline mode (sw.js) also needs HTTPS. Inside the Claude app it is off; there, Ready for the mountains says so.
   Inside the claude.ai preview they are switched off; there the game works with the plaque codes.
   index.html and field.html must stay in the same folder and on the same site: they share the player's progress.
 
