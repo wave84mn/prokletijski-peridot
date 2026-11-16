@@ -10,8 +10,8 @@ WHAT IS IN THIS FOLDER
                   rank, the field stamp with its QR), Legend & how to play, Before you go (checks location, camera, motion
                   and compass, shows the battery; tips; then the visit: Tourist Info Centre, time and getting around, safety,
                   national park, places of prayer).
-                  EN · ME · SQ switches the start screen's language (remembered on the device). The game itself is
-                  in English for now.
+                  EN · ME · SQ switches the language (remembered on the device); the game follows it. A first visit
+                  takes the phone's language. field.html?lang=me (or sq, en) picks one.
   field.html      the game: the story "Pieces of Peridot" with Meyra as the guide (since 16 Nov 2026): ten places in three
                   chapters (town, water, mountain), then the finders' desk at the Tourist Info Centre and the Kissing Cats, played on site
                   (GPS zones on the phone, or the 4-character code on each site's plaque). At each site a peridot shard
@@ -93,7 +93,10 @@ THE BADGE ON THE START SCREEN
 CHANGING TEXT
   Start screen texts in the three languages: the TXT block (en, me, sq) in the script in index.html; the ten places
   and their names: PLACES10 just above it. Tourist Info Centre details (address, opening hours, phone) go in visCentre.
-  Game sites, tasks and questions: the FIELD block of the script in field.html.
+  Game sites, tasks and questions: the FIELD block of the script in field.html (English). Their Montenegrin and
+  Albanian words, and every button and message of the game, come from the game text table (the Sheet "Prokletijski
+  Peridot · Game Text", one sheet per language); the next build of the game reads it. Here they sit in STRINGS at the
+  top of the script in field.html.
 
 Maps: © OpenStreetMap contributors (ODbL); heights: Copernicus DEM GLO-30 © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH
 2014-2018, provided under COPERNICUS by the European Union and ESA.
