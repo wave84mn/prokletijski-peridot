@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0e1312"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Peridot"></head><body>
 <title>Prokletijski Peridot</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -317,6 +317,8 @@ button { font: inherit; color: inherit; }
 .ld-checks .res.ok { color: var(--peridot-hi); }
 .ld-checks .res.bad { color: var(--rust); }
 .ld-checks .ld-btn { grid-column: 2; grid-row: 1 / span 2; min-height: 40px; padding: 6px 14px; font-size: 14px; }
+.ld-checks li.wide { grid-template-columns: minmax(0, 1fr); }   /* Ready for the mountains: the button under its text */
+.ld-checks li.wide .ld-btn { grid-column: 1; grid-row: auto; justify-self: start; margin-top: 4px; }
 .ld-tips { margin: 8px 0 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; font-size: 14.5px; line-height: 1.45; color: rgba(244, 236, 217, 0.84); }
 .ld-tips li::marker { color: var(--gold); }
 .ld-framed { margin-top: 12px; padding: 10px 12px; border-radius: 4px; font-size: 14px; line-height: 1.45; background: rgba(229, 185, 113, 0.12); box-shadow: inset 0 0 0 1px rgba(229, 185, 113, 0.4); }
@@ -663,7 +665,7 @@ window.__peridotBoot = setTimeout(function () {
 </script>
 
 <script type="module">
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+const THREE = await import('./vendor/three.module.js').catch(() => import('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js'));
 /* ---------------------------------------------------------------- missions (content from the nine published stations) */
 const MISSIONS = [
  {
@@ -6507,14 +6509,16 @@ const TXT = {
     // Before you go
     rdyKicker: 'Get ready', rdyTitle: 'Before you go', rdyIntro: 'Check your phone here, before you set out. Nothing you allow here leaves your phone.',
     chkLoc: 'Location', chkCam: 'Camera', chkMotion: 'Motion and compass', chkBatt: 'Battery', check: 'Check', again: 'Again',
+    chkOff: 'No signal', offBtn: 'Ready for the mountains', sOffIdle: 'On Wi‑Fi, before you drive to the valleys: saves the whole game on this phone (about 9 MB).',
+    sOffBusy: 'Saving… {n} of {m} files', sOffOk: 'Ready: the game works without signal ({mb} MB on this phone)', sOffPart: '{n} files could not be saved: try again on Wi‑Fi', sOffFail: 'Could not save: try again on Wi‑Fi', sOffNa: 'Works on the game’s website (xplore-prokletije.com/p/), not in this preview',
     sIdle: 'Not checked yet', sBusy: 'Checking…', sLocOk: 'Works · accurate to {n} m', sOk: 'Works', sBlocked: 'Blocked: allow it for this site in your browser settings',
     sNa: 'Not available on this device', sTimeout: 'No fix yet: go outside or near a window and try again', sInsecure: 'Needs the game’s https address',
     sMotionNa: 'Not available on this device: the map still works, the camera view turns less smoothly',
     sBatt: '{n}%', sBattCharging: '{n}% · charging', sBattNa: 'This browser doesn’t say. ',
     battTip: 'The camera and GPS use a lot of power: start with a full battery, or bring a power bank for a day in the valleys. The game uses the camera only while you look for a piece.',
     tipsTitle: 'Good to know',
-    tips: ['Mobile data: the game loads its map and pictures when you open it. In the valleys the signal can be weak, so open the game once on Wi‑Fi before you set out.',
-      'Your progress is saved in this browser on this phone: play to the end on the same phone and browser.',
+    tips: ['In the valleys the signal can be weak: on Wi‑Fi in town, tap Ready for the mountains above and the whole game works without signal.',
+      'Your progress is saved in this browser on this phone. iPhone can clear it after 7 days without a visit: keep the game on your home screen, and keep its save code (in the game: Places › Save code).',
       'Add the game to your home screen: Share › Add to Home Screen (iPhone), or the browser menu › Add to Home screen (Android).'],
     framedNote: 'Inside the Claude app the camera and location are switched off. Open the game at <code>xplore-prokletije.com/p/</code> to check them.',
   },
@@ -6557,14 +6561,16 @@ const TXT = {
     visPrayH: 'Mjesta molitve', visPray: 'Džamije i crkve su mjesta molitve: posjeti ih tiho, pristojno obučen, i ostani napolju tokom molitve i službe, posebno petkom u podne, tokom džume u džamijama.',
     rdyKicker: 'Pripremi se', rdyTitle: 'Prije polaska', rdyIntro: 'Provjeri telefon ovdje, prije nego što kreneš. Ništa što ovdje dozvoliš ne napušta tvoj telefon.',
     chkLoc: 'Lokacija', chkCam: 'Kamera', chkMotion: 'Pokret i kompas', chkBatt: 'Baterija', check: 'Provjeri', again: 'Ponovo',
+    chkOff: 'Bez signala', offBtn: 'Spremno za planine', sOffIdle: 'Na Wi‑Fi‑ju, prije polaska u doline: čuva cijelu igru na ovom telefonu (oko 9 MB).',
+    sOffBusy: 'Čuvam… {n} od {m} fajlova', sOffOk: 'Spremno: igra radi bez signala ({mb} MB na ovom telefonu)', sOffPart: 'Nije sačuvano {n} fajlova: pokušaj ponovo na Wi‑Fi‑ju', sOffFail: 'Čuvanje nije uspjelo: pokušaj ponovo na Wi‑Fi‑ju', sOffNa: 'Radi na sajtu igre (xplore-prokletije.com/p/), ne u ovom pregledu',
     sIdle: 'Još nije provjereno', sBusy: 'Provjeravam…', sLocOk: 'Radi · tačnost {n} m', sOk: 'Radi', sBlocked: 'Blokirano: dozvoli za ovaj sajt u podešavanjima pregledača',
     sNa: 'Nije dostupno na ovom uređaju', sTimeout: 'Još nema lokacije: izađi napolje ili priđi prozoru i pokušaj ponovo', sInsecure: 'Potrebna je https adresa igre',
     sMotionNa: 'Nije dostupno na ovom uređaju: mapa radi, a prikaz kamere se okreće manje glatko',
     sBatt: '{n}%', sBattCharging: '{n}% · puni se', sBattNa: 'Ovaj pregledač to ne prikazuje. ',
     battTip: 'Kamera i GPS troše dosta baterije: kreni s punom baterijom ili ponesi pomoćnu bateriju za dan u dolinama. Igra koristi kameru samo dok tražiš djelić.',
     tipsTitle: 'Dobro je znati',
-    tips: ['Mobilni internet: igra učitava mapu i slike kad je otvoriš. U dolinama signal može biti slab, pa je otvori jednom na Wi‑Fi‑ju prije polaska.',
-      'Napredak se čuva u ovom pregledaču na ovom telefonu: igraj do kraja na istom telefonu i u istom pregledaču.',
+    tips: ['U dolinama signal može biti slab: na Wi‑Fi‑ju u gradu dodirni Spremno za planine gore i cijela igra radi bez signala.',
+      'Napredak se čuva u ovom pregledaču na ovom telefonu. iPhone ga može obrisati nakon 7 dana bez posjete: drži igru na početnom ekranu i sačuvaj njen kod za čuvanje (u igri: Places › Save code).',
       'Dodaj igru na početni ekran: Podijeli › Dodaj na početni ekran (iPhone), ili meni pregledača › Dodaj na početni ekran (Android).'],
     framedNote: 'U Claude aplikaciji kamera i lokacija su isključene. Otvori igru na <code>xplore-prokletije.com/p/</code> da ih provjeriš.',
   },
@@ -6607,14 +6613,16 @@ const TXT = {
     visPrayH: 'Vende lutjeje', visPray: 'Xhamitë dhe kishat janë vende lutjeje: vizitoji në heshtje, të veshur me kujdes, dhe qëndro jashtë gjatë lutjeve dhe meshave, sidomos të premten në mesditë, në kohën e xhumasë në xhami.',
     rdyKicker: 'Përgatitu', rdyTitle: 'Para nisjes', rdyIntro: 'Kontrollo telefonin këtu, para se të nisesh. Asgjë që lejon këtu nuk largohet nga telefoni yt.',
     chkLoc: 'Vendndodhja', chkCam: 'Kamera', chkMotion: 'Lëvizja dhe busulla', chkBatt: 'Bateria', check: 'Kontrollo', again: 'Sërish',
+    chkOff: 'Pa sinjal', offBtn: 'Gati për malet', sOffIdle: 'Me Wi‑Fi, para se të nisesh për në lugina: ruan gjithë lojën në këtë telefon (rreth 9 MB).',
+    sOffBusy: 'Po ruaj… {n} nga {m} skedarë', sOffOk: 'Gati: loja punon pa sinjal ({mb} MB në këtë telefon)', sOffPart: '{n} skedarë nuk u ruajtën: provo sërish me Wi‑Fi', sOffFail: 'Ruajtja dështoi: provo sërish me Wi‑Fi', sOffNa: 'Funksionon në faqen e lojës (xplore-prokletije.com/p/), jo në këtë pamje paraprake',
     sIdle: 'Ende e pakontrolluar', sBusy: 'Duke kontrolluar…', sLocOk: 'Funksionon · saktësia {n} m', sOk: 'Funksionon', sBlocked: 'E bllokuar: lejoje për këtë faqe te cilësimet e shfletuesit',
     sNa: 'Nuk është në dispozicion në këtë pajisje', sTimeout: 'Ende pa vendndodhje: dil jashtë ose afrohu te dritarja dhe provo sërish', sInsecure: 'Duhet adresa https e lojës',
     sMotionNa: 'Nuk është në dispozicion në këtë pajisje: harta funksionon, pamja e kamerës rrotullohet më pak butë',
     sBatt: '{n}%', sBattCharging: '{n}% · po mbushet', sBattNa: 'Ky shfletues nuk e tregon. ',
     battTip: 'Kamera dhe GPS harxhojnë shumë bateri: nisu me bateri plot, ose merr një bateri rezervë për një ditë në lugina. Loja e përdor kamerën vetëm kur kërkon një copë.',
     tipsTitle: 'Mirë të dihet',
-    tips: ['Interneti celular: loja ngarkon hartën dhe fotot kur e hap. Në lugina sinjali mund të jetë i dobët, prandaj hape një herë me Wi‑Fi para nisjes.',
-      'Përparimi ruhet në këtë shfletues, në këtë telefon: luaj deri në fund me të njëjtin telefon dhe shfletues.',
+    tips: ['Në lugina sinjali mund të jetë i dobët: me Wi‑Fi në qytet, prek Gati për malet më lart dhe gjithë loja punon pa sinjal.',
+      'Përparimi ruhet në këtë shfletues, në këtë telefon. iPhone mund ta fshijë pas 7 ditësh pa vizitë: mbaje lojën në ekranin bazë dhe ruaj kodin e saj (në lojë: Places › Save code).',
       'Shtoje lojën në ekranin kryesor: Shpërndaj › Shto në ekranin bazë (iPhone), ose menyja e shfletuesit › Shto në ekranin bazë (Android).'],
     framedNote: 'Në aplikacionin Claude kamera dhe vendndodhja janë të fikura. Hape lojën te <code>xplore-prokletije.com/p/</code> për t’i kontrolluar.',
   },
@@ -6662,7 +6670,7 @@ for (const b of document.querySelectorAll('.ld-lang [data-lang]')) b.addEventLis
 const panel = { kind: null, opener: null };
 const panelEl = $('ld-panel'), panelBody = $('ld-panel-body'), sheetEl = panelEl.querySelector('.ld-sheet');
 const head = (k, title) => `<p class="kicker">${esc(t(k))}</p><h2 id="ld-panel-title">${esc(t(title))}</h2>`;
-const CHECKS = { loc: { s: 'idle' }, cam: { s: 'idle' }, motion: { s: 'idle' }, batt: { s: 'idle' } };
+const CHECKS = { loc: { s: 'idle' }, cam: { s: 'idle' }, motion: { s: 'idle' }, batt: { s: 'idle' }, off: { s: 'idle' } };
 
 function panelMine() {
   const f = fieldProgress();
@@ -6699,15 +6707,15 @@ function visitPart() {   // since 16 Nov 2026 part of Before you go (the Visit i
 }
 function checkLine(id, label) {
   const c = CHECKS[id];
-  const text = c.s === 'idle' ? t('sIdle') : c.s === 'busy' ? t('sBusy') : c.msg;
+  const text = c.s === 'idle' ? t(id === 'off' ? 'sOffIdle' : 'sIdle') : c.s === 'busy' ? (c.msg || t('sBusy')) : c.msg;
   const cls = c.s === 'ok' ? 'ok' : c.s === 'bad' ? 'bad' : '';
-  const btn = id === 'batt' ? '' : `<button type="button" class="ld-btn ghost" data-check="${id}"${c.s === 'busy' ? ' disabled' : ''}>${esc(c.s === 'idle' ? t('check') : t('again'))}</button>`;
-  return `<li><b>${esc(t(label))}</b>${btn}<span class="res ${cls}" aria-live="polite">${esc(text)}</span></li>`;
+  const btn = id === 'batt' ? '' : `<button type="button" class="ld-btn ${id === 'off' ? '' : 'ghost'}" data-check="${id}"${c.s === 'busy' ? ' disabled' : ''}>${esc(id === 'off' ? t('offBtn') : c.s === 'idle' ? t('check') : t('again'))}</button>`;
+  return `<li${id === 'off' ? ' class="wide"' : ''}><b>${esc(t(label))}</b>${id === 'off' ? '' : btn}<span class="res ${cls}" aria-live="polite">${esc(text)}</span>${id === 'off' ? btn : ''}</li>`;
 }
 function panelReady() {
   return `${head('rdyKicker', 'rdyTitle')}<p>${esc(t('rdyIntro'))}</p>
     ${framed ? `<p class="ld-framed">${t('framedNote')}</p>` : ''}
-    <ul class="ld-checks">${checkLine('loc', 'chkLoc')}${checkLine('cam', 'chkCam')}${checkLine('motion', 'chkMotion')}${checkLine('batt', 'chkBatt')}</ul>
+    <ul class="ld-checks">${checkLine('loc', 'chkLoc')}${checkLine('cam', 'chkCam')}${checkLine('motion', 'chkMotion')}${checkLine('batt', 'chkBatt')}${checkLine('off', 'chkOff')}</ul>
     <h3>${esc(t('tipsTitle'))}</h3><ul class="ld-tips">${t('tips').map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
     ${visitPart()}`;
 }
@@ -6752,7 +6760,30 @@ document.addEventListener('keydown', (e) => {
 /* ---------------------------------------------------------------- Before you go: the checks */
 function setCheck(id, s, msg) { CHECKS[id] = { s, msg }; if (panel.kind === 'ready') renderPanel(); }
 function runCheck(id) {
-  if (id === 'loc') checkLocation(); else if (id === 'cam') checkCamera(); else if (id === 'motion') checkMotion();
+  if (id === 'loc') checkLocation(); else if (id === 'cam') checkCamera(); else if (id === 'motion') checkMotion(); else if (id === 'off') readyOffline();
+}
+/* "Ready for the mountains" (fix plan step 5): the service worker saves every file of the game on this phone, on Wi-Fi in town */
+const swOK = () => 'serviceWorker' in navigator && window.isSecureContext && !framed;
+if (swOK()) navigator.serviceWorker.register('sw.js').catch(() => {});
+async function readyOffline() {
+  if (!swOK()) { setCheck('off', 'bad', t('sOffNa')); return; }
+  setCheck('off', 'busy', t('sOffBusy', { n: 0, m: '…' }));
+  try {
+    await navigator.serviceWorker.register('sw.js');
+    const reg = await navigator.serviceWorker.ready;
+    navigator.storage?.persist?.().catch(() => {});   // ask the browser to keep the saved game (and the progress)
+    const res = await new Promise((resolve, reject) => {
+      const ch = new MessageChannel(), to = setTimeout(() => reject(new Error('timeout')), 240000);
+      ch.port1.onmessage = (e) => {
+        const d = e.data || {};
+        if (d.type === 'progress') setCheck('off', 'busy', t('sOffBusy', { n: d.n, m: d.m }));
+        if (d.type === 'done') { clearTimeout(to); resolve(d); }
+      };
+      reg.active.postMessage({ type: 'ready' }, [ch.port2]);
+    });
+    if (res.failed) setCheck('off', 'bad', t('sOffPart', { n: res.failed }));
+    else { setCheck('off', 'ok', t('sOffOk', { mb: (res.bytes / 1e6).toFixed(1) })); store.set('peridot.offline', String(Date.now())); }
+  } catch { setCheck('off', 'bad', t('sOffFail')); }
 }
 function checkLocation() {
   if (!navigator.geolocation) { setCheck('loc', 'bad', t('sNa')); return; }

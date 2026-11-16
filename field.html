@@ -347,6 +347,11 @@ body.card-open .toast { top: calc(max(12px, env(safe-area-inset-top, 0px)) + 6px
 .ar-fast b { font-family: var(--f-display); font-weight: 800; font-size: 26px; text-transform: uppercase; letter-spacing: 0.02em; }
 .ar-fast p { margin: 0; line-height: 1.45; }
 .ar-fast-btns { display: grid; gap: 8px; margin-top: 4px; }
+/* step 5: the save code */
+.savecode { display: grid; grid-template-columns: 132px minmax(0, 1fr); gap: 12px; align-items: center; }
+.savecode canvas { width: 132px; height: 132px; border-radius: 8px; image-rendering: pixelated; }
+.savecode code { font-size: 15px; line-height: 1.35; word-break: break-all; user-select: all; color: var(--parchment); background: var(--obsidian-2); border-radius: 8px; padding: 10px; }
+.codebox.restore input { font-size: 15px; letter-spacing: 0.02em; text-transform: none; }
 /* Meyra (16 Nov 2026): her painted face beside her lines; a scene is several bubbles */
 .cub { align-items: start; }
 .cub .face { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; display: block; margin-top: 2px; box-shadow: 0 0 0 2px #e5b971, 0 0 0 4px rgba(10, 12, 12, 0.7), 0 4px 10px rgba(0, 0, 0, 0.45); }
@@ -498,6 +503,7 @@ textarea.export { width: 100%; box-sizing: border-box; min-height: 180px; font: 
   .gem-rays { opacity: 0.5; }
 }
 </style>
+<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0e1312"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Peridot">
 </head>
 <body>
 <div class="map" id="map" aria-label="Map of the sites">
@@ -558,7 +564,7 @@ textarea.export { width: 100%; box-sizing: border-box; min-height: 180px; font: 
     <span class="txt"><span class="kicker" id="g-kicker"></span><b id="g-title"></b><span id="g-line"></span></span>
   </button>
   <div class="dock-row">
-    <button class="bar-btn glass" id="btn-sites"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg><span class="label">Sites</span></button>
+    <button class="bar-btn glass" id="btn-sites"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg><span class="label">Places</span></button>
     <button class="bar-btn glass" id="btn-code"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 10v4M11 10v4M15 10v4M18 10v4"/></svg><span class="label">Code</span></button>
   </div>
 </div>
@@ -1323,6 +1329,7 @@ function fieldCard() {
       ...(on ? [] : [{ id: 'f:loc-on', label: 'Turn on location', primary: true }]),
       { id: 'f:code', label: 'Enter a plaque code', primary: on },
       { id: 'f:intro', label: 'How it works' },   // stays in the list (bug 16)
+      { id: 'f:savecode', label: 'Save code' },   // backup (step 5)
       ...(!TEST && (fs.assembled || FIELD.some((f) => frec(f.id)?.arrived)) ? [{ id: 'f:restart', label: 'Start over' }] : []),
       ...(SURVEY ? [{ id: 'f:export', label: 'Export settings' }] : []),
       ...(on && !TEST ? [{ id: 'f:loc-off', label: 'Turn off location' }] : []),
@@ -1589,6 +1596,18 @@ function fieldAction(a) {
       actions: [{ id: 'f:list', label: 'Cancel', primary: true }, { id: 'f:restart-yes', label: 'Yes, start over' }] });
     return;
   }
+  if (verb === 'savecode') { saveCodeCard(); return; }
+  if (verb === 'copysave') {
+    const code = $('save-code')?.textContent || '', link = `${PAGE_URL}#save-${code}`;
+    navigator.clipboard?.writeText(link).then(() => toast('Save code copied', 1800), () => { const r = document.createRange(); r.selectNodeContents($('save-code')); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); toast('Selected: copy it now', 2200); });
+    return;
+  }
+  if (verb === 'restore') {
+    const data = readSaveCode($('f-restore')?.value);
+    if (!data) { saveCodeCard({ note: { tone: 'bad', head: 'Hmm.', text: 'That is not a save code. Check it and try again.' } }); return; }
+    restoreCard(data); return;
+  }
+  if (verb === 'restore-yes') { if (pendingRestore) { save.field = pendingRestore; persist(); location.href = location.pathname + location.search; } return; }
   if (verb === 'restart-yes') { save.field = {}; persist(); location.reload(); return; }
   if (verb === 'test-reset') { store.set(SAVE_KEY, '{}'); store.set('peridot.field.testpos', ''); location.reload(); return; }
   if (verb === 'test') { testCard(); return; }
@@ -2734,6 +2753,85 @@ if (TEST) {
   try { const p = JSON.parse(store.get('peridot.field.testpos') || 'null'); if (Array.isArray(p) && p.length === 2) simulateAt(p[0], p[1]); } catch { /* */ }
 }
 
+/* ================================================================ THE SAVE CODE (fix plan step 5)
+   iPhone can clear a site's saved data after 7 days without a visit. The whole progress fits in 52 characters (version 2;
+   per place: flags, catch points, task points; chapters and flags; riddle points / 10; the stamp; a checksum), shown as text
+   and as a QR code that opens the game with #save-<code>. Restoring asks first and replaces this phone's progress. */
+const B64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
+const SAVE_BYTES = 1 + 3 * FIELD.length + 2 + 5 + 1;
+function saveCode() {
+  const fs = fieldSave(), b = [2];
+  for (const f of FIELD) {
+    const r = fs.m[f.id] || {};
+    b.push((r.arrived ? 1 : 0) | (r.arrived === 'gps' ? 2 : 0) | (r.look ? 4 : 0) | (r.done ? 8 : 0) | (r.hint ? 16 : 0) | (r.task != null ? 32 : 0) | (r.q != null ? 64 : 0) | (r.q > 0 ? 128 : 0),
+      clamp(Math.round(r.catch || 0), 0, 255), clamp(Math.round(r.task || 0), 0, 255));
+  }
+  b.push((fs.ch[1] ? 1 : 0) | (fs.ch[2] ? 2 : 0) | (fs.ch[3] ? 4 : 0) | (fs.assembled ? 8 : 0) | (fs.arrivedA ? 16 : 0) | (fs.seenIntro ? 32 : 0),
+    Math.round((fs.assembled ? fs.riddlePts ?? FP.assembly : 0) / 10));
+  const st = /^PRK-([0-9A-Z]{5})$/.exec(fs.stamp || '')?.[1] || '';
+  for (let i = 0; i < 5; i++) b.push(st ? st.charCodeAt(i) : 0);
+  b.push(b.reduce((a, x) => (a + x) & 255, 0));
+  let out = '', acc = 0, bits = 0;
+  for (const x of b) { acc = (acc << 8) | x; bits += 8; while (bits >= 6) { bits -= 6; out += B64[(acc >> bits) & 63]; } acc &= (1 << bits) - 1; }
+  if (bits) out += B64[(acc << (6 - bits)) & 63];
+  return out;
+}
+function readSaveCode(text) {
+  const code = String(text || '').trim().replace(/^.*#save-/, '').replace(/[^A-Za-z0-9_-]/g, '');
+  const b = []; let acc = 0, bits = 0;
+  for (const ch of code) { acc = (acc << 6) | B64.indexOf(ch); bits += 6; if (bits >= 8) { bits -= 8; b.push((acc >> bits) & 255); acc &= (1 << bits) - 1; } }
+  if (b.length < SAVE_BYTES || b[0] !== 2) return null;
+  if (b.slice(0, SAVE_BYTES - 1).reduce((a, x) => (a + x) & 255, 0) !== b[SAVE_BYTES - 1]) return null;
+  const m = {}; let i = 1;
+  for (const f of FIELD) {
+    const fl = b[i], c = b[i + 1], tk = b[i + 2]; i += 3;
+    if (!fl && !c && !tk) continue;
+    const r = {};
+    if (fl & 1) r.arrived = fl & 2 ? 'gps' : 'code';
+    if (fl & 4) r.look = 1;
+    if (c) r.catch = c;
+    if (fl & 32) r.task = tk;
+    if (fl & 64) r.q = fl & 128 ? FP.q : 0;
+    if (fl & 16) r.hint = true;
+    if (fl & 8) r.done = 1;
+    m[f.id] = r;
+  }
+  const g = b[i], riddle = b[i + 1] * 10; i += 2;
+  const st = b.slice(i, i + 5).map((x) => String.fromCharCode(x)).join('');
+  const out = { v: 2, m, ch: {}, seenIntro: !!(g & 32) };
+  for (const n of [1, 2, 3]) if (g & (1 << (n - 1))) out.ch[n] = 1;
+  if (g & 16) out.arrivedA = 'code';
+  if (g & 8) { out.assembled = 1; out.riddlePts = riddle; }
+  if (/^[0-9A-Z]{5}$/.test(st)) out.stamp = `PRK-${st}`;
+  return out;
+}
+const hasProgress = () => { const fs = fieldSave(); return !!(fs.assembled || FIELD.some((f) => fs.m[f.id]?.arrived)); };
+let pendingRestore = null;
+function saveCodeCard(state = {}) {
+  fieldAccent(null);
+  const has = hasProgress(), code = has ? saveCode() : '', url = `${PAGE_URL}#save-${code}`;
+  showCard({
+    field: 'savecode', kicker: 'Backup', title: 'Your save code',
+    body: [has ? 'iPhone can clear a website’s saved progress after 7 days without a visit. Take a photo of this QR code, or copy the code into a note or a message to yourself: it brings your progress back, on this phone or another one.'
+      : 'Nothing to save yet. Played on another phone? Paste its save code below.'],
+    html: has ? `<div class="savecode"><canvas id="save-qr" width="264" height="264" aria-label="QR code with your save code"></canvas><code id="save-code">${esc(code)}</code></div>` : '',
+    html2: `<label class="codebox restore"><span class="sr">A save code to restore</span><input id="f-restore" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Paste a save code to restore"></label>`,
+    note: state.note || null,
+    actions: [...(has ? [{ id: 'f:copysave', label: 'Copy the code', primary: true }] : []), { id: 'f:restore', label: 'Restore', primary: !has }, { id: 'f:list', label: 'Back' }],
+    onShow: (el) => { const cv = el.querySelector('#save-qr'); if (cv) drawQR(cv, url); },
+  });
+}
+function restoreCard(data) {   // what the code holds, before it replaces this phone's progress
+  pendingRestore = data;
+  const n = FIELD.filter((f) => data.m[f.id]?.done).length;
+  const pts = FIELD.reduce((a, f) => a + fieldPts(data.m[f.id]), 0) + Object.keys(data.ch).length * FP.chapter + (data.assembled ? data.riddlePts : 0);
+  showCard({
+    field: 'restore', kicker: 'Backup', title: 'Restore this progress?',
+    body: [`${n} of ${FIELD.length} places done, ${fmt(pts)} points${data.stamp ? `, field stamp ${data.stamp}` : ''}.`, 'It replaces the progress on this phone.'],
+    actions: [{ id: 'f:restore-yes', label: 'Restore it', primary: true }, { id: 'f:list', label: 'Cancel' }],
+  });
+}
+
 /* ================================================================ THE PERIDOT (shared: the missions' shards, the valley-map pins,
    the cub's pendant, and the shard caught in the field game's camera view)
    v2 (15 Nov 2026, the user: "more beautiful, more realistic, and glowing more beautiful"); v3 the same day: a marquise cut
@@ -2899,7 +2997,7 @@ function peridotKit(T) {
    aside are visible little jumps instead of slides. */
 const THREE_URL = 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
 let threeP = null;
-function loadThree() { if (!threeP) threeP = import(THREE_URL).catch((e) => { threeP = null; throw e; }); return threeP; }
+function loadThree() { if (!threeP) threeP = import('./vendor/three.module.js').catch(() => import(THREE_URL)).catch((e) => { threeP = null; throw e; }); return threeP; }   // three.js ships with the game (offline); the CDN is a fallback
 function prefetchThree() { if (!threeP && !document.hidden) loadThree().catch(() => { /* offline: the shard is tapped instead */ }); }
 const withTimeout = (p, ms) => Promise.race([p, new Promise((_, no) => setTimeout(() => no(new Error('timeout')), ms))]);
 const buzz = (p) => { if (navigator.vibrate) try { navigator.vibrate(p); } catch { /* */ } };
@@ -3311,7 +3409,15 @@ function finishCatch() {
 if (DEBUG) setTimeout(() => { if (window.game) Object.assign(window.game, { cat, startCatch, throwOrb, loadThree }); }, 0);
 
 /* ================================================================ BOOT */
-function fieldHash(h) {   // #field-T2 opens the site; #field-T2-6DYP (the plaque QR) also confirms the visit
+if ('serviceWorker' in navigator && window.isSecureContext && !framed) navigator.serviceWorker.register('sw.js').catch(() => {});   // offline (step 5); not inside the Claude app
+function fieldHash(h) {   // #field-T2 opens the site; #field-T2-6DYP (the plaque QR) also confirms the visit; #save-<code> restores a backup
+  const sv = /^save-([A-Za-z0-9_-]{20,})$/.exec(h || '');
+  if (sv) {
+    const data = readSaveCode(sv[1]);
+    try { history.replaceState(null, '', location.pathname + location.search); } catch { /* */ }
+    setTimeout(() => (data ? restoreCard(data) : saveCodeCard({ note: { tone: 'bad', head: 'Hmm.', text: 'That link holds no save code this game can read.' } })), 300);
+    return true;
+  }
   const m = /^field-([A-Z]\d?)(?:-([0-9A-Za-z]{4}))?$/.exec(h || ''); if (!m) return false;
   const byCode = m[2] && [...FIELD, ASSEMBLY].find((x) => x.code === normCode(m[2]));   // the code wins: links made before the ids changed (V1–V3) still work
   const f = byCode || (m[1] === 'A' ? ASSEMBLY : FIELD_BY_ID[m[1]]); if (!f) return false;
