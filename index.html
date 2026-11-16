@@ -6627,7 +6627,7 @@ function fieldProgress() {
   const rec = (p) => m[p.key[scheme]] || null;
   const done = PLACES10.filter((p) => rec(p)?.done).length;
   const chapters = Math.min(3, Object.values(ch).filter(Boolean).length);
-  const pts = Object.values(m).reduce((a, r) => a + (r?.arrived ? 100 : 0) + (r?.catch || 0) + (r?.task || 0) + (r?.q || 0), 0) + chapters * 500 + (f.assembled ? 1000 : 0);
+  const pts = Object.values(m).reduce((a, r) => a + (r?.arrived ? 100 : 0) + (r?.catch || 0) + (r?.task || 0) + (r?.q || 0), 0) + chapters * 500 + (f.assembled ? (f.riddlePts ?? 1000) : 0);
   const started = Object.values(m).some((r) => r?.arrived);
   const rank = f.assembled && done >= 10 && pts >= 6300 ? 4 : f.assembled ? 3 : chapters ? 2 : started ? 1 : 0;   // Guardian: everything, and 90 % of 7,000
   return { rec, done, chapters, pts, started, rank, assembled: !!f.assembled, stamp: typeof f.stamp === 'string' ? f.stamp : null };

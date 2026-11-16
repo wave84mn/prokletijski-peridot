@@ -887,7 +887,6 @@ const LEGEND = ['Long ago, a burning stone fell out of the night sky and struck 
   'For centuries the people of the valley lived by its light. When the sunrise came through the stone, the herders knew it was time to take the flocks up to the katuns, and the farmers knew the snowmelt was coming. And the old ones say that when the sun stood behind the whole stone, its green light lit the mouth of a hidden cave. No one has found it since, and it still keeps its ancient secrets.',
   'Then the earth woke. An earthquake shook the Cats and shattered the crystal, and its pieces rolled down into the valleys of Gusinje. People found them, kept them and passed them from hand to hand.',
   'The pieces are still out there. Find them, and the light may shine again.'];
-const OBSERVE_NOTE = 'TO Gusinje is still checking this one on site, so every honest answer earns the points for now.';
 
 const FIELD = [
   /* ---------------- chapter I: the town pieces, on foot */
@@ -988,7 +987,7 @@ const FIELD = [
 /* the finale: the finders' desk at the Tourist Info Centre (gift + riddle, 1,000 points), then home to the Kissing Cats */
 const ASSEMBLY = { id: 'A', title: 'The finders’ desk', zone: null, code: 'SB6R',
   desk: ['You found every piece. Most people never find one.', 'The stone only fits back together if we remember where each piece was.',
-    'Three questions. Take your time: wrong answers cost nothing.', 'Then we take it home.'],
+    'Three questions. Take your time: every wrong answer costs a little.', 'Then we take it home.'],
   riddle: [
     { q: 'The town pieces: two of them were kept about 50 m apart. Where?', options: ['The Vizier’s Mosque and St George’s Church', 'Grlja and Oko Skakavice', 'The square and Suljova česma', 'Two springs in Grebaje'], a: 0 },
     { q: 'The water pieces: how deep is the Eye of the Skakavica?', options: ['About 8 m', 'About 1 m', 'About 30 m', 'Nobody knows'], a: 0 },
@@ -998,6 +997,21 @@ const ASSEMBLY = { id: 'A', title: 'The finders’ desk', zone: null, code: 'SB6
     'My great-grandfather found a little green stone under the Cats when he was a boy. Same green.', 'The old ones say its light shows the way to a hidden cave at sunrise.',
     'Now all we need is a sunrise.'] };
 const FIELD_BY_ID = Object.fromEntries(FIELD.map((f) => [f.id, f]));
+/* answers in a fixed order for each place (fix plan step 2, 16 Nov 2026): numbers in rising order, everything else shuffled
+   with a seed per question, so the right answer is no longer always A. The salt was picked so the 15 right answers spread
+   over A–D (4, 3, 4, 4) with never the same letter three times in a row. */
+const ORDER_SALT = 'peridot-25-';
+const hashStr = (str) => { let h = 2166136261; for (const c of str) { h ^= c.codePointAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
+const seeded = (a) => () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+function answerOrder(labels, key) {
+  const idx = labels.map((_, i) => i);
+  if (labels.every((o) => /^\d+$/.test(o))) return idx.sort((a, b) => +labels[a] - +labels[b]);
+  const r = seeded(hashStr(ORDER_SALT + key));
+  for (let i = idx.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [idx[i], idx[j]] = [idx[j], idx[i]]; }
+  return idx;
+}
+const inOrder = (options, labels, key) => answerOrder(labels, key).map((i) => options[i]);   // options built by original index, shown in this order
+const RIDDLE_MISS = 100;   // each wrong answer at the desk costs 100 of the riddle's 1,000 points; after three the answer is shown
 const chapterOf = (f) => FIELD_CHAPTERS[f.ch - 1];
 const FIELD_MAX = FIELD.length * SITE_MAX + FIELD_CHAPTERS.length * FP.chapter + FP.assembly;
 
@@ -1051,7 +1065,7 @@ const fieldDone = (id) => !!frec(id)?.done;
 const fieldPts = (r) => r ? (r.arrived ? FP.arrive : 0) + (r.catch || 0) + (r.task || 0) + (r.q || 0) : 0;
 function fieldTotal() {
   const fs = fieldSave();
-  return FIELD.reduce((a, f) => a + fieldPts(fs.m[f.id]), 0) + Object.values(fs.ch).filter(Boolean).length * FP.chapter + (fs.assembled ? FP.assembly : 0);
+  return FIELD.reduce((a, f) => a + fieldPts(fs.m[f.id]), 0) + Object.values(fs.ch).filter(Boolean).length * FP.chapter + (fs.assembled ? (fs.riddlePts ?? FP.assembly) : 0);
 }
 const chapterDone = (c) => c.ids.filter((id) => !FIELD_BY_ID[id].bonus).every(fieldDone);
 const partsHome = () => FIELD_CHAPTERS.filter((c) => fieldSave().ch[c.n]).length;
@@ -1259,7 +1273,7 @@ function fieldCard() {
     }).join('');
     return `<p class="route-head" style="--route: ${c.color}"><i></i>${'I II III'.split(' ')[c.n - 1]} · ${esc(c.name)} · ${esc(c.how)}<span>${fs.ch[c.n] ? '✓' : `${n}/${list.length}`}</span></p><ul class="sheet-list field-list">${items}</ul>`;
   }).join('');
-  const aSt = fs.assembled ? `<span class="s done">${fmt(FP.assembly)}</span>` : `<span class="s">${piecesDone()}/${FIELD.length}</span>`;
+  const aSt = fs.assembled ? `<span class="s done">${fmt(fs.riddlePts ?? FP.assembly)}</span>` : `<span class="s">${piecesDone()}/${FIELD.length}</span>`;
   const asm = `<p class="route-head" style="--route: var(--peridot)"><i></i>Finale · Tourist Info Centre, Gusinje<span></span></p><ul class="sheet-list field-list"><li><button data-id="f:open:A"><span class="fnum">★</span><span class="n">${esc(ASSEMBLY.title)}<small>Bring every piece, then home to the Kissing Cats${SURVEY ? ` · code ${ASSEMBLY.code}` : ''}</small></span>${aSt}</button></li></ul>`;
   const on = fieldOn && loc.state !== 'off';
   showCard({
@@ -1387,6 +1401,7 @@ function taskCard(id, state = {}) {
     model.onShow = (el) => { const i = el.querySelector('#f-num'); i?.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); fieldAction(`check:${id}`); } }); };
   } else {
     model.options = t.options.map((label, i) => ({ id: `f:pick:${id}:${i}`, label, state: state.marks?.[i] || '' }));
+    if (t.type === 'choice') model.options = inOrder(model.options, t.options, `t:${id}`);
     model.actions = [...(t.hint && !r.hint && t.type !== 'observe' ? [{ id: `f:hint:${id}`, label: `Hint (−${FP.hint})` }] : []), { id: `f:open:${id}`, label: 'Back' }];
   }
   if (r.hint && t.hint) model.note = { tone: '', head: 'Hint', text: t.hint };
@@ -1413,8 +1428,8 @@ function factCard(id, state = {}) {
   const marks = state.marks || (answered ? q.options.map((_, i) => (i === q.a ? 'correct' : 'dim')) : []);
   showCard({
     field: 'fact', fid: id, kicker: `${f.title} · field note`, title: f.fact.title, body: f.fact.text,
-    html: `<p class="qline">${esc(q.q)}</p>`,
-    options: q.options.map((label, i) => ({ id: `f:q:${id}:${i}`, label, state: marks[i] || '' })), answered,
+    html2: `<p class="qline">${esc(q.q)}</p>`,
+    options: inOrder(q.options.map((label, i) => ({ id: `f:q:${id}:${i}`, label, state: marks[i] || '' })), q.options, `q:${id}`), answered,
     note: state.note || null,
     actions: answered ? [{ id: `f:after:${id}`, label: 'Continue', primary: true }] : [{ id: `f:open:${id}`, label: 'Back' }],
   });
@@ -1461,12 +1476,21 @@ function assemblyCard(state = {}) {   // the finale, step 1: the finders' desk a
       actions: [{ id: 'f:code:A', label: 'Enter the desk code', primary: true }, ...((SURVEY || DEBUG) && ASSEMBLY.zone ? [{ id: 'f:sim:A', label: 'Test: pretend I’m here' }] : []), { id: 'f:list', label: 'All places' }] });
     return;
   }
-  const k = state.k || 0, q = ASSEMBLY.riddle[k];
+  const k = state.k ?? fs.ridK ?? 0, q = ASSEMBLY.riddle[k], wrong = fs.ridWrong?.[k] || [], out = wrong.length >= 3;   // out: three misses, the answer is shown
+  const marks = Object.fromEntries([...wrong.map((i) => [i, 'wrong']), ...(out ? [[q.a, 'correct']] : [])]);
+  const lost = RIDDLE_MISS * Object.values(fs.ridWrong || {}).reduce((a, w) => a + w.length, 0);
   showCard({ field: 'riddle', kicker: `The finders’ desk · question ${k + 1} of 3`, title: FIELD_CHAPTERS[k].name, html: partsSVG(),
-    cub: k === 0 && !state.note ? ASSEMBLY.desk : null,
-    body: [q.q], options: q.options.map((label, i) => ({ id: `f:rid:${k}:${i}`, label, state: state.marks?.[i] || '' })),
+    cub: k === 0 && !wrong.length ? ASSEMBLY.desk : null,
+    body: [q.q], options: inOrder(q.options.map((label, i) => ({ id: `f:rid:${k}:${i}`, label, state: marks[i] || (out ? 'dim' : '') })), q.options, `r:${k}`), answered: out,
     note: state.note || null,
-    actions: [{ id: 'f:list', label: 'Later' }] });
+    rules: `Each wrong answer costs ${RIDDLE_MISS} of the riddle’s ${fmt(FP.assembly)} points; after three, the answer is shown.${lost ? ` Riddle points so far: ${fmt(FP.assembly - lost)}.` : ''}`,
+    actions: out ? [{ id: `f:ridnext:${k}`, label: k < ASSEMBLY.riddle.length - 1 ? 'Next question' : 'Finish', primary: true }] : [{ id: 'f:list', label: 'Later' }] });
+}
+function riddleNext(k) {   // a question answered (or shown): the next one, or the peridot made whole
+  const fs = fieldSave();
+  if (k < ASSEMBLY.riddle.length - 1) { fs.ridK = k + 1; persist(); assemblyCard({ k: k + 1 }); return; }
+  const lost = RIDDLE_MISS * Object.values(fs.ridWrong || {}).reduce((a, w) => a + w.length, 0);
+  fs.riddlePts = Math.max(0, FP.assembly - lost); fs.assembled = Date.now(); persist(); refreshFieldMarkers(); sound('done'); catsCard();
 }
 function catsCard() {   // the finale, step 2: home to the Kissing Cats (painted for now; the AR scene comes in step 10 of the plan)
   fieldAccent(null); sound('piece');
@@ -1532,7 +1556,7 @@ function fieldAction(a) {
     const f = FIELD_BY_ID[id], t = f.task, r = frec(id), raw = $('f-num')?.value;
     if (raw === '' || raw == null || !Number.isFinite(+raw)) { taskCard(id, { note: { tone: 'bad', head: 'Your count?', text: 'Type a number first.' } }); return; }
     const v = Math.round(+raw); r.val = v;
-    if (t.answer == null) { finishTask(id, true, `You counted ${v}. ${OBSERVE_NOTE}`); return; }
+    if (t.answer == null) { finishTask(id, true, `You counted ${v}.${t.after ? ` ${t.after}` : ''}`); return; }
     if (v === t.answer) { finishTask(id, true, `Yes, ${v}.${t.after ? ` ${t.after}` : ''}`); return; }
     r.tries = (r.tries || 0) + 1; persist(); sound('wrong');
     if (r.tries >= 3) { finishTask(id, false, `It is ${t.answer}.${t.after ? ` ${t.after}` : ''}`); return; }
@@ -1559,12 +1583,16 @@ function fieldAction(a) {
   }
   if (verb === 'after') { const r = frec(id); if (!r.done) { r.done = Date.now(); persist(); } missionDoneCard(id); return; }
   if (verb === 'rid') {
-    const k = +id, i = +arg, q = ASSEMBLY.riddle[k];
-    if (i !== q.a) { sound('wrong'); assemblyCard({ k, marks: { [i]: 'wrong' }, note: { tone: 'bad', head: 'It doesn’t fit.', text: 'Think back to the places, and try again.' } }); return; }
-    sound('right');
-    if (k < ASSEMBLY.riddle.length - 1) { assemblyCard({ k: k + 1 }); return; }
-    fieldSave().assembled = Date.now(); persist(); refreshFieldMarkers(); sound('done'); catsCard(); return;
+    const k = +id, i = +arg, q = ASSEMBLY.riddle[k], fs = fieldSave();
+    if (fs.assembled) return;
+    if (i !== q.a) {
+      fs.ridWrong ||= {}; const w = fs.ridWrong[k] ||= []; if (!w.includes(i)) w.push(i); persist(); sound('wrong');
+      assemblyCard({ k, note: w.length >= 3 ? { tone: 'bad', head: 'Not this time.', text: `It’s “${q.options[q.a]}”.` } : { tone: 'bad', head: `It doesn’t fit. −${RIDDLE_MISS}`, text: 'Think back to the places, and try again.' } });
+      return;
+    }
+    sound('right'); riddleNext(k); return;
   }
+  if (verb === 'ridnext') { riddleNext(+id); return; }
   if (verb === 'export') { exportCard(); return; }
   if (verb === 'copy') { copyExport(); return; }
 }
