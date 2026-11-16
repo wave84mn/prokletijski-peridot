@@ -342,6 +342,11 @@ body { background: var(--obsidian); }
 /* step 3 (16 Nov 2026): a toast never covers an open card's title; the card's title takes focus without a ring */
 body.card-open .toast { top: calc(max(12px, env(safe-area-inset-top, 0px)) + 6px); }
 #card-title:focus, #card-title:focus-visible { outline: none; }   /* the title only takes focus so a screen reader starts there; the next Tab lands on the buttons */
+/* step 4: the passenger check over the camera view */
+.ar-fast { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 20; width: min(360px, calc(100% - 32px)); box-sizing: border-box; border-radius: 16px; padding: 18px; display: grid; gap: 10px; text-align: center; }
+.ar-fast b { font-family: var(--f-display); font-weight: 800; font-size: 26px; text-transform: uppercase; letter-spacing: 0.02em; }
+.ar-fast p { margin: 0; line-height: 1.45; }
+.ar-fast-btns { display: grid; gap: 8px; margin-top: 4px; }
 /* Meyra (16 Nov 2026): her painted face beside her lines; a scene is several bubbles */
 .cub { align-items: start; }
 .cub .face { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; display: block; margin-top: 2px; box-shadow: 0 0 0 2px #e5b971, 0 0 0 4px rgba(10, 12, 12, 0.7), 0 4px 10px rgba(0, 0, 0, 0.45); }
@@ -580,6 +585,11 @@ textarea.export { width: 100%; box-sizing: border-box; min-height: 180px; font: 
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l1.6-2h6.8L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.4"/></svg>
     </button>
   </header>
+  <div class="ar-fast glass" id="ar-fast" role="alertdialog" aria-labelledby="ar-fast-title" aria-describedby="ar-fast-text" hidden>
+    <b id="ar-fast-title">Moving fast?</b>
+    <p id="ar-fast-text">The camera view pauses above about 15 km/h, so nobody plays while driving. If you are a passenger, go on.</p>
+    <div class="ar-fast-btns"><button type="button" class="btn primary" id="ar-fast-yes">I’m a passenger</button><button type="button" class="btn" id="ar-fast-no">Close the camera</button></div>
+  </div>
   <div class="ar-camnote glass" id="ar-camnote" role="status" hidden>
     <p id="ar-camnote-text"></p>
     <a id="ar-camnote-link" href="#" target="_blank" rel="noopener" hidden></a>
@@ -963,7 +973,7 @@ const FIELD = [
     task: { type: 'number', prompt: 'From the marked spot, how many separate jets of water can you count coming out of the rock?', answer: null, hint: 'Count the white jets, not the ripples.' },
     fact: { title: 'Water from the rock', text: ['About 2 km south of Gusinje, the Vruja rises here in many small springs straight out of the rock.', 'Every year on Ilindan, 2 August, people gather at the springs, many of them emigrants home for the summer.'] },
     q: { q: 'When is the traditional gathering at the springs?', options: ['2 August (Ilindan)', '1 May', '13 June', '31 December'], a: 0 } },
-  { id: 'V1', ch: 2, title: 'Grlja waterfall', heritage: 'Natural heritage', zone: { lat: 42.5229, lon: 19.8416, ...ZONE.valley }, twin: 'grlja', code: 'QSWT',
+  { id: 'V1', ch: 2, title: 'Grlja waterfall', heritage: 'Natural heritage', zone: { lat: 42.5229, lon: 19.8416, ...ZONE.valley }, twin: 'grlja', code: 'QSWT', edge: true, winter: true,
     scene: ['Listen to that. The river drops fifteen metres into the stone here.', 'One piece fell into the gorge, and the water polished it for years.',
       'When sunrise came through the stone in spring, the old people knew the river would soon roar like this.', 'Stay behind the railing. The gorge doesn’t give things back.'],
     got: 'Polished smooth. The river did a good job.', close: 'Next stop: the place where this water starts.',
@@ -972,7 +982,7 @@ const FIELD = [
       after: 'The fall is loudest in late spring, when the snow melts in the high mountains. The people of the valley read that moment in the sunrise through the peridot.' },
     fact: { title: 'Into the canyon', text: ['The Grlja drops into a deep, narrow canyon right by the road.', 'The Skakavica, which rises at Oko Skakavice, joins the Grlja about 2.5 km below its source.'] },
     q: { q: 'Where does the Skakavica begin?', options: ['At Oko Skakavice', 'At Ali Pasha’s Springs', 'In Lake Plav', 'In Grebaje'], a: 0 } },
-  { id: 'V2', ch: 2, title: 'Oko Skakavice', heritage: 'Natural heritage', zone: { lat: 42.5119, lon: 19.8348, ...ZONE.valley }, twin: 'oko', code: 'QBJU',
+  { id: 'V2', ch: 2, title: 'Oko Skakavice', heritage: 'Natural heritage', zone: { lat: 42.5119, lon: 19.8348, ...ZONE.valley }, twin: 'oko', code: 'QBJU', edge: true, winter: true,
     scene: ['Oko Skakavice. The Eye. Eight metres deep, and you can see every stone on the bottom.', 'This piece sank all the way down and waited for the clearest morning.',
       'The water is about five degrees. No swimming. Trust me, you don’t want to.', 'Point at the middle of the pool. Let’s bring it up.'],
     got: 'Straight from the bottom of the Eye. Look how clear it is.', close: 'Eight metres. Remember that number.',
@@ -983,7 +993,7 @@ const FIELD = [
     q: { q: 'How cold is the water?', options: ['About 5 °C', 'About 12 °C', 'About 18 °C', 'It is frozen'], a: 0 } },
 
   /* ---------------- chapter III: the mountain piece, in Grebaje */
-  { id: 'G1', ch: 3, title: 'Grebaje valley', heritage: 'Natural and cultural heritage · Suljova česma', zone: { lat: 42.5159, lon: 19.7832, ...ZONE.valley }, twin: 'grebaje', code: 'AU3Z',
+  { id: 'G1', ch: 3, title: 'Grebaje valley', heritage: 'Natural and cultural heritage · Suljova česma', zone: { lat: 42.5159, lon: 19.7832, ...ZONE.valley }, twin: 'grebaje', code: 'AU3Z', winter: true,
     zoneNote: 'Suljo’s fountain by the road in Grebaje, where the climbs start; centre estimated at the trailhead (about 1,160 m): check on site.',
     scene: ['Suljova česma. Suljo’s fountain, the last drinking water before the climbs.', 'Shepherds on their way up to the katuns always stopped here to drink.',
       'One of them found this piece in the stream, and his family has kept it ever since.', 'Look at the fountain, where the water runs out.'],
@@ -996,6 +1006,7 @@ const FIELD = [
 ];
 /* the finale: the finders' desk at the Tourist Info Centre (gift + riddle, 1,000 points), then home to the Kissing Cats */
 const ASSEMBLY = { id: 'A', title: 'The finders’ desk', zone: null, code: 'SB6R',
+  address: 'Čaršijska 62, Gusinje', hours: '07:00–15:00',   // TO Gusinje, 16 Nov 2026; when the desk is closed: the phone number on the door
   desk: ['You found every piece. Most people never find one.', 'The stone only fits back together if we remember where each piece was.',
     'Three questions. Take your time: every wrong answer costs a little.', 'Then we take it home.'],
   riddle: [
@@ -1167,9 +1178,26 @@ function smoothFix(now) {   // accuracy-weighted mean of the last few seconds of
   const last = pts[pts.length - 1];
   return { lat: la / w, lon: lo / w, acc: last.acc, t: last.t, n: pts.length };
 }
+/* moving fast (step 4 of the fix plan): above about 15 km/h for a few seconds, the camera view pauses and asks whether you are a
+   passenger, so nobody plays while driving between the water places. The phone's own speed when it gives one, else from fixes. */
+const FAST = { kmh: 15, need: 2, okUntil: 0 };
+const speedNow = { kmh: 0, n: 0 };
+function noteSpeed(fx, coordSpeed) {
+  const prev = loc.last;
+  let kmh = Number.isFinite(coordSpeed) && coordSpeed >= 0 ? coordSpeed * 3.6 : null;
+  if (kmh == null && prev && fx.t - prev.t > 900 && fx.acc < 40) kmh = distM([prev.lat, prev.lon], [fx.lat, fx.lon]) / ((fx.t - prev.t) / 1000) * 3.6;
+  if (kmh == null) return;
+  speedNow.kmh = kmh; speedNow.n = kmh > FAST.kmh ? speedNow.n + 1 : 0;
+  if (arOpen && speedNow.n >= FAST.need && Date.now() > FAST.okUntil) showPassenger();
+}
+function showPassenger() {
+  const el = $('ar-fast'); if (!el || !el.hidden) return;
+  el.hidden = false; stopCatch(); sound('wrong'); $('ar-fast-yes').focus({ preventScroll: true });
+}
 function onFix(p) {
   if (loc.sim) return;
   const fx = { lat: p.coords.latitude, lon: p.coords.longitude, acc: Number.isFinite(p.coords.accuracy) ? p.coords.accuracy : 999, t: Date.now() };
+  if (Number.isFinite(fx.lat) && Number.isFinite(fx.lon)) noteSpeed(fx, p.coords.speed);
   if (!Number.isFinite(fx.lat) || !Number.isFinite(fx.lon)) return;
   const ok = acceptRaw(fx);
   if (!ok) return;
@@ -1354,7 +1382,8 @@ function fieldMissionCard(id) {
   }[stage];
   const primary = { arrive: null, look: { id: `f:look:${id}`, label: 'Find the piece' }, task: { id: `f:task:${id}`, label: 'Do the task' }, fact: { id: `f:fact:${id}`, label: 'Field note' }, done: null }[stage];
   const body = [next];
-  if (f.worship && stage !== 'done') body.push('A working place of worship: everything is done from outside. Dress modestly if you go in.');
+  if (f.worship && stage !== 'done') body.push('A working place of worship: everything is done from outside. Dress modestly if you go in, and stay outside at the Friday noon prayer.');
+  if (f.winter && stage === 'arrive' && [10, 11, 0, 1, 2, 3].includes(new Date().getMonth())) body.push('From November to April snow may close the road here. Ask at the Tourist Info Centre before you drive.');
   showCard({
     field: 'mission', fid: id, kicker: `Chapter ${ROMAN[c.n - 1]} · ${c.name}${f.bonus ? ' · bonus' : ''}`, title: f.title, sub: f.heritage,
     cub: stage === 'arrive' || stage === 'look' ? f.scene : stage === 'done' ? f.close : null,
@@ -1478,13 +1507,15 @@ function assemblyCard(state = {}) {   // the finale, step 1: the finders' desk a
   const left = FIELD.length - piecesDone();
   if (partsHome() < 3) {
     showCard({ field: 'assembly', kicker: 'Finale · Tourist Info Centre, Gusinje', title: ASSEMBLY.title, html: partsSVG(),
-      body: [`Bring every piece here: the finders’ gift and the last riddle wait at the desk, then the peridot goes home to the Kissing Cats. Still out there: ${left} ${left === 1 ? 'piece' : 'pieces'}.`],
+      body: [`Bring every piece here: the finders’ gift and the last riddle wait at the desk, then the peridot goes home to the Kissing Cats. Still out there: ${left} ${left === 1 ? 'piece' : 'pieces'}.`,
+        `Tourist Info Centre, ${ASSEMBLY.address} · open ${ASSEMBLY.hours}.`],
       actions: [{ id: 'f:list', label: 'All places', primary: true }, { id: 'close', label: 'Close' }] });
     return;
   }
   if (!fs.arrivedA) {
     showCard({ field: 'assembly', kicker: 'Finale · Tourist Info Centre, Gusinje', title: ASSEMBLY.title, html: partsSVG(), cub: ALL_PIECES,
-      body: ['Show 10/10 at the desk of the Tourist Info Centre in Gusinje: every finder gets a gift from Prokletije. The staff give you the desk code for the last riddle.'],
+      body: [`Show 10/10 at the desk of the Tourist Info Centre, ${ASSEMBLY.address} (open ${ASSEMBLY.hours}): every finder gets a surprise gift. The staff give you the desk code for the last riddle.`,
+        'Desk closed? Call the phone number on the door.'],
       actions: [{ id: 'f:code:A', label: 'Enter the desk code', primary: true }, ...((SURVEY || DEBUG) && ASSEMBLY.zone ? [{ id: 'f:sim:A', label: 'Test: pretend I’m here' }] : []), { id: 'f:list', label: 'All places' }] });
     return;
   }
@@ -1916,10 +1947,11 @@ function targetBearing(f) {
   return bearingDeg(hereLL(f), PLACES[t.target]);
 }
 function openAR(f, mode) {
+  $('ar-fast').hidden = true;
   arF = f; arMode = mode; arScan = 0; arShardGot = false; arOpen = true;
   orient.compass = false; orient.manual = true; orient.heading = 0; orient.elev = 0; orient.steady = 0;
   camFov.frameT = null; camFov.lagS = []; camSel.tried = new Set(); camSel.manualPick = !!readLS(CAM_KEY)?.manual;
-  startOrientation(); startCamera();
+  startOrientation(); if (mode !== 'point') startCamera();   // the camera only for finding the piece (battery): pointing needs only the compass
   const c = f.ch ? chapterOf(f) : null; fieldAccent(c);
   $('ar-kicker').textContent = mode === 'record' ? 'Survey · record bearing' : `${f.title} · ${mode === 'point' ? 'task' : 'look'}`;
   $('ar-title').textContent = mode === 'point' || mode === 'record' ? 'Point and tap Here' : f.look.mode === 'scan' ? 'Hold steady' : 'Look around';
@@ -1932,10 +1964,11 @@ function openAR(f, mode) {
   $('ar-scan').hidden = !(mode === 'look' && f.look.mode === 'scan');
   buildARItems();
   closeCard(); arEl.hidden = false; updateFieldChip();
+  if (speedNow.n >= FAST.need && Date.now() > FAST.okUntil) setTimeout(showPassenger, 300);
   if (mode === 'look') {
     const sh = arItems._items.find((it) => it.kind === 'shard'), spot = shardSpot(f);
     const here = fixFresh() && loc.fix.acc <= 40 ? [loc.fix.lat, loc.fix.lon] : null;
-    if (spot && here && distM(here, [spot.lat, spot.lon]) > landRange()) {   // GPS: the shard waits at its spot; walk to it
+    if (spot && here && !f.edge && distM(here, [spot.lat, spot.lon]) > landRange()) {   // GPS: the shard waits at its spot; walk to it (never at a canyon or a pool: there it comes to you)
       const prev = { scan: $('ar-scan').hidden, aim: $('ar-aim').hidden, title: $('ar-title').textContent };
       $('ar-scan').hidden = true; $('ar-aim').hidden = true; act.hidden = true; if (sh) sh.hidden = true;
       startApproach(f, spot).then((ok) => {
@@ -2043,8 +2076,8 @@ arItems.addEventListener('click', (e) => {
   setTimeout(() => { if (arOpen && arF === f) afterLook(f); }, 1100);
 });
 function taskIntro(id) { taskCard(id); }   // a pointing task opens the camera view (since step 3 straight away, no mission card in between)
-function arToPoint(f) {   // after the catch at a place with a pointing task: the task starts in the same camera view (bug 14)
-  stopCatch(); arMode = 'point'; arScan = 0; arShardGot = false; arEl.classList.remove('holding');
+function arToPoint(f) {   // after the catch at a place with a pointing task: the task starts in the same view (bug 14), camera off (battery)
+  stopCatch(); stopCamera(); $('ar-lens').hidden = true; arMode = 'point'; arScan = 0; arShardGot = false; arEl.classList.remove('holding');
   $('ar-kicker').textContent = `${f.title} · task`; $('ar-title').textContent = 'Point and tap Here'; $('ar-say').textContent = f.task.prompt;
   const act = $('ar-act'); act.hidden = false; act.textContent = 'Here';
   $('ar-hint').hidden = !(f.task.hint && !frec(f.id)?.hint); $('ar-aim').hidden = false; $('ar-scan').hidden = true;
@@ -2075,6 +2108,11 @@ $('ar-hint').addEventListener('click', () => {
   $('ar-say').textContent = `Hint: ${f.task.hint}`; $('ar-hint').hidden = true;
 });
 $('ar-close').addEventListener('click', () => { sound('tap'); closeAR(); });
+$('ar-fast-yes').addEventListener('click', () => {   // a passenger: go on, and don't ask again for 15 minutes
+  sound('tap'); FAST.okUntil = Date.now() + 15 * 60000; $('ar-fast').hidden = true;
+  const f = arF, m = arMode; closeAR(() => openAR(f, m));
+});
+$('ar-fast-no').addEventListener('click', () => { sound('tap'); $('ar-fast').hidden = true; closeAR(); });
 window.addEventListener('keydown', (e) => {
   if (!arOpen) return;
   if (e.key === 'Escape') { closeAR(); }
@@ -3297,7 +3335,7 @@ if (fieldOn) startLocation();
 updateTestUI();
 if (TEST && !loc.sim) setTimeout(testCard, 300);
 else if (!fieldHash(location.hash.slice(1)) && !fieldSave().seenIntro) setTimeout(fieldIntroCard, 300);
-if (DEBUG) window.game = { FIELD, ASSEMBLY, save, loc, orient, view, arView, arProject, dirBE, camFov, camSel, arLag, simulateAt, testWalk, testMove, TEST, arrive, fieldAction, fieldTotal, FIELD_MAX, drawMap, perf, get arOpen() { return arOpen; }, get card() { return card; } };
+if (DEBUG) window.game = { noteSpeed, speedNow, FAST, FIELD, ASSEMBLY, save, loc, orient, view, arView, arProject, dirBE, camFov, camSel, arLag, simulateAt, testWalk, testMove, TEST, arrive, fieldAction, fieldTotal, FIELD_MAX, drawMap, perf, get arOpen() { return arOpen; }, get card() { return card; } };
 
 
 </script>
