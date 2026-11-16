@@ -210,24 +210,40 @@ body { background: var(--obsidian); }
 .zone.here, .zone.inside { fill: rgba(198, 239, 84, 0.32); stroke: #eaffa0; stroke-width: 2.4; stroke-dasharray: none; }
 .zone.locked { fill: rgba(160, 170, 160, 0.1); stroke: rgba(220, 220, 210, 0.5); }
 .aimline { stroke: #8ec0ff; stroke-width: 2.5; stroke-dasharray: 2 7; stroke-linecap: round; opacity: 0.85; }
-/* the pins: a marquise peridot standing on its tip, glowing */
+/* the pins: a marquise peridot standing on its tip, glowing and alive (see gemMark in the script: --ph is the page's clock, --o each pin's offset) */
 .mk { cursor: pointer; }
-.gem-glow { fill: url(#gem-glow); pointer-events: none; animation: gem-breathe 2.6s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+.mk { --d: calc(var(--ph, 0s) + var(--o, 0s)); }
+.gem-glow { fill: url(#gem-glow); pointer-events: none; animation: gem-breathe 2.6s ease-in-out infinite; animation-delay: var(--d); transform-box: fill-box; transform-origin: center; }
 .gem-glow.g-hot { animation-duration: 1.1s; }
 .gem-glow.g-dim { opacity: 0.35; animation: none; }
+.gem-rays { fill: url(#gem-ray); pointer-events: none; animation: gem-turn 18s linear infinite, gem-rays 2.6s ease-in-out infinite; animation-delay: var(--d);
+  transform-box: fill-box; transform-origin: center; }
+.gem-rays.hot { animation-duration: 9s, 1.1s; }
+.gem-shadow { fill: rgba(0, 0, 0, 0.38); pointer-events: none; }
 .gem-body { fill: url(#gem-fill); stroke: #233a05; stroke-width: 1.3; stroke-linejoin: round; }
 .gem-cut { fill: none; stroke: rgba(30, 52, 6, 0.55); stroke-width: 0.9; stroke-linejoin: round; }
 .gem-hl { fill: rgba(255, 255, 255, 0.78); }
+.gem-b.live { animation: gem-float 3.2s ease-in-out infinite; animation-delay: var(--d); transform-box: fill-box; transform-origin: center bottom; }
+.gem-b.live .gem-body { animation: gem-shine 2.6s ease-in-out infinite; animation-delay: var(--d); }
+.gem-glint { fill: rgba(255, 255, 240, 0.85); opacity: 0; animation: gem-glint 4.2s ease-in-out infinite; animation-delay: var(--d); }
+.gem-spark { fill: #fffbe6; opacity: 0; animation: gem-spark 3.4s ease-in-out infinite; animation-delay: calc(var(--d) - 1.3s); transform-box: fill-box; transform-origin: center;
+  filter: drop-shadow(0 0 2px rgba(255, 255, 210, 0.9)); }
 .mk.done .gem-body { fill: url(#gem-fill-dim); }
 .mk.locked .gem-body { fill: #8d958c; stroke: #3a3f3a; }
 .mk.locked .gem-glow { display: none; }
 .mk.sel .gem-b { filter: drop-shadow(0 0 4px rgba(231, 207, 144, 0.95)); }
-.gem-b.near { animation: shard-bob 1.1s ease-in-out infinite; transform-box: fill-box; transform-origin: center bottom; }
+.gem-b.near { animation: shard-bob 1.1s ease-in-out infinite; animation-delay: var(--d); transform-box: fill-box; transform-origin: center bottom; }
 .gem-done circle { fill: var(--map-gold-hi); stroke: #3a2c10; stroke-width: 1.4; }
 .gem-done path { fill: none; stroke: #2a200a; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .gem-count circle { fill: var(--map-slate); stroke: var(--map-gold); stroke-width: 1.6; }
 .gem-count text { font: 800 13px var(--f-display); fill: var(--map-gold-hi); text-anchor: middle; }
-@keyframes gem-breathe { 0%, 100% { opacity: 0.7; transform: scale(0.94); } 50% { opacity: 1; transform: scale(1.06); } }
+@keyframes gem-breathe { 0%, 100% { opacity: 0.6; transform: scale(0.88); } 50% { opacity: 1; transform: scale(1.14); } }
+@keyframes gem-turn { to { transform: rotate(360deg); } }
+@keyframes gem-rays { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.85; } }
+@keyframes gem-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+@keyframes gem-shine { 0%, 100% { filter: drop-shadow(0 0 2px rgba(214, 255, 90, 0.5)); } 50% { filter: drop-shadow(0 0 7px rgba(226, 255, 122, 0.95)); } }
+@keyframes gem-glint { 0%, 52% { transform: translateX(0); opacity: 0; } 58% { opacity: 1; } 76%, 100% { transform: translateX(36px); opacity: 0; } }
+@keyframes gem-spark { 0%, 68%, 100% { transform: scale(0) rotate(0deg); opacity: 0; } 79% { transform: scale(1) rotate(45deg); opacity: 1; } 90% { transform: scale(0) rotate(90deg); opacity: 0; } }
 /* slate labels with an inlaid gold line */
 .mk-plate { position: absolute; left: 0; top: 0; pointer-events: auto; display: flex; flex-direction: column; align-items: flex-start; max-width: 230px;
   -webkit-appearance: none; appearance: none; margin: 0; padding: 4px 10px 5px; border: 1.5px solid var(--map-gold); border-radius: 3px; background: rgba(31, 34, 39, 0.95);
@@ -442,6 +458,8 @@ textarea.export { width: 100%; box-sizing: border-box; min-height: 180px; font: 
 @keyframes shard-halo { 0% { transform: scale(0.6); opacity: 1; } 100% { transform: scale(1.6); opacity: 0; } }
 @media (prefers-reduced-motion: reduce) {
   .ar-shard, .ar-orb, .ar-orb span, .ar-arrow svg, .mk-shard .b, .mk-shard .halo { animation: none; }
+  .gem-glow, .gem-rays, .gem-b.live, .gem-b.live .gem-body, .gem-b.near, .gem-glint, .gem-spark { animation: none; }
+  .gem-rays { opacity: 0.5; }
 }
 </style>
 </head>
@@ -451,6 +469,8 @@ textarea.export { width: 100%; box-sizing: border-box; min-height: 180px; font: 
     <defs>
       <radialGradient id="gem-glow"><stop offset="0" stop-color="#e2ff7a" stop-opacity="0.8"/><stop offset="0.42" stop-color="#a6e03e" stop-opacity="0.34"/><stop offset="1" stop-color="#7fc22a" stop-opacity="0"/></radialGradient>
       <linearGradient id="gem-fill" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f6ffb8"/><stop offset="0.34" stop-color="#cdee3e"/><stop offset="0.68" stop-color="#88b31a"/><stop offset="1" stop-color="#3f6408"/></linearGradient>
+      <radialGradient id="gem-ray"><stop offset="0" stop-color="#fbffd9" stop-opacity="1"/><stop offset="0.3" stop-color="#e2f97a" stop-opacity="0.7"/><stop offset="1" stop-color="#9ccf2c" stop-opacity="0"/></radialGradient>
+      <clipPath id="gem-clip"><path d="M0 0 C -9.5 -9 -11 -27 0 -40 C 11 -27 9.5 -9 0 0 Z"/></clipPath>
       <linearGradient id="gem-fill-dim" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e2ebc0"/><stop offset="0.5" stop-color="#99ad5a"/><stop offset="1" stop-color="#4b5c24"/></linearGradient>
     </defs>
     <g id="map-base"></g><g id="map-over"></g><g id="map-me"></g>
@@ -2052,11 +2072,23 @@ const onScreen = ([x, y], m = 40) => x > -m && y > -m && x < mapW + m && y < map
 // a marquise peridot standing on its lower tip (the tip marks the place), 22 x 40 px, with its cut drawn in
 const GEM_PATH = 'M0 0 C -9.5 -9 -11 -27 0 -40 C 11 -27 9.5 -9 0 0 Z';
 const GEM_CUT = 'M0 -40 L -3.6 -26 L 0 -20 L 3.6 -26 Z M -3.6 -26 L -8.6 -21 M 3.6 -26 L 8.6 -21 M 0 -20 L -3.4 -10 L 0 0 L 3.4 -10 Z M -3.4 -10 L -8.6 -19 M 3.4 -10 L 8.6 -19 M -8.6 -20 H 8.6';
+// its light (16 Nov 2026: "on AR trail mission map, peridots should be animated and glowing"): a four-point star of light turning
+// slowly behind it, a breathing halo, the stone floating and shining, a glint sweeping its facets and a sparkle twinkling on top.
+// Collected stones rest dimmed; the locked last step is grey and still. The animations run on the page's clock (--ph, set when
+// the overlay is rewritten) with a fixed offset per pin (--o), so panning and zooming never restart them and the pins don't pulse in step.
+const GEM_RAYS = 'M0 -40 L2.6 -2.6 L32 0 L2.6 2.6 L0 40 L-2.6 2.6 L-32 0 L-2.6 -2.6 Z M11.3 -11.3 L1.4 0 L11.3 11.3 L0 1.4 L-11.3 11.3 L-1.4 0 L-11.3 -11.3 L0 -1.4 Z';
+const GEM_SPARK = 'M0 -6.5 L1.3 -1.3 L6.5 0 L1.3 1.3 L0 6.5 L-1.3 1.3 L-6.5 0 L-1.3 -1.3 Z';
+const gemOffset = (id) => `${(-([...String(id)].reduce((a, c) => a * 31 + c.charCodeAt(0), 7) % 37) / 10).toFixed(1)}s`;
 function gemMark(f, st, near) {
-  const glow = st === 'done' ? 'g-dim' : near || st === 'here' ? 'g-hot' : '';
-  return `<circle class="gem-glow ${glow}" cy="-20" r="${near || st === 'here' ? 30 : 24}"/>`
-    + `<g class="gem-b${near ? ' near' : ''}"><path class="gem-body" d="${GEM_PATH}"/><path class="gem-cut" d="${GEM_CUT}"/>`
-    + `<path class="gem-hl" d="M -2.4 -33 C -5.6 -28 -6.6 -22 -6 -16 C -4.2 -21 -3.4 -27 -2.4 -33 Z"/></g>`
+  const hot = near || st === 'here', live = st !== 'done' && st !== 'locked';
+  const glow = st === 'done' ? 'g-dim' : hot ? 'g-hot' : '';
+  return (live ? `<g transform="translate(0 -20)"><path class="gem-rays${hot ? ' hot' : ''}" d="${GEM_RAYS}"/></g>` : '')
+    + `<circle class="gem-glow ${glow}" cy="-20" r="${hot ? 32 : 27}"/>`
+    + `<ellipse class="gem-shadow" cy="1" rx="7" ry="2.2"/>`
+    + `<g class="gem-b${live ? ' live' : ''}${near ? ' near' : ''}"><path class="gem-body" d="${GEM_PATH}"/><path class="gem-cut" d="${GEM_CUT}"/>`
+    + `<path class="gem-hl" d="M -2.4 -33 C -5.6 -28 -6.6 -22 -6 -16 C -4.2 -21 -3.4 -27 -2.4 -33 Z"/>`
+    + (live ? `<g clip-path="url(#gem-clip)"><path class="gem-glint" d="M -15 -46 L -9.5 -46 L -18.5 4 L -24 4 Z"/></g><g transform="translate(4.6 -31)"><path class="gem-spark" d="${GEM_SPARK}"/></g>` : '')
+    + '</g>'
     + (st === 'done' ? '<g class="gem-done" transform="translate(9 -36)"><circle r="7.5"/><path d="M-3.4 0.2 L-1 2.6 L3.6 -2.4"/></g>' : '');
 }
 function siteState(f) {
@@ -2116,7 +2148,7 @@ function drawMap() {
   if (merged) {   // the town as one pin and one label
     const townDone = FIELD.filter((f) => f.ch === 1 && f.zone && fieldDone(f.id)).length, townN = FIELD.filter((f) => f.ch === 1 && f.zone).length;
     const [x, y] = toScreen(W(42.5634, 19.8312));
-    pins.push(`<g class="mk cluster" data-act="zoomtown" transform="translate(${x.toFixed(1)} ${y.toFixed(1)})" role="button" aria-label="Gusinje town: ${townDone} of ${townN} sites done"><circle class="gem-glow" cy="-20" r="28"/><g class="gem-b"><path class="gem-body" d="${GEM_PATH}"/><path class="gem-cut" d="${GEM_CUT}"/></g><g class="gem-count" transform="translate(11 -38)"><circle r="10"/><text y="4">${townN - townDone}</text></g></g>`);
+    pins.push(`<g class="mk cluster" data-act="zoomtown" transform="translate(${x.toFixed(1)} ${y.toFixed(1)})" style="--o:${gemOffset('town')}" role="button" aria-label="Gusinje town: ${townDone} of ${townN} sites done">${gemMark(null, townDone === townN ? 'done' : 'open', false).replace(/<g class="gem-done".*$/, '')}<g class="gem-count" transform="translate(11 -38)"><circle r="10"/><text y="4">${townN - townDone}</text></g></g>`);
     const title = 'T1–T8 · Gusinje town', sub = `${townDone}/${townN} done${TOWN_KM ? ` · ${TOWN_KM} km trail on foot` : ''}`;
     const [px, py] = plateBox(x, y, title, sub, true);
     plates.push(`<button class="mk-plate" data-act="zoomtown" style="transform:translate(${px.toFixed(1)}px,${py.toFixed(1)}px)"><b>${title}</b><i>${sub}</i></button>`);
@@ -2130,7 +2162,7 @@ function drawMap() {
     const st = siteState(f), sel = f.id === selectedId || f.id === tgt?.id ? 'sel' : '';
     const r = frec(f.id), near = f.id !== 'A' && !r?.look && st !== 'done' && (r?.arrived || (fixFresh() && distM([loc.fix.lat, loc.fix.lon], [f.zone.lat, f.zone.lon]) < Math.max(150, f.zone.r * 3)));
     const shard = f.id !== 'A' && !r?.look && st !== 'done';
-    pins.push(`<g class="mk ${st} ${sel}" data-act="open:${f.id}" transform="translate(${x.toFixed(1)} ${y.toFixed(1)})" role="button" aria-label="${esc(f.title)}${shard ? ': a peridot shard is here' : ''}">${gemMark(f, st, near)}</g>`);
+    pins.push(`<g class="mk ${st} ${sel}" data-act="open:${f.id}" transform="translate(${x.toFixed(1)} ${y.toFixed(1)})" style="--o:${gemOffset(f.id)}" role="button" aria-label="${esc(f.title)}${shard ? ': a peridot shard is here' : ''}">${gemMark(f, st, near)}</g>`);
     if (showPlate(f)) {
       const title = `${f.id === 'A' ? '★' : f.id} · ${f.title}`, sub = plateSub(f, st);
       const at = plateBox(x, y, title, sub, isKey(f));
@@ -2163,7 +2195,11 @@ function drawMap() {
     names.push(`<g class="pk" transform="translate(${x.toFixed(1)} ${y.toFixed(1)})"><path d="M0 -5 L4.6 3 L-4.6 3 Z"/><text x="7" y="0">${esc(name)}</text><text class="ele" x="7" y="11">${p.e}</text></g>`);
   }
   const html = trails.join('') + names.join('') + zones.join('') + pins.reverse().join('');
-  if (html !== lastOver) { $('map-over').innerHTML = html; lastOver = html; perf.writes++; }
+  if (html !== lastOver) {   // new pins pick up their animations where the page's clock is (see gemMark)
+    const over = $('map-over');
+    over.style.setProperty('--ph', `${(-performance.now() / 1000).toFixed(3)}s`);
+    over.innerHTML = html; lastOver = html; perf.writes++;
+  }
   const ph = plates.join('');
   if (ph !== lastPlates) { $('map-plates').innerHTML = ph; lastPlates = ph; perf.writes++; }
   drawMe(tgt);
